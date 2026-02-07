@@ -1,34 +1,144 @@
-index.html<!doctype html>
+<!doctype html>
 <html lang="tr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Spradon Evleri | Personel Giriş</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Spradon Evleri | Personel Giriş (DEMO)</title>
 </head>
+<body style="margin:0;font-family:Arial;background:#0f172a;color:#fff;">
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;">
+    <div style="width:100%;max-width:520px;background:#111827;border:1px solid #1f2937;border-radius:16px;padding:20px;box-shadow:0 20px 50px rgba(0,0,0,.35);">
+      <div style="text-align:center;margin-bottom:14px;">
+        <div style="font-size:22px;font-weight:800;">Spradon Evleri</div>
+        <div style="opacity:.8;margin-top:6px;">Personel Giriş (DEMO) | Akıllı Site - HAFIZA</div>
+      </div>
 
-<body style="margin:0;font-family:Arial;background:#0f172a;color:#fff;display:flex;align-items:center;justify-content:center;min-height:100vh">
+      <div id="loginBox" style="margin-top:16px;">
+        <label style="display:block;font-size:13px;opacity:.8;margin:10px 0 6px;">Personel ID</label>
+        <input id="pid" placeholder="Örn: 0002"
+          style="width:100%;padding:12px;border-radius:10px;border:1px solid #334155;background:#0b1220;color:#fff;outline:none;" />
 
-  <div style="width:380px;max-width:92vw;background:#111827;padding:24px;border-radius:14px;box-shadow:0 0 20px rgba(0,0,0,.55)">
-    <h2 style="text-align:center;margin:0 0 8px 0">Spradon Evleri</h2>
-    <p style="text-align:center;opacity:.75;margin:0 0 18px 0">Akıllı Site – HAFIZA (DEMO)</p>
+        <label style="display:block;font-size:13px;opacity:.8;margin:10px 0 6px;">Şifre</label>
+        <input id="pwd" type="password" placeholder="••••••"
+          style="width:100%;padding:12px;border-radius:10px;border:1px solid #334155;background:#0b1220;color:#fff;outline:none;" />
 
-    <label style="font-size:12px;opacity:.8">Personel ID</label>
-    <input placeholder="Örn: 0002" style="width:100%;padding:12px;margin:6px 0 12px 0;border-radius:8px;border:1px solid #334155;background:#020617;color:#fff;outline:none">
+        <button onclick="login()"
+          style="width:100%;margin-top:12px;padding:12px;border-radius:10px;border:none;background:#22c55e;color:#062016;font-weight:800;cursor:pointer;">
+          Giriş Yap
+        </button>
 
-    <label style="font-size:12px;opacity:.8">Şifre</label>
-    <input type="password" placeholder="••••••••" style="width:100%;padding:12px;margin:6px 0 14px 0;border-radius:8px;border:1px solid #334155;background:#020617;color:#fff;outline:none">
+        <div id="loginMsg" style="margin-top:10px;font-size:13px;opacity:.85;"></div>
 
-    <button style="width:100%;padding:12px;border-radius:8px;border:none;background:#22c55e;color:#052e16;font-weight:bold;cursor:pointer">
-      GİRİŞ
-    </button>
+        <div style="margin-top:14px;padding:12px;border-radius:12px;background:#0b1220;border:1px dashed #334155;font-size:13px;opacity:.9;">
+          <b>Demo Notu:</b> Bu demo; “İşe Geldim / İşten Çıktım / İzin İstiyorum” akışını gösterir.
+          <div style="margin-top:6px;opacity:.8;">
+            Sonraki adımda: Güvenlik devriye saatleri, teknik iş akışı, yönetici paneli ve raporlar eklenecek.
+          </div>
+        </div>
+      </div>
 
-    <div style="margin-top:14px;padding:10px;border-radius:10px;background:#0b1220;border:1px solid #1f2937">
-      <div style="font-size:12px;opacity:.85">Demo Notu</div>
-      <div style="font-size:12px;opacity:.7;margin-top:4px">
-        Bu ekran canlı link içindir. Bir sonraki adımda “İşe Geldim / İşten Çıktım / İzin” butonlarını ekleyeceğiz.
+      <div id="panelBox" style="display:none;margin-top:16px;">
+        <div style="display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;">
+          <div>
+            <div style="font-size:14px;opacity:.8;">Hoş geldin</div>
+            <div id="who" style="font-size:18px;font-weight:800;margin-top:2px;"></div>
+            <div id="dept" style="font-size:13px;opacity:.75;margin-top:4px;"></div>
+          </div>
+          <button onclick="logout()"
+            style="padding:10px 12px;border-radius:10px;border:1px solid #334155;background:#0b1220;color:#fff;cursor:pointer;">
+            Çıkış
+          </button>
+        </div>
+
+        <div style="margin-top:14px;padding:12px;border-radius:12px;background:#0b1220;border:1px solid #334155;">
+          <div style="font-size:13px;opacity:.85;">
+            <b>Konum kuralı (DEMO):</b> Şimdilik “Site içindeyim” onayıyla çalışıyor.
+            Gerçekte çokgen/konum kontrolünü ekleyeceğiz.
+          </div>
+          <label style="display:flex;gap:10px;align-items:center;margin-top:10px;">
+            <input type="checkbox" id="insite" />
+            <span>Şu an site içindeyim</span>
+          </label>
+          <div id="siteMsg" style="margin-top:8px;font-size:13px;opacity:.8;"></div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr;gap:10px;margin-top:14px;">
+          <button onclick="action('İşe Geldim')"
+            style="padding:14px;border-radius:12px;border:none;background:#60a5fa;color:#07121f;font-weight:900;cursor:pointer;">
+            İşe Geldim
+          </button>
+
+          <button onclick="action('İşten Çıktım')"
+            style="padding:14px;border-radius:12px;border:none;background:#fbbf24;color:#1a1202;font-weight:900;cursor:pointer;">
+            İşten Çıktım
+          </button>
+
+          <button onclick="requestLeave()"
+            style="padding:14px;border-radius:12px;border:none;background:#fb7185;color:#1a070b;font-weight:900;cursor:pointer;">
+            İzin Almak İstiyorum
+          </button>
+        </div>
+
+        <div style="margin-top:14px;padding:12px;border-radius:12px;background:#0b1220;border:1px solid #334155;">
+          <div style="font-weight:800;margin-bottom:8px;">Bugünkü Kayıtlar (DEMO)</div>
+          <div id="log" style="font-size:13px;opacity:.9;white-space:pre-wrap;"></div>
+        </div>
       </div>
     </div>
   </div>
 
-</body>
-</html>
+<script>
+  // DEMO kullanıcı listesi (şimdilik sabit)
+  // Sonraki adım: senin verdiğin personel listesine göre çoğaltacağız.
+  const USERS = {
+    "0001": { name: "Seda Zeybek", dept: "Yönetim (Müdür)", pass: "01" },
+    "0002": { name: "Akın Kamil Durmuş", dept: "Gece Saha Sorumlusu", pass: "02" },
+    "0003": { name: "Celal İnce", dept: "Saha Sorumlusu", pass: "03" },
+    "0004": { name: "İhsan Ayçil", dept: "Saha Sorumlusu", pass: "04" },
+    "0006": { name: "Murat Alp", dept: "Teknik Şefi", pass: "06" },
+    "0007": { name: "Yüksel", dept: "Temizlik Şefi", pass: "07" }
+  };
+
+  const LS_USER = "hafiza_demo_user";
+  const LS_LOG  = "hafiza_demo_log";
+
+  function nowStr(){
+    const d = new Date();
+    const pad = n => String(n).padStart(2,"0");
+    return `${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+
+  function getLog(){
+    return JSON.parse(localStorage.getItem(LS_LOG) || "[]");
+  }
+  function setLog(arr){
+    localStorage.setItem(LS_LOG, JSON.stringify(arr));
+  }
+  function renderLog(){
+    const arr = getLog();
+    const who = JSON.parse(localStorage.getItem(LS_USER) || "null");
+    const today = new Date(); today.setHours(0,0,0,0);
+
+    const lines = arr
+      .filter(x => x.userId === (who?.id||""))
+      .filter(x => new Date(x.ts).setHours(0,0,0,0) === today.getTime())
+      .map(x => `• ${x.when} — ${x.type}${x.note ? " | " + x.note : ""}`);
+
+    document.getElementById("log").textContent = lines.length ? lines.join("\n") : "Kayıt yok.";
+  }
+
+  function showPanel(user){
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("panelBox").style.display = "block";
+    document.getElementById("who").textContent  = user.name;
+    document.getElementById("dept").textContent = user.dept;
+    renderLog();
+  }
+
+  function login(){
+    const id = (document.getElementById("pid").value || "").trim();
+    const pw = (document.getElementById("pwd").value || "").trim();
+    const msg = document.getElementById("loginMsg");
+
+    if(!USERS[id]){
+      msg.textContent = "ID bulunamadı. (Demo kullanıcıları: 000
