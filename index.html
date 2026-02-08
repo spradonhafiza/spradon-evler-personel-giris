@@ -289,14 +289,32 @@
 <script>
   // ===== DEMO USERS (telefon yok) =====
   const USERS = {
-    "0001": { name:"Celal İnce", dept:"Saha Sorumlusu", role:"saha", pass:"1234" },
-    "0002": { name:"İhsan Ayçil", dept:"Saha Sorumlusu", role:"saha", pass:"1234" },
-    "0003": { name:"Akın Kamil Durmuş", dept:"Gece Saha", role:"saha", pass:"1234" },
-    "0101": { name:"Serkan Keskin", dept:"Güvenlik", role:"guvenlik", pass:"1234" },
-    "0201": { name:"Murat Alp", dept:"Teknik Şefi", role:"teknik_sef", pass:"1234" },
-    "0301": { name:"Yüksel", dept:"Temizlik Şefi", role:"temizlik_sef", pass:"1234" },
-    "9999": { name:"Selâ Zeybek", dept:"Müdür", role:"mudur", pass:"1234" }
-  };
+   const USERS = {
+  // ===== DEMO USERS =====
+const USERS = {
+
+  // ==== YÖNETİM / SAHA ====
+  "0001": { name:"Seda Zeybek", dept:"Müdür", role:"mudur", pass:"1234" },
+  "0002": { name:"Akın Kamil Durmuş", dept:"Gece Saha", role:"saha", pass:"1234" },
+  "0003": { name:"İhsan Ayçin", dept:"Saha Sorumlusu", role:"saha", pass:"1234" },
+  "0004": { name:"Celal İnce", dept:"Saha Sorumlusu", role:"saha", pass:"1234" },
+
+  // ==== GÜVENLİK ====
+  "0101": { name:"Serkan Keskin", dept:"Güvenlik", role:"guvenlik", pass:"1234" },
+  "0102": { name:"Besnen Karaduman", dept:"Güvenlik", role:"guvenlik", pass:"1234" },
+  "0103": { name:"Bedrettin Aydın", dept:"Güvenlik", role:"guvenlik", pass:"1234" },
+  "0104": { name:"Ferit Aydemir", dept:"Güvenlik", role:"guvenlik", pass:"1234" },
+  "0105": { name:"Kadircan Sert", dept:"Güvenlik", role:"guvenlik", pass:"1234" },
+  "0106": { name:"Salih Akbulut", dept:"Güvenlik", role:"guvenlik", pass:"1234" },
+  "0107": { name:"Serkan Işık", dept:"Güvenlik", role:"guvenlik", pass:"1234" },
+  "0108": { name:"Onur Sofuoğlu", dept:"Güvenlik", role:"guvenlik", pass:"1234" },
+  "0109": { name:"Kelimesi Kaya", dept:"Güvenlik", role:"guvenlik", pass:"1234" },
+  "0110": { name:"Sultan’a Bağlı Güvenlik", dept:"Güvenlik", role:"guvenlik", pass:"1234" },
+
+  // ==== TEKNİK ====
+  "0201": { name:"Murat Alp", dept:"Teknik Şefi", role:"teknik_sef", pass:"1234" },
+  "0202": { name:"Selman", dept:"Teknik", role:"teknik", pass:"1234" },
+  "0203": { name:"Alparslan Yıldız", dept:"Teknik", role:"teknik", pass:"1234" },
 
   // ===== STORAGE KEYS =====
   const LS_USER = "hafiza_demo_user";
