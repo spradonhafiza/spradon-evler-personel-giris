@@ -1,70 +1,152 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<title>Spradon Evleri | Personel Paneli</title>
-<style>
-body{
-  background:#2f3e3e;
-  font-family:Arial;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-  color:#fff;
-}
-.kutu{
-  background:#4a5a5a;
-  padding:25px;
-  border-radius:10px;
-  width:420px;
-}
-h2{margin-top:0}
-.bilgi{
-  background:#394949;
-  padding:10px;
-  border-radius:6px;
-  margin-bottom:10px;
-}
-.buton{
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  border:none;
-  border-radius:6px;
-  cursor:pointer;
-  background:#b7e08a;
-  font-weight:bold;
-}
-.kutu-kucuk{
-  font-size:13px;
-  opacity:0.9;
-}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Spradon Evleri | Personel Paneli</title>
+  <style>
+    body{margin:0;font-family:Arial;background:#2f3e3e;display:flex;align-items:center;justify-content:center;height:100vh}
+    .kutu{background:#4a5a5a;color:#fff;padding:22px;border-radius:10px;width:520px;max-width:92vw;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    h2{margin:0 0 10px 0}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .card{background:rgba(0,0,0,.15);border-radius:10px;padding:12px;margin-top:10px}
+    .btn{padding:10px 12px;border-radius:8px;border:0;cursor:pointer;font-weight:700}
+    .btn-green{background:#b7e08a}
+    .btn-gray{background:#d0d0d0}
+    .btn-red{background:#ffb3b3}
+    input,select{padding:10px;border-radius:8px;border:0;min-width:140px}
+    table{width:100%;border-collapse:collapse;margin-top:8px;font-size:14px}
+    td,th{padding:8px;border-bottom:1px solid rgba(255,255,255,.15);text-align:left}
+    .muted{opacity:.85;font-size:12px}
+  </style>
 </head>
 <body>
+  <div class="kutu">
+    <h2>Spradon Evleri</h2>
 
-<div class="kutu">
-  <h2>Spradon Evleri</h2>
-  <div class="bilgi">
-    <b>Personel Paneli</b><br>
-    Giriş başarılı ✔
+    <div class="card" id="who"></div>
+
+    <div class="card">
+      <div class="row">
+        <button class="btn btn-green" onclick="openSecurity()">Güvenlik Bildirimi (Yakında)</button>
+        <button class="btn btn-gray" onclick="logout()">Çıkış</button>
+      </div>
+      <div class="muted">Bu panel demo amaçlıdır. Bir sonraki adımda “Güvenlik Fotoğraf Bildirimi” ekranını ekleyeceğiz.</div>
+    </div>
+
+    <div class="card" id="adminBox" style="display:none">
+      <b>Personel Yönetimi (Müdür)</b>
+      <div class="row" style="margin-top:10px">
+        <input id="u_id" placeholder="ID (örn 0103)" />
+        <input id="u_name" placeholder="Ad Soyad" />
+        <select id="u_role">
+          <option>Müdür</option>
+          <option>Gece Saha</option>
+          <option>Saha</option>
+          <option>Güvenlik</option>
+          <option>Teknik Şefi</option>
+          <option>Teknik</option>
+          <option>Temizlik Şefi</option>
+          <option>Temizlik</option>
+          <option>Danışman</option>
+          <option>Muhasebe</option>
+        </select>
+        <button class="btn btn-green" onclick="addOrUpdate()">Ekle / Güncelle</button>
+        <button class="btn btn-red" onclick="removeUser()">Sil</button>
+      </div>
+
+      <div class="muted" style="margin-top:8px">
+        Not: Buradan eklediğin/sildiğin personel tarayıcıda (localStorage) saklanır. Gerçek sistemde veritabanı olur.
+      </div>
+    </div>
+
+    <div class="card">
+      <b>Personel Listesi</b>
+      <div id="list"></div>
+    </div>
   </div>
 
-  <div class="bilgi">
-    <b>Akın Kamil Durmuş</b><br>
-    Gece Saha
-  </div>
+<script>
+  const LS_USERS = "spradon_users";
+  const LS_CURRENT = "spradon_current_user";
 
-  <button class="buton" onclick="alert('Bir sonraki adım: Güvenlik fotoğraf bildirimi ekranı')">
-    Güvenlik Bildirimi (Yakında)
-  </button>
+  function getUsers(){
+    return JSON.parse(localStorage.getItem(LS_USERS) || "{}");
+  }
+  function setUsers(obj){
+    localStorage.setItem(LS_USERS, JSON.stringify(obj));
+  }
+  function getCurrent(){
+    return JSON.parse(localStorage.getItem(LS_CURRENT) || "null");
+  }
 
-  <p class="kutu-kucuk">
-    Bu panel demo amaçlıdır.<br>
-    Bir sonraki adımda rol bazlı ekranlar eklenecek.
-  </p>
-</div>
+  const me = getCurrent();
+  if(!me){
+    // giriş yoksa login'e dön
+    window.location.href = "index.html";
+  }
 
+  document.getElementById("who").innerHTML =
+    `<div><b>Personel Paneli</b> — Giriş başarılı ✓</div>
+     <div style="margin-top:8px"><b>${me.name}</b><br/>${me.role}</div>`;
+
+  // Müdür ise personel yönetimi aç
+  if(me.role === "Müdür"){
+    document.getElementById("adminBox").style.display = "block";
+  }
+
+  function render(){
+    const users = getUsers();
+    const rows = Object.keys(users).sort().map(id => {
+      const u = users[id];
+      return <tr><td><b>${id}</b></td><td>${u.name}</td><td>${u.role}</td></tr>;
+    }).join("");
+
+    document.getElementById("list").innerHTML =
+      `<table>
+        <thead><tr><th>ID</th><th>Ad Soyad</th><th>Rol</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  }
+
+  function addOrUpdate(){
+    const id = document.getElementById("u_id").value.trim();
+    const name = document.getElementById("u_name").value.trim();
+    const role = document.getElementById("u_role").value;
+
+    if(!id || !name){
+      alert("ID ve Ad Soyad boş olamaz.");
+      return;
+    }
+
+    const users = getUsers();
+    users[id] = { name, role };
+    setUsers(users);
+    render();
+    alert("Kaydedildi.");
+  }
+
+  function removeUser(){
+    const id = document.getElementById("u_id").value.trim();
+    if(!id){ alert("Silmek için ID yaz."); return; }
+    const users = getUsers();
+    if(!users[id]){ alert("Bu ID yok."); return; }
+    delete users[id];
+    setUsers(users);
+    render();
+    alert("Silindi.");
+  }
+
+  function logout(){
+    localStorage.removeItem(LS_CURRENT);
+    window.location.href = "index.html";
+  }
+
+  function openSecurity(){
+    alert("Güvenlik Fotoğraf Bildirimi ekranını bir sonraki adımda ekliyoruz.");
+  }
+
+  render();
+</script>
 </body>
 </html>
