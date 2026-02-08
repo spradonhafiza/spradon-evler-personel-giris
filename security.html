@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Güvenlik Bildirimi</title>
+  <style>
+    body{background:#2f3e3e;font-family:Arial;color:#fff;margin:0;padding:18px}
+    .wrap{max-width:520px;margin:0 auto}
+    .card{background:#4a5a5a;border-radius:12px;padding:16px;box-shadow:0 8px 20px rgba(0,0,0,.25)}
+    input,select,button,textarea{width:100%;padding:10px;border-radius:10px;border:0;margin-top:10px}
+    button{cursor:pointer;font-weight:bold}
+    .btn{background:#c9d26a;color:#111}
+    .btn2{background:#7aa0ff;color:#111}
+    .muted{opacity:.85;font-size:12px}
+    .item{background:#3c4a4a;border-radius:10px;padding:10px;margin-top:10px}
+    img{width:100%;border-radius:10px;margin-top:8px}
+    .top{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:10px}
+    .link{color:#c9d26a;cursor:pointer;text-decoration:underline}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div><b>Güvenlik Bildirimi</b> 📸</div>
+    <div class="link" onclick="goBack()">← Panele Dön</div>
+  </div>
+
+  <div class="card">
+    <div class="muted">İnternet olmasa da kayıt cihazda saklanır. İnternet gelince “Bekleyenler” bölümünden dışa aktar / (sonraki adımda) otomatik gönder.</div>
+
+    <input id="photo" type="file" accept="image/*" capture="environment" />
+    <select id="cat">
+      <option value="">Kategori seç</option>
+      <option>Kapısı açık daire</option>
+      <option>Araç farı açık</option>
+      <option>Araç camı açık</option>
+      <option>Aydınlatma yanmıyor</option>
+      <option>Buluntu eşya</option>
+      <option>Diğer</option>
+    </select>
+    <textarea id="note" rows="2" placeholder="Kısa not (opsiyonel)"></textarea>
+
+    <button class="btn" onclick="save()">Kaydet (Bekleyenlere ekle)</button>
+    <button class="btn2" onclick="exportJson()">Bekleyenleri Dışa Aktar (JSON)</button>
+
+    <div class="muted" style="margin-top:10px">
+      Durum: <b id="net"></b> — Bekleyen kayıt: <b id="count"></b>
+    </div>
+
+    <div id="list"></div>
+  </div>
+</div>
+
+<script>
+  const LS_QUEUE = "spradon_security_queue";
+  const LS_CURRENT = "spradon_current_user";
+
+  function currentUser(){
+    const raw = localStorage.getItem(LS_CURRENT);
+    return raw ? JSON.parse(raw) : null;
+  }
+
+  function loadQueue(){
+    const raw = localStorage.getItem(LS_QUEUE);
+    return raw ? JSON.parse(raw) : [];
+  }
+  function saveQueue(q){
+    localStorage.setItem(LS_QUEUE, JSON.stringify(q));
+  }
+
+  function updateNet(){
+    document.getElementById("net").textContent = navigator.onLine ? "İnternet var ✅" : "İnternet yok ⛔";
+  }
+
+  function render(){
+    updateNet();
+    const q = loadQueue();
+    document.getElementById("count").textContent = q.length;
+
+    let html = "";
+    q.slice().reverse().forEach((x, idxRev) => {
+      const idx = q.length - 1 - idxRev;
+      html += `
+        <div class="item">
+          <div><b>${x.cat || "Kategori yok"}</b> — <span class="muted">${x.when}</span></div>
+          <div class="muted">Bildiren: ${x.byName} (${x.byDept})</div>
+          ${x.note ? <div style="margin-top:6px">${x.note}</div> : ``}
+          ${x.dataUrl ? <img src="${x.dataUrl}" /> : ``}
+          <div class="muted" style="margin-top:6px">Durum: ${x.status}</div>
+          <button style="margin-top:8px" onclick="removeOne(${idx})">Sil</button>
+        </div>
+      `;
+    });
+    document.getElementById("list").innerHTML = html || <div class="muted" style="margin-top:10px">Bekleyen kayıt yok.</div>;
+  }
+
+  async function fileToDataUrl(file){
+    return new Promise((resolve, reject) => {
+      const r = new FileReader();
+      r.onload = () => resolve(r.result);
+      r.onerror = reject;
+      r.readAsDataURL(file);
+    });
+  }
+
+  async function save(){
+    const u = currentUser();
+    if(!u){
+      alert("Oturum yok. Giriş yapmalısın.");
+      location.href = "index.html";
+      return;
+    }
+
+    const file = document.getElementById("photo").files[0];
+    const cat = document.getElementById("cat").value;
+    const note = document.getElementById("note").value.trim();
+
+    if(!file || !cat){
+      alert("Fotoğraf + kategori seçmelisin.");
+      return;
+    }
+
+    const dataUrl = await fileToDataUrl(file);
+
+    const q = loadQueue();
+    q.push({
+      cat,
+      note,
+      dataUrl,
+      when: new Date().toLocaleString("tr-TR"),
+      byId: u.id,
+      byName: u.name,
+      byDept: u.dept,
+      status: navigator.onLine ? "İnternet var: Gönderime hazır" : "İnternet yok: Beklemede"
+    });
+    saveQueue(q);
+
+    document.getElementById("photo").value = "";
+    document.getElementById("cat").value = "";
+    document.getElementById("note").value = "";
+
+    alert("Kaydedildi ✅");
+    render();
+  }
+
+  function removeOne(i){
+    const q = loadQueue();
+    q.splice(i, 1);
+    saveQueue(q);
+    render();
+  }
+
+  function exportJson(){
+    const q = loadQueue();
+    if(q.length === 0){
+      alert("Bekleyen kayıt yok.");
+      return;
+    }
+    const blob = new Blob([JSON.stringify(q, null, 2)], {type:"application/json"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "guvenlik_bekleyen_kayitlar.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  // İnternet gelince bekleyenlerin durumunu güncelle (demo)
+  window.addEventListener("online", () => {
+    const q = loadQueue().map(x => ({...x, status:"İnternet var: Gönderime hazır"}));
+    saveQueue(q);
+    render();
+  });
+  window.addEventListener("offline", render);
+
+  function goBack(){ location.href = "panel.html"; }
+
+  render();
+</script>
+</body>
+</html>
