@@ -1,44 +1,91 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Spradon Evleri | Personel Girişi</title>
+  <style>
+    body{margin:0;font-family:Arial;background:#2f3e3e;display:flex;align-items:center;justify-content:center;height:100vh}
+    .kutu{background:#4a5a5a;color:#fff;padding:22px;border-radius:10px;width:320px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    h2{margin:0 0 14px 0}
+    label{display:block;margin-top:10px;font-size:14px;opacity:.9}
+    input{width:100%;padding:10px;border-radius:8px;border:0;margin-top:6px}
+    button{width:100%;padding:11px;border-radius:8px;border:0;margin-top:14px;background:#b7e08a;font-weight:700;cursor:pointer}
+    .note{margin-top:10px;font-size:12px;opacity:.85}
+  </style>
+</head>
+<body>
+  <div class="kutu">
+    <h2>Spradon Evleri</h2>
+
+    <label>Personel ID</label>
+    <input id="pid" placeholder="Örn: 0002" />
+
+    <label>Şifre</label>
+    <input id="pass" type="password" placeholder="1234" />
+
+    <button onclick="login()">GİRİŞ</button>
+
+    <div class="note">
+      Demo: Şifre herkes için <b>1234</b><br/>
+      Not: Giriş başarılı olunca panel sayfasına yönlendirir.
+    </div>
+  </div>
+
 <script>
-const USERS = {
-  // --- Yönetim / Saha ---
-  "0001": { name: "Seda Zeybek", role: "Müdür" },
-  "0002": { name: "Akın Kamil Durmuş", role: "Gece Saha" },
-  "0003": { name: "İhsan Ayçi", role: "Saha" },
-  "0004": { name: "Celal İnce", role: "Saha" },
+  // ---- SABİT BAŞLANGIÇ LİSTESİ (ilk açılışta localStorage'a yazılır) ----
+  const SEED_USERS = {
+    "0001": { name:"Seda Zeybek",  role:"Müdür" },
+    "0002": { name:"Akın Kamil Durmuş", role:"Gece Saha" },
+    "0003": { name:"İhsan Ayçi",   role:"Saha" },
+    "0004": { name:"Celal İnce",   role:"Saha" },
+    "0101": { name:"Serkan Keskin", role:"Güvenlik" },
+    "0102": { name:"Besna Karaduman", role:"Güvenlik" },
+    "0201": { name:"Murat Alp",   role:"Teknik Şefi" },
+    "0202": { name:"Selman",      role:"Teknik" },
+    "0301": { name:"Yüksel",      role:"Temizlik Şefi" },
+    "0302": { name:"Timur",       role:"Temizlik" }
+  };
 
-  // --- Güvenlik ---
-  "0101": { name: "Serkan Keskin", role: "Güvenlik" },
-  "0102": { name: "Besna Karaduman", role: "Güvenlik" },
+  const LS_USERS = "spradon_users";
+  const LS_CURRENT = "spradon_current_user";
 
-  // --- Teknik ---
-  "0201": { name: "Murat Alp", role: "Teknik Şef" },
-  "0202": { name: "Selman", role: "Teknik" },
-
-  // --- Temizlik ---
-  "0301": { name: "Yüksel", role: "Temizlik Şefi" },
-  "0302": { name: "Timur", role: "Temizlik" }
-};
-
-function login(){
-  const id = document.getElementById("pid").value.trim();
-  const pw = document.getElementById("pass").value.trim();
-
-  if(pw !== "1234"){
-    alert("Şifre hatalı");
-    return;
-  }
-  if(!USERS[id]){
-    alert("Personel ID bulunamadı");
-    return;
+  // İlk kurulum: localStorage boşsa seed’i yaz
+  function ensureUsers(){
+    const existing = localStorage.getItem(LS_USERS);
+    if(!existing){
+      localStorage.setItem(LS_USERS, JSON.stringify(SEED_USERS));
+    }
   }
 
-  alert(
-    "Giriş başarılı\n\n" +
-    USERS[id].name + "\n" +
-    USERS[id].role
-  );
+  function getUsers(){
+    ensureUsers();
+    return JSON.parse(localStorage.getItem(LS_USERS) || "{}");
+  }
 
-  // Panel sayfasına yönlendirme varsa burada çalışır:
-  // window.location.href = "panel.html";
-}
+  function login(){
+    const id = document.getElementById("pid").value.trim();
+    const pw = document.getElementById("pass").value.trim();
+
+    if(pw !== "1234"){
+      alert("Şifre hatalı!");
+      return;
+    }
+
+    const users = getUsers();
+    if(!users[id]){
+      alert("Personel ID bulunamadı!");
+      return;
+    }
+
+    // giriş yapanı kaydet
+    localStorage.setItem(LS_CURRENT, JSON.stringify({ id, ...users[id] }));
+    // panele git
+    window.location.href = "panel.html";
+  }
+
+  // Sayfa açılınca seed garanti olsun
+  ensureUsers();
 </script>
+</body>
+</html>
