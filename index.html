@@ -1,91 +1,85 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<title>Spradon Evleri | Personel Girişi</title>
-<style>
-body{
-  background:#2f3e3e;
-  font-family:Arial;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  height:100vh;
-}
-.kutu{
-  background:#4a5a5a;
-  padding:25px;
-  border-radius:8px;
-  width:280px;
-  color:#fff;
-}
-input,button{
-  width:100%;
-  padding:10px;
-  margin-top:8px;
-  border-radius:5px;
-  border:none;
-}
-button{
-  background:#b7e08a;
-  cursor:pointer;
-  font-weight:bold;
-}
-.not{
-  font-size:12px;
-  margin-top:10px;
-  opacity:.8;
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Spradon Evleri | Personel Girişi</title>
+  <style>
+    body{
+      margin:0; font-family: Arial, sans-serif;
+      background:#2f3e3e; display:flex; align-items:center; justify-content:center;
+      height:100vh;
+    }
+    .kutu{
+      width:320px; background:#4a5a5a; color:#fff; border-radius:10px;
+      padding:22px; box-shadow:0 10px 25px rgba(0,0,0,.35);
+    }
+    h2{margin:0 0 12px 0; font-size:22px}
+    label{display:block; margin-top:10px; opacity:.9}
+    input{
+      width:100%; padding:10px; border-radius:7px; border:1px solid #334;
+      background:#2b3636; color:#fff; outline:none; margin-top:6px;
+    }
+    button{
+      width:100%; padding:11px; margin-top:14px; border:0; border-radius:8px;
+      background:#b7e08a; cursor:pointer; font-weight:bold;
+    }
+    .note{margin-top:10px; font-size:12px; opacity:.85}
+    .mini{margin-top:10px; font-size:12px; opacity:.75}
+  </style>
 </head>
-
 <body>
+  <div class="kutu">
+    <h2>Spradon Evleri</h2>
 
-<div class="kutu">
-  <h3>Spradon Evleri</h3>
+    <label>Personel ID</label>
+    <input id="pid" placeholder="Örn: 0002" />
 
-  <input id="pid" placeholder="Personel ID">
-  <input id="sifre" type="password" placeholder="Şifre">
+    <label>Şifre</label>
+    <input id="pass" type="password" placeholder="1234" />
 
-  <button onclick="girisYap()">GİRİŞ</button>
+    <button onclick="login()">GİRİŞ</button>
 
-  <div class="not">
-    Demo: Şifre herkes için <b>1234</b>
+    <div class="note">Demo: Şifre herkes için <b>1234</b></div>
+    <div class="mini">Not: Giriş başarılı olunca panel sayfasına yönlendirir.</div>
   </div>
-</div>
 
-<script>
-const KULLANICILAR = {
-  "0001": { isim:"Seda Zeybek", rol:"Müdür" },
-  "0002": { isim:"Akın Kamil Durmuş", rol:"Gece Saha" },
-  "0003": { isim:"İhsan Ayçi", rol:"Saha" },
-  "0004": { isim:"Celal İnce", rol:"Saha" },
-  "0101": { isim:"Serkan Keskin", rol:"Güvenlik" },
-  "0201": { isim:"Murat Alp", rol:"Teknik Şef" },
-  "0301": { isim:"Yüksel", rol:"Temizlik Şef" }
-};
+  <script>
+    const USERS = {
+      "0001": { name:"Seda Zeybek",   role:"Müdür" },
+      "0002": { name:"Akın Kamil Durmuş", role:"Gece Saha" },
+      "0003": { name:"İhsan Ayçi",    role:"Saha" },
+      "0004": { name:"Celal İnce",    role:"Saha" },
 
-function girisYap(){
-  const id = document.getElementById("pid").value;
-  const sifre = document.getElementById("sifre").value;
+      "0101": { name:"Serkan Keskin", role:"Güvenlik" },
+      "0102": { name:"Besna Karaduman", role:"Güvenlik" },
 
-  if(sifre !== "1234"){
-    alert("Şifre hatalı");
-    return;
-  }
+      "0201": { name:"Murat Alp",     role:"Teknik Şef" },
+      "0202": { name:"Selman",        role:"Teknik" },
 
-  if(!KULLANICILAR[id]){
-    alert("Personel bulunamadı");
-    return;
-  }
+      "0301": { name:"Yüksel",        role:"Temizlik Şef" },
+      "0302": { name:"Timur",         role:"Temizlik" }
+    };
 
-  alert(
-    "Giriş başarılı\n\n" +
-    KULLANICILAR[id].isim + "\n" +
-    KULLANICILAR[id].rol
-  );
-}
-</script>
+    function login(){
+      const id = (document.getElementById("pid").value || "").trim();
+      const pw = (document.getElementById("pass").value || "").trim();
 
+      if(pw !== "1234"){
+        alert("Şifre hatalı!");
+        return;
+      }
+      if(!USERS[id]){
+        alert("Personel ID bulunamadı!");
+        return;
+      }
+
+      // Kullanıcıyı tarayıcıda sakla (panel bunu okuyacak)
+      localStorage.setItem("spradon_user", JSON.stringify({ id, ...USERS[id] }));
+
+      // Panel sayfasına geç
+      window.location.href = "panel.html";
+    }
+  </script>
 </body>
 </html>
