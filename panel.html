@@ -203,7 +203,7 @@ const UNIT_RULES = {
 };
 
 // Yönetici yetkisi olanlar (personel ekle/sil/düzenle)
-// Sen + Müdür + Muhasebe (Eciş Şenol) — ID’ler varsayılan listeden eşleşecek.
+// Sen + Müdür + Muhasebe (Ece Şenol) — ID’ler varsayılan listeden eşleşecek.
 const ADMIN_IDS = new Set(["Y001","N001","M001"]); // Seda, Akın, Eciş
 
 // Resmî çıktı için isim eşlemesi (şimdilik not)
@@ -266,7 +266,7 @@ function ensureSeed(){
     "K202": { name: "Selman", unit: "Teknik" },
     "I301": { name: "Yüksel", unit: "Temizlik" },
     "I302": { name: "Timur Kul", unit: "Temizlik" },
-    "M001": { name: "Eciş Şenol", unit: "Muhasebe" },
+    "M001": { name: "Ece Şenol", unit: "Muhasebe" },
   };
 
   saveUsers(seed);
