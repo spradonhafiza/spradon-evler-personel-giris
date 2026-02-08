@@ -2,115 +2,96 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>Spradon Evleri | Personel Giriş</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spradon Evleri | Personel Girişi</title>
 <style>
 body{
   margin:0;
-  font-family:Arial;
-  background:#2f3a36;
-  color:#fff;
+  height:100vh;
   display:flex;
   align-items:center;
   justify-content:center;
-  height:100vh;
+  background:#6b6f6a;
+  font-family:Arial, Helvetica, sans-serif;
 }
-.card{
-  width:360px;
-  background:#394641;
-  padding:20px;
+.box{
+  background:#7a7e78;
+  padding:25px;
   border-radius:10px;
-  box-shadow:0 0 20px rgba(0,0,0,.4);
+  width:300px;
+  box-shadow:0 10px 30px rgba(0,0,0,.4);
 }
-input,button{
+h2{margin:0 0 10px;color:#fff;text-align:center}
+input{
   width:100%;
   padding:10px;
   margin-top:8px;
   border-radius:6px;
   border:none;
 }
-input{
-  background:#1f2926;
-  color:#fff;
-}
 button{
-  background:#8fd19e;
+  width:100%;
+  margin-top:12px;
+  padding:10px;
+  border:none;
+  border-radius:6px;
+  background:#dff2c2;
   font-weight:bold;
   cursor:pointer;
 }
-.small{
-  font-size:12px;
-  opacity:.8;
+.note{
   margin-top:10px;
-}
-.list{
-  background:#1f2926;
-  margin-top:15px;
-  padding:10px;
-  border-radius:6px;
-  font-size:13px;
+  font-size:12px;
+  color:#eee;
+  text-align:center;
 }
 </style>
 </head>
 
 <body>
-<div class="card">
+<div class="box">
   <h2>Spradon Evleri</h2>
-  <div class="small">Akıllı Site – HAFIZA (DEMO)</div>
 
-  <label>Personel ID</label>
-  <input id="pid" placeholder="Örn: 0002">
-
-  <label>Şifre</label>
-  <input id="pass" type="password" placeholder="1234">
+  <input id="pid" placeholder="Personel ID">
+  <input id="pass" type="password" placeholder="Şifre">
 
   <button onclick="login()">GİRİŞ</button>
 
-  <div class="list" id="userList"></div>
-
-  <div class="small">
-    Demo notu: Fotoğraf, devriye, teknik ve temizlik ekranları
-    bir sonraki adımda eklenecek.
+  <div class="note">
+    Demo: Şifre herkes için <b>1234</b>
   </div>
 </div>
 
 <script>
-const USERS = {// ===== DEMO USERS =====
 const USERS = {
-  // Müdür
-  <script>
-const USERS = {
-  "0001": { name: "Seda Zeybek", dept: "Müdür", role: "mudur", pass: "1234" },
-  "0002": { name: "Akın Kamil Durmuş", dept: "Gece Saha", role: "saha", pass: "1234" },
-  "0003": { name: "İhsan Ayçin", dept: "Saha Sorumlusu", role: "saha", pass: "1234" },
-
-  "0101": { name: "Serkan Keskin", dept: "Güvenlik", role: "guvenlik", pass: "1234" },
-  "0102": { name: "Besna Karaduman", dept: "Güvenlik", role: "guvenlik", pass: "1234" },
-
-  "0201": { name: "Murat Alp", dept: "Teknik Şefi", role: "teknik_sef", pass: "1234" },
-  "0202": { name: "Selman", dept: "Teknik", role: "teknik", pass: "1234" },
-
-  "0301": { name: "Yüksel", dept: "Temizlik Şefi", role: "temizlik_sef", pass: "1234" },
-  "0302": { name: "Timur Kul", dept: "Temizlik", role: "temizlik", pass: "1234" }
-};
-</script>
+  "0001": { name:"Seda Zeybek", role:"Müdür" },
+  "0002": { name:"Akın Kamil Durmuş", role:"Gece Saha" },
+  "0003": { name:"İhsan Ayçi", role:"Saha" },
+  "0004": { name:"Celal İnce", role:"Saha" },
+  "0101": { name:"Serkan Keskin", role:"Güvenlik" },
+  "0201": { name:"Murat Alp", role:"Teknik Şef" },
+  "0301": { name:"Yüksel", role:"Temizlik Şef" }
 };
 
 function login(){
-  const id=document.getElementById("pid").value;
-  const p=document.getElementById("pass").value;
-  if(USERS[id] && USERS[id].pass===p){
-    alert("Hoş geldin: "+USERS[id].name);
-  }else{
-    alert("Hatalı ID veya şifre");
-  }
-}
+  const id = document.getElementById("pid").value;
+  const pw = document.getElementById("pass").value;
 
-let out="";
-for(let k in USERS){
-  out+=k+" — "+USERS[k].name+" ("+USERS[k].dept+")<br>";
+  if(pw !== "1234"){
+    alert("Şifre hatalı");
+    return;
+  }
+
+  if(!USERS[id]){
+    alert("Personel ID bulunamadı");
+    return;
+  }
+
+  alert(
+    "Giriş başarılı\n\n" +
+    USERS[id].name + "\n" +
+    USERS[id].role
+  );
 }
-document.getElementById("userList").innerHTML=out;
 </script>
 </body>
 </html>
