@@ -1,66 +1,501 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Spradon Evleri | Personel Paneli</title>
   <style>
-    body{background:#2f3e3e;font-family:Arial, sans-serif;margin:0;padding:18px;color:#fff}
-    .wrap{max-width:860px;margin:0 auto}
-    .card{background:#445a5a;padding:18px;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,.25);margin-bottom:12px}
-    h2,h3{margin:0 0 10px 0}
-    .muted{opacity:.85;font-size:12px;line-height:1.4}
-    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-    input,select,button{padding:10px;border-radius:10px;border:0;font-size:14px}
-    input,select{flex:1;min-width:180px}
-    button{cursor:pointer;font-weight:800}
-    .btn{background:#f0d36a;color:#111}
-    .btn2{background:#7aa0ff;color:#111}
-    .btnRed{background:#ff7a7a;color:#111}
-    .btnGray{background:#d0d0d0;color:#111}
-    .smallBtn{padding:7px 10px;border-radius:10px;font-size:12px}
-    .pill{display:inline-block;padding:5px 10px;border-radius:999px;background:rgba(0,0,0,.18);font-size:12px}
-    table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
-    th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,.12);text-align:left;vertical-align:top}
-    th{opacity:.9}
-    .ok{color:#b9ffb9;font-weight:800}
-    .warn{color:#ffe7a6;font-weight:800}
-    .line{height:1px;background:rgba(255,255,255,.12);margin:12px 0}
-    a{color:#f0d36a}
+    :root{
+      --bg:#2f3e3e;
+      --card:#485a5a;
+      --card2:#3f4f4f;
+      --txt:#f3f3f3;
+      --muted:#cfd7d7;
+      --btn:#b7e08a;
+      --btn2:#9fb7ff;
+      --danger:#ff7a7a;
+      --line:rgba(255,255,255,.12);
+      --shadow:0 18px 40px rgba(0,0,0,.25);
+      --radius:14px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Arial, Helvetica, sans-serif;
+      background:var(--bg);
+      color:var(--txt);
+      min-height:100vh;
+    }
+    .wrap{max-width:980px;margin:0 auto;padding:22px 16px 40px}
+    .topbar{
+      display:flex;gap:10px;align-items:center;justify-content:space-between;
+      background:var(--card2); padding:14px 16px;border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+    .brand{font-size:22px;font-weight:800;letter-spacing:.2px}
+    .right{display:flex;gap:10px;align-items:center}
+    .pill{
+      background:rgba(255,255,255,.12);
+      border:1px solid var(--line);
+      padding:9px 12px;border-radius:999px;color:var(--txt);
+      font-weight:700;font-size:13px;
+    }
+    .btn{
+      border:none;cursor:pointer;font-weight:800;
+      padding:10px 14px;border-radius:12px;
+    }
+    .btn-primary{background:var(--btn)}
+    .btn-secondary{background:var(--btn2); color:#0d1730}
+    .btn-danger{background:var(--danger); color:#230909}
+    .btn-ghost{
+      background:transparent;border:1px solid var(--line);color:var(--txt)
+    }
+    .grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:14px}
+    .card{
+      background:var(--card);border:1px solid var(--line);
+      border-radius:var(--radius);box-shadow:var(--shadow);
+      padding:16px;
+    }
+    .card h3{margin:0 0 10px;font-size:18px}
+    .sub{color:var(--muted);font-size:13px;line-height:1.4}
+    .row{
+      display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px
+    }
+    .field{
+      display:flex;flex-direction:column;gap:6px;min-width:170px;flex:1
+    }
+    label{font-size:12px;color:var(--muted)}
+    input, select{
+      width:100%;
+      padding:10px 10px;border-radius:12px;border:1px solid var(--line);
+      background:rgba(0,0,0,.12); color:var(--txt);
+      outline:none;
+    }
+    input[readonly]{opacity:.85}
+    table{width:100%;border-collapse:collapse;margin-top:12px}
+    th,td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:left}
+    th{color:var(--muted);font-size:12px;font-weight:800}
+    td{font-size:14px}
+    .tag{
+      display:inline-block;padding:6px 10px;border-radius:999px;
+      background:rgba(0,0,0,.18);border:1px solid var(--line);
+      font-size:12px;font-weight:800;color:var(--txt);
+    }
+    .actions{display:flex;gap:8px;flex-wrap:wrap}
+    .small{padding:7px 10px;border-radius:10px;font-size:12px}
+    .note{
+      margin-top:8px;
+      background:rgba(0,0,0,.12);
+      border:1px dashed rgba(255,255,255,.25);
+      border-radius:12px;padding:10px 12px;color:var(--muted);font-size:13px
+    }
+    .warn{
+      background:rgba(255,122,122,.14);
+      border:1px solid rgba(255,122,122,.35);
+      color:#ffecec;
+    }
+    .ok{
+      background:rgba(183,224,138,.14);
+      border:1px solid rgba(183,224,138,.35);
+      color:#f4ffe8;
+    }
+    .hide{display:none !important}
   </style>
 </head>
-
 <body>
-<div class="wrap">
-
-  <div class="card">
-    <div class="row" style="justify-content:space-between">
-      <div>
-        <h2>Spradon Evleri | Personel Paneli</h2>
-        <div class="muted" id="who"></div>
-      </div>
-      <div class="row">
-        <button class="btn2" onclick="goSecurity()">Güvenlik Bildirimi</button>
-        <button class="btnGray" onclick="logout()">Çıkış</button>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">Spradon Evleri | Personel Paneli</div>
+      <div class="right">
+        <span class="pill" id="mePill">...</span>
+        <button class="btn btn-secondary" id="securityBtn">Güvenlik Bildirimi</button>
+        <button class="btn btn-ghost" id="logoutBtn">Çıkış</button>
       </div>
     </div>
 
-    <div class="line"></div>
+    <div class="grid">
 
-    <div class="muted">
-      <span class="pill"><b>AKIN ID sistemi</b> aktif</span>
-      <span class="pill">A: Güvenlik</span>
-      <span class="pill">K: Teknik</span>
-      <span class="pill">İ: Temizlik</span>
-      <span class="pill">N: Saha</span>
-      <span class="pill">Y: Yönetim</span>
-      <span class="pill">M: Muhasebe</span>
-      <div class="muted" style="margin-top:8px">
-        Not: Kod tarafında Temizlik prefix’i <b>I</b> tutulur; ekranda <b>İ</b> olarak gösterilir.
+      <div class="card" id="adminCard">
+        <h3>➕ Personel Ekle</h3>
+        <div class="sub">Yeni personel eklemek için <b>Ad Soyad</b> + <b>Birim</b> seç. <b>ID otomatik</b> oluşur (AKIN mantığı).</div>
+
+        <div class="row" style="margin-top:14px">
+          <div class="field">
+            <label>ID (otomatik)</label>
+            <input id="newId" type="text" readonly value="" />
+          </div>
+          <div class="field" style="flex:2;min-width:240px">
+            <label>Ad Soyad</label>
+            <input id="newName" type="text" placeholder="Örn: Yüksel Kaya" />
+          </div>
+          <div class="field">
+            <label>Birim seç</label>
+            <select id="newUnit">
+              <option value="">— Seç —</option>
+              <option value="Güvenlik">Güvenlik (A101…)</option>
+              <option value="Teknik">Teknik (K201…)</option>
+              <option value="Temizlik">Temizlik (I301…)</option>
+              <option value="Saha">Saha (N001…)</option>
+              <option value="Yönetim">Yönetim (Y001…)</option>
+              <option value="Muhasebe">Muhasebe (M001…)</option>
+            </select>
+          </div>
+          <div class="field" style="max-width:160px;flex:0 0 160px">
+            <label>&nbsp;</label>
+            <button class="btn btn-primary" id="addBtn">Ekle</button>
+          </div>
+        </div>
+
+        <div class="note ok" id="adminNote">
+          Şifre demo için herkes: <b>1234</b> — Bu sayfada personel ekle/sil/düzenle yetkisi sadece yönetici gruptadır.
+        </div>
+        <div class="note warn hide" id="noAdminNote">
+          Bu hesap <b>yönetici yetkisine</b> sahip değil. Personel ekleme/silme/düzenleme kapalı.
+        </div>
       </div>
+
+      <div class="card">
+        <h3>👥 Personel Listesi</h3>
+        <div class="sub">“Düzenle” ile isim/birim güncelleyebilirsin. “Sil” ile kaydı kaldırırsın.</div>
+
+        <table>
+          <thead>
+            <tr>
+              <th style="width:120px">ID</th>
+              <th>Ad Soyad</th>
+              <th style="width:170px">Birim</th>
+              <th style="width:220px">İşlem</th>
+            </tr>
+          </thead>
+          <tbody id="listBody"></tbody>
+        </table>
+
+        <div class="note">
+          Not: Şimdilik tüm veriler tarayıcıda <b>localStorage</b> ile tutulur (internet gitse bile kaybolmaz). İleride “merkez veri” yaparız.
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Not</h3>
+        <div class="sub">
+          • Bu demo GitHub Pages üzerinde çalışır.<br/>
+          • Resmî çıktı gerekirse: Akın için resmî ad <b>Kamil Durmuş</b> gösterilecek şekilde rapor modülü ekleriz.<br/>
+          • Güvenlik bildirimleri için “offline bekleyenler” kuyruğu bir sonraki adımda açılacak.
+        </div>
+      </div>
+
     </div>
   </div>
 
-  <div class="card" id="adminBox" style="display:none">
-    <h3>➕ Personel Ekle (ID Otomatik)</h3>
-    <div class="muted">Birim seç → sistem otomatik ID üretir. Şifre demo için herkes: <b>123
+<script>
+/* =========================
+   1) AYARLAR / SABİTLER
+========================= */
+
+// AKIN mantığı: Birim → ID harfi + başlangıç
+const UNIT_RULES = {
+  "Güvenlik": { prefix: "A", start: 101 },
+  "Teknik":   { prefix: "K", start: 201 },
+  "Temizlik": { prefix: "I", start: 301 }, // Türkçe İ sorun çıkarır → I
+  "Saha":     { prefix: "N", start: 1   },
+  "Yönetim":  { prefix: "Y", start: 1   },
+  "Muhasebe": { prefix: "M", start: 1   },
+};
+
+// Yönetici yetkisi olanlar (personel ekle/sil/düzenle)
+// Sen + Müdür + Muhasebe (Eciş Şenol) — ID’ler varsayılan listeden eşleşecek.
+const ADMIN_IDS = new Set(["Y001","N001","M001"]); // Seda, Akın, Eciş
+
+// Resmî çıktı için isim eşlemesi (şimdilik not)
+// Panelde “Akın Kamil Durmuş” görünebilir; resmî çıktı modülünde “Kamil Durmuş” basarız.
+const OFFICIAL_NAME_MAP = {
+  // "N001": "Kamil Durmuş"  // ileride rapor modülünde kullanırız
+};
+
+const STORAGE_KEY_USERS = "spradon_users_v1";
+const STORAGE_KEY_SEQ   = "spradon_id_seq_v1";
+const STORAGE_KEY_ME    = "spradon_current_user_v1"; // index.html bunu yazıyor varsayıyoruz
+
+/* =========================
+   2) YARDIMCI FONKSİYONLAR
+========================= */
+function pad3(n){
+  n = Number(n || 0);
+  if(n < 0) n = 0;
+  if(n < 10) return "00" + n;
+  if(n < 100) return "0" + n;
+  return String(n);
+}
+function safeTrim(s){ return (s || "").toString().trim(); }
+
+function loadSeq(){
+  try{ return JSON.parse(localStorage.getItem(STORAGE_KEY_SEQ) || "{}"); }
+  catch{ return {}; }
+}
+function saveSeq(seq){
+  localStorage.setItem(STORAGE_KEY_SEQ, JSON.stringify(seq));
+}
+
+function loadUsers(){
+  try{ return JSON.parse(localStorage.getItem(STORAGE_KEY_USERS) || "{}"); }
+  catch{ return {}; }
+}
+function saveUsers(users){
+  localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(users));
+}
+
+function ensureSeed(){
+  const users = loadUsers();
+  if(Object.keys(users).length > 0) return; // zaten var
+
+  // Varsayılan başlangıç listesi (senin verdiğin “şu anlık” ekip)
+  // ID’ler AKIN kuralına göre:
+  // Yönetim: Y001 Seda
+  // Saha: N001 Akın, N002 İhsan, N003 Celal
+  // Güvenlik: A101 Serkan, A102 Besna
+  // Teknik: K201 Murat, K202 Selman
+  // Temizlik: I301 Yüksel, I302 Timur
+  const seed = {
+    "Y001": { name: "Seda Zeybek", unit: "Yönetim" },
+    "N001": { name: "Akın Kamil Durmuş", unit: "Saha" },
+    "N002": { name: "İhsan Ayçi", unit: "Saha" },
+    "N003": { name: "Celal İnce", unit: "Saha" },
+    "A101": { name: "Serkan Keskin", unit: "Güvenlik" },
+    "A102": { name: "Besna Karaduman", unit: "Güvenlik" },
+    "K201": { name: "Murat Alp", unit: "Teknik" },
+    "K202": { name: "Selman", unit: "Teknik" },
+    "I301": { name: "Yüksel", unit: "Temizlik" },
+    "I302": { name: "Timur Kul", unit: "Temizlik" },
+    "M001": { name: "Eciş Şenol", unit: "Muhasebe" },
+  };
+
+  saveUsers(seed);
+
+  // Sayaçları da ileride çakışmayacak şekilde kur
+  const seq = {};
+  for(const unit in UNIT_RULES){
+    const {prefix, start} = UNIT_RULES[unit];
+    // mevcut en yüksek ID’yi bul
+    let maxNum = start - 1;
+    for(const id of Object.keys(seed)){
+      if(id.startsWith(prefix)){
+        const num = parseInt(id.slice(1), 10);
+        if(!isNaN(num)) maxNum = Math.max(maxNum, num);
+      }
+    }
+    seq[prefix] = maxNum + 1; // bir sonraki
+  }
+  saveSeq(seq);
+}
+
+function getMe(){
+  // index.html “current user” saklamıyorsa bile sayfa çalışsın diye:
+  // querystring ile ?id=N001 gibi geleni de destekleyelim.
+  const url = new URL(location.href);
+  const qid = url.searchParams.get("id");
+  if(qid) return { id: qid };
+
+  try{
+    const me = JSON.parse(localStorage.getItem(STORAGE_KEY_ME) || "null");
+    if(me && me.id) return me;
+  }catch{}
+  return null;
+}
+
+function setMePill(me, users){
+  if(!me || !me.id || !users[me.id]){
+    document.getElementById("mePill").textContent = "Misafir";
+    return;
+  }
+  document.getElementById("mePill").textContent =
+    me.id + " · " + users[me.id].name + " · " + users[me.id].unit;
+}
+
+function isAdmin(me){
+  return me && me.id && ADMIN_IDS.has(me.id);
+}
+
+function nextIdForUnit(unit){
+  const rule = UNIT_RULES[unit];
+  if(!rule) return "";
+  const seq = loadSeq();
+  const prefix = rule.prefix;
+
+  // ilk kez yoksa start’tan başlat
+  if(typeof seq[prefix] !== "number"){
+    seq[prefix] = rule.start;
+  }
+  // Saha/Yönetim/Muhasebe start=1 ise N001 gibi üretmek için +pad3
+  const id = prefix + pad3(seq[prefix]);
+  return id;
+}
+
+function commitNextId(unit){
+  const rule = UNIT_RULES[unit];
+  if(!rule) return null;
+  const seq = loadSeq();
+  const prefix = rule.prefix;
+  if(typeof seq[prefix] !== "number"){
+    seq[prefix] = rule.start;
+  }
+  const id = prefix + pad3(seq[prefix]);
+  seq[prefix] = seq[prefix] + 1;
+  saveSeq(seq);
+  return id;
+}
+
+function renderList(users, canEdit){
+  const body = document.getElementById("listBody");
+  body.innerHTML = "";
+
+  const ids = Object.keys(users).sort((a,b)=> a.localeCompare(b));
+  if(ids.length === 0){
+    const tr = document.createElement("tr");
+    tr.innerHTML = <td colspan="4" style="color:#cfd7d7">Kayıt yok.</td>;
+    body.appendChild(tr);
+    return;
+  }
+
+  for(const id of ids){
+    const u = users[id];
+    const tr = document.createElement("tr");
+
+    const actions = canEdit ? `
+      <div class="actions">
+        <button class="btn btn-secondary small" data-act="edit" data-id="${id}">Düzenle</button>
+        <button class="btn btn-danger small" data-act="del" data-id="${id}">Sil</button>
+      </div>
+    ` : <span class="tag">Sadece görüntüleme</span>;
+
+    tr.innerHTML = `
+      <td><span class="tag">${id}</span></td>
+      <td>${escapeHtml(u.name || "")}</td>
+      <td>${escapeHtml(u.unit || "")}</td>
+      <td>${actions}</td>
+    `;
+    body.appendChild(tr);
+  }
+}
+
+function escapeHtml(s){
+  return (s || "").toString()
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#39;");
+}
+
+/* =========================
+   3) SAYFA BAŞLAT
+========================= */
+ensureSeed();
+
+const users = loadUsers();
+const me = getMe();
+setMePill(me, users);
+
+const canEdit = isAdmin(me);
+
+// Admin kartı aç/kapat
+document.getElementById("adminCard").classList.toggle("hide", !canEdit);
+document.getElementById("noAdminNote").classList.toggle("hide", canEdit);
+document.getElementById("adminNote").classList.toggle("hide", !canEdit);
+
+// İlk liste bas
+renderList(users, canEdit);
+
+// Birim seçilince ID otomatik göster
+const newUnitEl = document.getElementById("newUnit");
+const newIdEl = document.getElementById("newId");
+
+function refreshAutoId(){
+  const unit = newUnitEl.value;
+  newIdEl.value = unit ? nextIdForUnit(unit) : "";
+}
+newUnitEl.addEventListener("change", refreshAutoId);
+refreshAutoId();
+
+// Ekle butonu
+document.getElementById("addBtn").addEventListener("click", ()=>{
+  if(!canEdit){ alert("Bu hesap yönetici değil."); return; }
+
+  const unit = safeTrim(newUnitEl.value);
+  const name = safeTrim(document.getElementById("newName").value);
+
+  if(!unit){ alert("Birim seç."); return; }
+  if(!name){ alert("Ad Soyad gir."); return; }
+
+  const id = commitNextId(unit);
+  if(!id){ alert("ID üretilemedi."); return; }
+
+  const usersNow = loadUsers();
+  if(usersNow[id]){
+    // çok nadir: seq çakışması
+    alert("ID çakıştı. Sayfayı yenileyip tekrar dene.");
+    return;
+  }
+  usersNow[id] = { name, unit };
+  saveUsers(usersNow);
+
+  document.getElementById("newName").value = "";
+  refreshAutoId();
+  renderList(usersNow, canEdit);
+});
+
+// Liste edit/sil
+document.getElementById("listBody").addEventListener("click", (e)=>{
+  const btn = e.target.closest("button");
+  if(!btn) return;
+  if(!canEdit){ alert("Bu hesap yönetici değil."); return; }
+
+  const act = btn.getAttribute("data-act");
+  const id = btn.getAttribute("data-id");
+  if(!act || !id) return;
+
+  const usersNow = loadUsers();
+  const u = usersNow[id];
+  if(!u){ alert("Kayıt bulunamadı."); return; }
+
+  if(act === "del"){
+    const ok = confirm(id + " (" + u.name + ") silinsin mi?");
+    if(!ok) return;
+    delete usersNow[id];
+    saveUsers(usersNow);
+    renderList(usersNow, canEdit);
+    return;
+  }
+
+  if(act === "edit"){
+    const newName = safeTrim(prompt("Yeni Ad Soyad:", u.name));
+    if(!newName) return;
+
+    const newUnit = safeTrim(prompt("Yeni Birim (Güvenlik/Teknik/Temizlik/Saha/Yönetim/Muhasebe):", u.unit));
+    if(!newUnit) return;
+    if(!UNIT_RULES[newUnit]){
+      alert("Birim hatalı. Şunlardan biri olmalı: Güvenlik, Teknik, Temizlik, Saha, Yönetim, Muhasebe");
+      return;
+    }
+
+    // ID değişmiyor (kural: ID sabit)
+    usersNow[id] = { name: newName, unit: newUnit };
+    saveUsers(usersNow);
+    renderList(usersNow, canEdit);
+    return;
+  }
+});
+
+// Çıkış
+document.getElementById("logoutBtn").addEventListener("click", ()=>{
+  // current user temizle
+  localStorage.removeItem(STORAGE_KEY_ME);
+  location.href = "./index.html";
+});
+
+// Güvenlik bildirimi sayfasına git
+document.getElementById("securityBtn").addEventListener("click", ()=>{
+  location.href = "./security.html";
+});
+</script>
+</body>
+</html>
