@@ -1,22 +1,49 @@
 <script>
   // --- Varsayılan kullanıcılar (demo) ---
-  const DEFAULT_USERS = {
-    "0001": { name: "Seda Zeybek", dept: "Yönetim", role: "mudur" },
-    "0002": { name: "Akın Kamil Durmuş", dept: "Saha", role: "saha" },
-    "0003": { name: "İhsan Ayçi", dept: "Saha", role: "saha" },
-    "0004": { name: "Celal İnce", dept: "Saha", role: "saha" },
+const DEFAULT_USERS = {
+  // ===== Yönetim / Saha =====
+  "0001": { name:"Seda Zeybek", dept:"Yönetim", role:"mudur" },
+  "0002": { name:"Akın Kamil Durmuş", legalName:"Kamil Durmuş", dept:"Saha", role:"saha_sorumlusu" },
+  "0003": { name:"İhsan Ayçi", dept:"Saha", role:"saha" },
+  "0004": { name:"Celal İnce", dept:"Saha", role:"saha" },
 
-    "0101": { name: "Serkan Keskin", dept: "Güvenlik", role: "guvenlik" },
-    "0102": { name: "Besna Karaduman", dept: "Güvenlik", role: "guvenlik" },
+  // ===== Muhasebe =====
+  "0401": { name:"Ece Şenol", dept:"Muhasebe", role:"muhasebe" },
 
-    "0201": { name: "Murat Alp", dept: "Teknik", role: "teknik_sef" },
-    "0202": { name: "Selman", dept: "Teknik", role: "teknik" },
+  // ===== Teknik =====
+  "0201": { name:"Murat Alp", dept:"Teknik", role:"teknik_sef" },
+  "0202": { name:"Selman Bişkin", dept:"Teknik", role:"teknik" },
+  "0203": { name:"Alparslan Yıldız", dept:"Teknik", role:"teknik" },
+  "0204": { name:"Niyazi Eliş", dept:"Teknik", role:"teknik" },
 
-    "0301": { name: "Yüksel", dept: "Temizlik", role: "temizlik_sef" },
-    "0302": { name: "Timur", dept: "Temizlik", role: "temizlik" },
+  // ===== Temizlik =====
+  "0301": { name:"Yüksel", dept:"Temizlik", role:"temizlik_sef" },
+  "0302": { name:"Yakup", dept:"Temizlik", role:"temizlik" },
+  "0303": { name:"Timur Kul", dept:"Temizlik", role:"temizlik" },
+  "0304": { name:"Sevim", dept:"Temizlik", role:"temizlik" },
+  "0305": { name:"Gülten", dept:"Temizlik", role:"temizlik" },
+  "0306": { name:"Türkan Yılmaz", dept:"Temizlik", role:"temizlik" },
+  "0307": { name:"Selahattin", dept:"Temizlik", role:"temizlik" },
+  "0308": { name:"Paşa Tokat", dept:"Temizlik", role:"temizlik" },
+  "0309": { name:"Erdoğan", dept:"Temizlik", role:"temizlik" },
 
-    "0401": { name: "Ece Şenol", dept: "Muhasebe", role: "muhasebe" }
-  };
+  // ===== Güvenlik (Güvenlik personeli) =====
+  "0101": { name:"Serkan Keskin", dept:"Güvenlik", role:"guvenlik" },
+  "0102": { name:"Besna Karaduman", dept:"Güvenlik", role:"guvenlik" },
+  "0103": { name:"Bedrettin Aydın", dept:"Güvenlik", role:"guvenlik" },
+  "0104": { name:"Ferit Aydemir", dept:"Güvenlik", role:"guvenlik" },
+  "0105": { name:"Salih Akpolat", dept:"Güvenlik", role:"guvenlik" },
+  "0106": { name:"Serkan Işık", dept:"Güvenlik", role:"guvenlik" },
+  "0107": { name:"Onur Sofuoğlu", dept:"Güvenlik", role:"guvenlik" },
+  "0108": { name:"Kerim EnesKaya", dept:"Güvenlik", role:"guvenlik" },
+  "0109": { name:"Sultan Aba", dept:"Güvenlik", role:"guvenlik" },
+
+  // ===== Danışma (giriş danışma) =====
+  "0151": { name:"Emir Haktan Demircan", dept:"Danışma", role:"danisma" },
+  "0152": { name:"Kadircan Sert", dept:"Danışma", role:"danisma" },
+  "0153": { name:"Emrecan Aksüzlük", dept:"Danışma", role:"danisma" },
+  "0154": { name:"Mehmet Nayir", dept:"Danışma", role:"danisma" }
+};
 
   const LS_USERS = "spradon_users";
   const LS_CURRENT = "spradon_current_user";
