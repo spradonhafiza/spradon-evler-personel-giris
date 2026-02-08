@@ -1,590 +1,111 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Spradon Evleri | Personel Giriş (DEMO)</title>
-  <style>
-    :root{
-      --bg:#0f172a;
-      --card:#111827;
-      --muted:#94a3b8;
-      --text:#e5e7eb;
-      --line:#243047;
-      --accent:#22c55e;
-      --warn:#f59e0b;
-      --danger:#ef4444;
-      --btn:#1f2937;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0; font-family: Arial, Helvetica, sans-serif;
-      background: radial-gradient(900px 500px at 20% 10%, rgba(34,197,94,.12), transparent),
-                  radial-gradient(700px 400px at 90% 30%, rgba(245,158,11,.12), transparent),
-                  var(--bg);
-      color:var(--text);
-      min-height:100vh;
-      display:flex; align-items:center; justify-content:center;
-      padding:24px;
-    }
-    .wrap{width:100%; max-width:1040px;}
-    .card{
-      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-      border:1px solid rgba(148,163,184,.18);
-      border-radius:16px;
-      box-shadow: 0 18px 60px rgba(0,0,0,.35);
-      overflow:hidden;
-    }
-    .header{
-      padding:18px 18px 10px 18px;
-      border-bottom:1px solid rgba(148,163,184,.18);
-      display:flex; gap:12px; align-items:center; justify-content:space-between;
-    }
-    .title{font-size:18px; font-weight:700}
-    .subtitle{font-size:12px; color:var(--muted); margin-top:4px}
-    .badge{
-      font-size:12px; padding:6px 10px; border-radius:999px;
-      border:1px solid rgba(148,163,184,.22);
-      color:#dbeafe; background: rgba(59,130,246,.12);
-      white-space:nowrap;
-    }
-    .grid{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:14px;
-      padding:18px;
-    }
-    @media (min-width: 900px){
-      .grid{grid-template-columns: 360px 1fr;}
-    }
-    .panel{
-      background: rgba(17,24,39,.58);
-      border:1px solid rgba(148,163,184,.18);
-      border-radius:14px;
-      padding:14px;
-    }
-    .panel h3{margin:0 0 10px 0; font-size:14px}
-    .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
-    label{display:block; font-size:12px; color:var(--muted); margin:10px 0 6px}
-    input, select, textarea{
-      width:100%;
-      padding:10px 10px;
-      border-radius:10px;
-      border:1px solid rgba(148,163,184,.20);
-      background: rgba(2,6,23,.55);
-      color: var(--text);
-      outline:none;
-    }
-    textarea{min-height:84px; resize:vertical}
-    .btn{
-      appearance:none; border:1px solid rgba(148,163,184,.22);
-      background: rgba(31,41,55,.85);
-      color:var(--text);
-      padding:10px 12px; border-radius:12px;
-      cursor:pointer; font-weight:700; font-size:13px;
-    }
-    .btn:hover{filter:brightness(1.08)}
-    .btn.acc{background: rgba(34,197,94,.14); border-color: rgba(34,197,94,.35)}
-    .btn.warn{background: rgba(245,158,11,.14); border-color: rgba(245,158,11,.35)}
-    .btn.dan{background: rgba(239,68,68,.14); border-color: rgba(239,68,68,.35)}
-    .kv{
-      display:grid;
-      grid-template-columns: 120px 1fr;
-      gap:8px 10px;
-      font-size:13px;
-      padding:10px;
-      border-radius:12px;
-      border:1px solid rgba(148,163,184,.16);
-      background: rgba(2,6,23,.35);
-    }
-    .k{color:var(--muted)}
-    .log{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size:12px;
-      line-height:1.45;
-      white-space:pre-wrap;
-      background: rgba(2,6,23,.45);
-      border:1px solid rgba(148,163,184,.16);
-      border-radius:12px;
-      padding:12px;
-      min-height:140px;
-      max-height:320px;
-      overflow:auto;
-    }
-    .tabs{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
-    .tab{padding:8px 10px; border-radius:999px; border:1px solid rgba(148,163,184,.18); background:rgba(2,6,23,.35); cursor:pointer; font-size:12px; font-weight:700}
-    .tab.active{border-color: rgba(34,197,94,.40); background: rgba(34,197,94,.12)}
-    .muted{color:var(--muted); font-size:12px}
-    .hr{height:1px; background: rgba(148,163,184,.18); margin:12px 0}
-    .hidden{display:none !important}
-  </style>
+<meta charset="UTF-8">
+<title>Spradon Evleri | Personel Giriş</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  background:#2f3a36;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  height:100vh;
+}
+.card{
+  width:360px;
+  background:#394641;
+  padding:20px;
+  border-radius:10px;
+  box-shadow:0 0 20px rgba(0,0,0,.4);
+}
+input,button{
+  width:100%;
+  padding:10px;
+  margin-top:8px;
+  border-radius:6px;
+  border:none;
+}
+input{
+  background:#1f2926;
+  color:#fff;
+}
+button{
+  background:#8fd19e;
+  font-weight:bold;
+  cursor:pointer;
+}
+.small{
+  font-size:12px;
+  opacity:.8;
+  margin-top:10px;
+}
+.list{
+  background:#1f2926;
+  margin-top:15px;
+  padding:10px;
+  border-radius:6px;
+  font-size:13px;
+}
+</style>
 </head>
 
 <body>
-<div class="wrap">
-  <div class="card">
-    <div class="header">
-      <div>
-        <div class="title">Spradon Evleri — Personel Paneli (DEMO)</div>
-        <div class="subtitle">Akıllı Site Hafızası • Giriş / Göreve Başla / Devriye / Teknik / Temizlik</div>
-      </div>
-      <div class="badge" id="topBadge">DEMO • Yerel Kayıt</div>
-    </div>
+<div class="card">
+  <h2>Spradon Evleri</h2>
+  <div class="small">Akıllı Site – HAFIZA (DEMO)</div>
 
-    <!-- LOGIN -->
-    <div id="loginView" class="grid">
-      <div class="panel">
-        <h3>Giriş</h3>
-        <div class="muted">Demo için örnek kullanıcılar aşağıda. (Gerçek sistemde tüm personel burada olacak.)</div>
+  <label>Personel ID</label>
+  <input id="pid" placeholder="Örn: 0002">
 
-        <label>Personel ID</label>
-        <input id="inpId" placeholder="Örn: 0002" />
+  <label>Şifre</label>
+  <input id="pass" type="password" placeholder="1234">
 
-        <label>Şifre</label>
-        <input id="inpPw" type="password" placeholder="••••••••" />
+  <button onclick="login()">GİRİŞ</button>
 
-        <div class="row" style="margin-top:12px">
-          <button class="btn acc" onclick="login()">GİRİŞ</button>
-          <button class="btn" onclick="fillDemo('0001','1234')">0001 doldur</button>
-          <button class="btn" onclick="fillDemo('0002','1234')">0002 doldur</button>
-          <button class="btn" onclick="fillDemo('0003','1234')">0003 doldur</button>
-        </div>
+  <div class="list" id="userList"></div>
 
-        <div class="hr"></div>
-
-        <div class="kv">
-          <div class="k">0001</div><div>Celal İnce — <b>Saha Sorumlusu</b></div>
-          <div class="k">0002</div><div>İhsan Ayçil — <b>Saha Sorumlusu</b></div>
-          <div class="k">0003</div><div>Akın Kamil Durmuş — <b>Gece Saha</b></div>
-          <div class="k">0101</div><div>Serkan Keskin — <b>Güvenlik</b></div>
-          <div class="k">0201</div><div>Murat Alp — <b>Teknik Şefi</b></div>
-          <div class="k">0301</div><div>Yüksel — <b>Temizlik Şefi</b></div>
-          <div class="k">9999</div><div>Seda Zeybek — <b>Müdür (Yönetici)</b></div>
-        </div>
-
-        <div class="muted" style="margin-top:10px">
-          Not: Bu demo verileri tarayıcıda (localStorage) tutulur. Sunum için ideal.
-        </div>
-      </div>
-
-      <div class="panel">
-        <h3>Demo Sunum Notu</h3>
-        <div class="muted">
-          Bu ekran yalnızca “giriş katmanı”. Giriş sonrası personel rolüne göre farklı paneller açılır:
-          <ul>
-            <li>Güvenlik: Devriye, aksaklık bildirimi</li>
-            <li>Teknik Şefi: Arıza durum güncelleme + yeni durum ekleme</li>
-            <li>Temizlik: Günlük faaliyet notu</li>
-            <li>Saha/Müdür: Hepsini görür</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <!-- APP -->
-    <div id="appView" class="grid hidden">
-      <div class="panel">
-        <h3>Personel Bilgisi</h3>
-        <div class="kv" id="userKv"></div>
-
-        <div class="tabs" id="tabs"></div>
-
-        <div class="hr"></div>
-
-        <div class="row">
-          <button class="btn acc" onclick="startShift()">Göreve Başla</button>
-          <button class="btn dan" onclick="endShift()">Görev Bitir</button>
-          <button class="btn" onclick="logout()">Çıkış</button>
-        </div>
-
-        <div class="muted" style="margin-top:10px" id="shiftInfo"></div>
-      </div>
-
-      <div class="panel">
-        <h3 id="panelTitle">Panel</h3>
-
-        <!-- Güvenlik / Devriye -->
-        <div id="secPanel" class="section hidden">
-          <div class="muted">Devriye planı: Gündüz 10–12 / 12–14 / 14–16 / 16–18 • Gece 22–24 / 00–02 / 02–04 / 04–06</div>
-
-          <label>Devriye Slotu</label>
-          <select id="patrolSlot">
-            <option value="">Seçiniz</option>
-          </select>
-
-          <div class="row" style="margin-top:10px">
-            <button class="btn acc" onclick="patrolStart()">Devriyeye Başla</button>
-            <button class="btn warn" onclick="patrolEnd()">Devriyeyi Bitir</button>
-          </div>
-
-          <label>Devriye Atılamadıysa Not</label>
-          <textarea id="patrolNote" placeholder="Örn: Personel eksikliği / ekstrem durum / acil olay nedeniyle devriye atılamadı."></textarea>
-
-          <div class="row" style="margin-top:10px">
-            <button class="btn" onclick="patrolMissed()">Devriye Atılamadı Olarak Kaydet</button>
-          </div>
-        </div>
-
-        <!-- Teknik -->
-        <div id="techPanel" class="section hidden">
-          <div class="muted">
-            Teknik şefi gün sonu “arıza durumlarını” günceller. Müdür/yönetici yeni durum ekleyebilir (demo).
-          </div>
-
-          <label>Arıza Başlığı</label>
-          <input id="faultTitle" placeholder="Örn: Blok A - otopark aydınlatma arızası" />
-
-          <label>Durum</label>
-          <select id="faultStatus"></select>
-
-          <label>Açıklama</label>
-          <textarea id="faultDesc" placeholder="Örn: Malzeme eksik, sipariş verildi."></textarea>
-
-          <div class="row" style="margin-top:10px">
-            <button class="btn acc" onclick="addFault()">Arıza Kaydı Oluştur</button>
-            <button class="btn" onclick="resolveFault()">Durumu Güncelle</button>
-          </div>
-
-          <div id="adminStatusBox" class="hidden">
-            <div class="hr"></div>
-            <h3 style="margin:0 0 8px 0; font-size:13px">Yönetici: Yeni Durum Ekle</h3>
-            <input id="newStatus" placeholder="Örn: Keşif yapıldı, planlandı" />
-            <div class="row" style="margin-top:10px">
-              <button class="btn" onclick="addStatus()">Durum Ekle</button>
-              <button class="btn dan" onclick="resetStatuses()">Durumları Sıfırla (Demo)</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Temizlik -->
-        <div id="cleanPanel" class="section hidden">
-          <div class="muted">Temizlik şefi/ekibi günlük faaliyet notu girebilir.</div>
-
-          <label>Günlük Not</label>
-          <textarea id="cleanNote" placeholder="Örn: Sosyal tesis/otopark ortak alanlar planlı temizlik tamamlandı."></textarea>
-
-          <div class="row" style="margin-top:10px">
-            <button class="btn acc" onclick="saveCleanNote()">Notu Kaydet</button>
-          </div>
-        </div>
-
-        <!-- Müdür / Saha -->
-        <div id="mgrPanel" class="section hidden">
-          <div class="muted">Saha/Müdür tüm kayıtları tek ekranda görür.</div>
-          <div class="row" style="margin-top:10px">
-            <button class="btn" onclick="exportLogs()">Kayıtları Kopyala</button>
-            <button class="btn dan" onclick="clearLogs()">Log Sıfırla (Demo)</button>
-          </div>
-        </div>
-
-        <div class="hr"></div>
-        <h3 style="margin:0 0 8px 0; font-size:13px">Kayıtlar (Log)</h3>
-        <div class="log" id="logBox"></div>
-      </div>
-    </div>
-
+  <div class="small">
+    Demo notu: Fotoğraf, devriye, teknik ve temizlik ekranları
+    bir sonraki adımda eklenecek.
   </div>
 </div>
 
 <script>
-  // ===== DEMO USERS (telefon yok) =====
-  const USERS = {
-   const USERS = {
-  // ===== DEMO USERS =====
 const USERS = {
+  "0001":{name:"Seda Zeybek",dept:"Müdür",role:"mudur",pass:"1234"},
+  "0002":{name:"Akın Kamil Durmuş",dept:"Gece Saha",role:"saha",pass:"1234"},
+  "0003":{name:"İhsan Ayçıl",dept:"Saha Sorumlusu",role:"saha",pass:"1234"},
+  "0004":{name:"Celal İnce",dept:"Saha Sorumlusu",role:"saha",pass:"1234"},
 
-  // ==== YÖNETİM / SAHA ====
-  "0001": { name:"Seda Zeybek", dept:"Müdür", role:"mudur", pass:"1234" },
-  "0002": { name:"Akın Kamil Durmuş", dept:"Gece Saha", role:"saha", pass:"1234" },
-  "0003": { name:"İhsan Ayçin", dept:"Saha Sorumlusu", role:"saha", pass:"1234" },
-  "0004": { name:"Celal İnce", dept:"Saha Sorumlusu", role:"saha", pass:"1234" },
+  "0101":{name:"Serkan Keskin",dept:"Güvenlik",role:"guvenlik",pass:"1234"},
+  "0102":{name:"Besnen Karaduman",dept:"Güvenlik",role:"guvenlik",pass:"1234"},
 
-  // ==== GÜVENLİK ====
-  "0101": { name:"Serkan Keskin", dept:"Güvenlik", role:"guvenlik", pass:"1234" },
-  "0102": { name:"Besnen Karaduman", dept:"Güvenlik", role:"guvenlik", pass:"1234" },
-  "0103": { name:"Bedrettin Aydın", dept:"Güvenlik", role:"guvenlik", pass:"1234" },
-  "0104": { name:"Ferit Aydemir", dept:"Güvenlik", role:"guvenlik", pass:"1234" },
-  "0105": { name:"Kadircan Sert", dept:"Güvenlik", role:"guvenlik", pass:"1234" },
-  "0106": { name:"Salih Akbulut", dept:"Güvenlik", role:"guvenlik", pass:"1234" },
-  "0107": { name:"Serkan Işık", dept:"Güvenlik", role:"guvenlik", pass:"1234" },
-  "0108": { name:"Onur Sofuoğlu", dept:"Güvenlik", role:"guvenlik", pass:"1234" },
-  "0109": { name:"Kelimesi Kaya", dept:"Güvenlik", role:"guvenlik", pass:"1234" },
-  "0110": { name:"Sultan’a Bağlı Güvenlik", dept:"Güvenlik", role:"guvenlik", pass:"1234" },
+  "0201":{name:"Murat Alp",dept:"Teknik Şef",role:"teknik",pass:"1234"},
+  "0202":{name:"Selman",dept:"Teknik",role:"teknik",pass:"1234"},
 
-  // ==== TEKNİK ====
-  "0201": { name:"Murat Alp", dept:"Teknik Şefi", role:"teknik_sef", pass:"1234" },
-  "0202": { name:"Selman", dept:"Teknik", role:"teknik", pass:"1234" },
-  "0203": { name:"Alparslan Yıldız", dept:"Teknik", role:"teknik", pass:"1234" },
+  "0301":{name:"Yüksel",dept:"Temizlik Şefi",role:"temizlik",pass:"1234"},
+  "0302":{name:"Timur Kul",dept:"Temizlik",role:"temizlik",pass:"1234"}
+};
 
-  // ===== STORAGE KEYS =====
-  const LS_USER = "hafiza_demo_user";
-  const LS_LOGS = "hafiza_demo_logs";
-  const LS_STAT = "hafiza_demo_statuses";
-  const LS_SHIFT = "hafiza_demo_shift";
-
-  // ===== DEFAULT STATUSES =====
-  const DEFAULT_STATUSES = [
-    "Alındı",
-    "Tekniğe aktarıldı",
-    "İnceleniyor",
-    "Malzeme eksik",
-    "Sipariş verildi",
-    "Planlandı",
-    "Giderildi",
-    "Ertesi güne aktarıldı"
-  ];
-
-  // ===== HELPERS =====
-  function nowTR(){
-    const d=new Date();
-    const pad=n=>String(n).padStart(2,"0");
-    return `${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+function login(){
+  const id=document.getElementById("pid").value;
+  const p=document.getElementById("pass").value;
+  if(USERS[id] && USERS[id].pass===p){
+    alert("Hoş geldin: "+USERS[id].name);
+  }else{
+    alert("Hatalı ID veya şifre");
   }
-  function getLogs(){
-    try{ return JSON.parse(localStorage.getItem(LS_LOGS) || "[]"); }catch{ return []; }
-  }
-  function setLogs(arr){ localStorage.setItem(LS_LOGS, JSON.stringify(arr)); }
-  function addLog(type, msg){
-    const u = getCurrentUser();
-    const line = `[${nowTR()}] (${u ? u.name : "Sistem"}) • ${type}: ${msg}`;
-    const logs = getLogs();
-    logs.unshift(line);
-    setLogs(logs);
-    renderLogs();
-  }
-  function renderLogs(){
-    const logs = getLogs();
-    document.getElementById("logBox").textContent = logs.slice(0,200).join("\n");
-  }
-  function getStatuses(){
-    try{
-      const s = JSON.parse(localStorage.getItem(LS_STAT) || "null");
-      if(!s || !Array.isArray(s) || !s.length) return DEFAULT_STATUSES.slice();
-      return s;
-    }catch{
-      return DEFAULT_STATUSES.slice();
-    }
-  }
-  function setStatuses(arr){ localStorage.setItem(LS_STAT, JSON.stringify(arr)); }
+}
 
-  function getCurrentUser(){
-    try{
-      return JSON.parse(localStorage.getItem(LS_USER) || "null");
-    }catch{ return null; }
-  }
-  function setCurrentUser(u){
-    localStorage.setItem(LS_USER, JSON.stringify(u));
-  }
-
-  function fillDemo(id,pw){
-    document.getElementById("inpId").value=id;
-    document.getElementById("inpPw").value=pw;
-  }
-
-  // ===== LOGIN / LOGOUT =====
-  function login(){
-    const id = document.getElementById("inpId").value.trim();
-    const pw = document.getElementById("inpPw").value.trim();
-    const u = USERS[id];
-
-    if(!u || pw !== u.pass){
-      alert("ID/Şifre hatalı (DEMO: şifre 1234).");
-      return;
-    }
-    setCurrentUser({ id, ...u });
-    addLog("Giriş", `${id} ile giriş yapıldı.`);
-    showApp();
-  }
-
-  function logout(){
-    addLog("Çıkış", `Oturum kapatıldı.`);
-    localStorage.removeItem(LS_USER);
-    document.getElementById("appView").classList.add("hidden");
-    document.getElementById("loginView").classList.remove("hidden");
-  }
-
-  // ===== APP VIEW =====
-  function showApp(){
-    const u = getCurrentUser();
-    if(!u){ return; }
-
-    document.getElementById("loginView").classList.add("hidden");
-    document.getElementById("appView").classList.remove("hidden");
-
-    document.getElementById("userKv").innerHTML = `
-      <div class="k">Ad</div><div><b>${u.name}</b></div>
-      <div class="k">Birim</div><div>${u.dept}</div>
-      <div class="k">Rol</div><div>${roleLabel(u.role)}</div>
-      <div class="k">ID</div><div>${u.id}</div>
-    `;
-
-    buildTabsByRole(u.role);
-    fillPatrolSlots();
-    fillStatusesSelect();
-    renderShiftInfo();
-    renderLogs();
-  }
-
-  function roleLabel(r){
-    if(r==="guvenlik") return "Güvenlik";
-    if(r==="teknik_sef") return "Teknik Şefi";
-    if(r==="temizlik_sef") return "Temizlik Şefi";
-    if(r==="saha") return "Saha Sorumlusu";
-    if(r==="mudur") return "Müdür";
-    return r;
-  }
-
-  function hideAllSections(){
-    document.querySelectorAll(".section").forEach(x=>x.classList.add("hidden"));
-  }
-
-  function buildTabsByRole(role){
-    const tabs = document.getElementById("tabs");
-    tabs.innerHTML = "";
-
-    // Sekmeler rol bazlı
-    const items = [];
-
-    if(role==="guvenlik"){
-      items.push({id:"sec", label:"Devriye & Not", show:"secPanel"});
-    }
-    if(role==="teknik_sef"){
-      items.push({id:"tech", label:"Teknik", show:"techPanel"});
-    }
-    if(role==="temizlik_sef"){
-      items.push({id:"clean", label:"Temizlik", show:"cleanPanel"});
-    }
-    if(role==="saha"){
-      items.push({id:"sec", label:"Devriye", show:"secPanel"});
-      items.push({id:"tech", label:"Teknik", show:"techPanel"});
-      items.push({id:"clean", label:"Temizlik", show:"cleanPanel"});
-      items.push({id:"mgr", label:"Genel", show:"mgrPanel"});
-    }
-    if(role==="mudur"){
-      items.push({id:"sec", label:"Devriye", show:"secPanel"});
-      items.push({id:"tech", label:"Teknik", show:"techPanel"});
-      items.push({id:"clean", label:"Temizlik", show:"cleanPanel"});
-      items.push({id:"mgr", label:"Yönetim", show:"mgrPanel"});
-    }
-
-    // Yönetici yeni durum ekleyebilsin
-    const adminBox = document.getElementById("adminStatusBox");
-    if(role==="mudur" || role==="saha"){
-      adminBox.classList.remove("hidden");
-    }else{
-      adminBox.classList.add("hidden");
-    }
-
-    items.forEach((it,idx)=>{
-      const b=document.createElement("button");
-      b.className="tab"+(idx===0 ? " active":"");
-      b.textContent=it.label;
-      b.onclick=()=>{
-        document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
-        b.classList.add("active");
-        hideAllSections();
-        document.getElementById(it.show).classList.remove("hidden");
-        document.getElementById("panelTitle").textContent = it.label;
-      };
-      tabs.appendChild(b);
-    });
-
-    // default
-    hideAllSections();
-    if(items[0]) {
-      document.getElementById(items[0].show).classList.remove("hidden");
-      document.getElementById("panelTitle").textContent = items[0].label;
-    }
-  }
-
-  // ===== SHIFT =====
-  function startShift(){
-    const u = getCurrentUser();
-    const d = new Date();
-    const shift = { startedAt: d.toISOString(), endedAt: null };
-    localStorage.setItem(LS_SHIFT, JSON.stringify(shift));
-    addLog("Görev", "Göreve başlandı.");
-    renderShiftInfo();
-  }
-
-  function endShift(){
-    const shift = JSON.parse(localStorage.getItem(LS_SHIFT) || "null");
-    if(!shift || !shift.startedAt){
-      alert("Önce 'Göreve Başla' yapmalısın.");
-      return;
-    }
-    shift.endedAt = new Date().toISOString();
-    localStorage.setItem(LS_SHIFT, JSON.stringify(shift));
-    addLog("Görev", "Görev bitirildi.");
-    renderShiftInfo();
-  }
-
-  function renderShiftInfo(){
-    const box = document.getElementById("shiftInfo");
-    const shift = JSON.parse(localStorage.getItem(LS_SHIFT) || "null");
-    if(!shift || !shift.startedAt){
-      box.textContent = "Görev durumu: Pasif (göreve başlanmadı).";
-      return;
-    }
-    const s = new Date(shift.startedAt);
-    const e = shift.endedAt ? new Date(shift.endedAt) : null;
-    box.textContent = e
-      ? `Görev durumu: Bitti • Başlangıç: ${s.toLocaleString("tr-TR")} • Bitiş: ${e.toLocaleString("tr-TR")}`
-      : `Görev durumu: Aktif • Başlangıç: ${s.toLocaleString("tr-TR")}`;
-  }
-
-  // ===== PATROLS =====
-  function fillPatrolSlots(){
-    const sel = document.getElementById("patrolSlot");
-    sel.innerHTML = `<option value="">Seçiniz</option>`;
-
-    // gündüz + gece slotları
-    const slots = [
-      {k:"GÜNDÜZ 10-12", v:"day_10_12"},
-      {k:"GÜNDÜZ 12-14", v:"day_12_14"},
-      {k:"GÜNDÜZ 14-16", v:"day_14_16"},
-      {k:"GÜNDÜZ 16-18", v:"day_16_18"},
-      {k:"GECE 22-24",  v:"night_22_24"},
-      {k:"GECE 00-02",  v:"night_00_02"},
-      {k:"GECE 02-04",  v:"night_02_04"},
-      {k:"GECE 04-06",  v:"night_04_06"}
-    ];
-    slots.forEach(s=>{
-      const o=document.createElement("option");
-      o.value=s.v; o.textContent=s.k;
-      sel.appendChild(o);
-    });
-  }
-
-  function patrolStart(){
-    const slot = document.getElementById("patrolSlot").value;
-    if(!slot){ alert("Slot seç."); return; }
-    addLog("Devriye", `${slot} başladı.`);
-  }
-  function patrolEnd(){
-    const slot = document.getElementById("patrolSlot").value;
-    if(!slot){ alert("Slot seç."); return; }
-    addLog("Devriye", `${slot} bitti.`);
-  }
-  function patrolMissed(){
-    const slot = document.getElementById("patrolSlot").value;
-    const note = document.getElementById("patrolNote").value.trim();
-    if(!slot){ alert("Slot seç."); return; }
-    if(!note){ alert("Kısa bir gerekçe notu yaz."); return; }
-    addLog("Devriye Atılamadı", `${slot} • Not: ${note}`);
-    document.getElementById("patrolNote").value="";
-  }
-
-  // ===== TECH =====
-  function fillStatusesSelect(){
-    const sel = document.getElementById("faultStatus");
-    const st = getStatuses();
-    sel.innerHTML = "";
-    st.forEach(x=>{
-      const o=document.createElement("option");
-      o.value=x; o.textContent=x;
-      sel.appendChild(o);
-    });
-  }
-
-  func
+let out="";
+for(let k in USERS){
+  out+=k+" — "+USERS[k].name+" ("+USERS[k].dept+")<br>";
+}
+document.getElementById("userList").innerHTML=out;
+</script>
+</body>
+</html>
