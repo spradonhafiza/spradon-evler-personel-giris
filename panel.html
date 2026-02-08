@@ -1,135 +1,267 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<title>Spradon Evleri | Personel Paneli</title>
-<style>
-body{
-  background:#2f3e3e;
-  font-family:Arial;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-  color:#fff;
-}
-.kutu{
-  background:#445a5a;
-  padding:25px;
-  border-radius:8px;
-  width:420px;
-}
-h2{margin-top:0}
-input,select,button{
-  width:100%;
-  padding:8px;
-  margin-top:6px;
-  border-radius:5px;
-  border:none;
-}
-button{
-  background:#f0d36a;
-  font-weight:bold;
-  cursor:pointer;
-}
-table{
-  width:100%;
-  margin-top:10px;
-  font-size:13px;
-}
-td{
-  padding:4px;
-}
-.sil{
-  background:#c0392b;
-  color:#fff;
-  border:none;
-  cursor:pointer;
-  padding:3px 6px;
-}
-.note{
-  font-size:12px;
-  opacity:.8;
-  margin-top:10px;
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Spradon Evleri | Personel Paneli</title>
+  <style>
+    body{
+      background:#2f3e3e;
+      font-family:Arial, sans-serif;
+      margin:0;
+      padding:18px;
+      color:#fff;
+    }
+    .wrap{max-width:720px;margin:0 auto;}
+    .card{
+      background:#445a5a;
+      padding:18px;
+      border-radius:12px;
+      box-shadow:0 8px 20px rgba(0,0,0,.25);
+      margin-bottom:12px;
+    }
+    h2,h3{margin:0 0 10px 0}
+    .muted{opacity:.85;font-size:12px}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    input,select,button{
+      padding:10px;
+      border-radius:10px;
+      border:0;
+      font-size:14px;
+    }
+    input,select{flex:1;min-width:160px}
+    button{cursor:pointer;font-weight:700}
+    .btn{background:#f0d36a;color:#111}
+    .btn2{background:#7aa0ff;color:#111}
+    .btnRed{background:#ff7a7a;color:#111}
+    .btnGray{background:#d0d0d0;color:#111}
+    table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
+    th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,.12);text-align:left}
+    th{opacity:.9}
+    .smallBtn{padding:7px 10px;border-radius:10px;font-size:12px}
+    .pill{display:inline-block;padding:4px 8px;border-radius:999px;background:rgba(0,0,0,.18);font-size:12px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    a{color:#f0d36a}
+  </style>
 </head>
 
 <body>
-<div class="kutu">
-  <h2>Personel Paneli</h2>
-  <div><b>Akın Kamil Durmuş</b><br>Gece Saha</div>
+<div class="wrap">
 
-  <hr>
-
-  <h3>Personel Ekle</h3>
-  <input id="isim" placeholder="Ad Soyad">
-  <select id="birim">
-    <option value="Güvenlik">Güvenlik</option>
-    <option value="Teknik">Teknik</option>
-    <option value="Temizlik">Temizlik</option>
-    <option value="Saha">Saha</option>
-  </select>
-  <button onclick="ekle()">Personel Ekle</button>
-
-  <h3>Personel Listesi</h3>
-  <table id="liste"></table>
-
-  <div class="note">
-    • Bu liste tarayıcıda saklanır (internet olmasa da silinmez)<br>
-    • İleride yetki ve şifre sistemi eklenecek
+  <div class="card">
+    <div class="topbar">
+      <div>
+        <h2>Spradon Evleri | Personel Paneli</h2>
+        <div class="muted" id="who"></div>
+      </div>
+      <div class="row">
+        <button class="btn2" onclick="goSecurity()">Güvenlik Bildirimi</button>
+        <button class="btnGray" onclick="logout()">Çıkış</button>
+      </div>
+    </div>
   </div>
+
+  <div class="card">
+    <h3>➕ Personel Ekle</h3>
+    <div class="muted">Yeni personel eklemek için ID + Ad Soyad + Birim seç.</div>
+    <div class="row" style="margin-top:10px">
+      <input id="newId" placeholder="ID (örn: 0103)" />
+      <input id="newName" placeholder="Ad Soyad (örn: Yüksel Kaya)" />
+      <select id="newDept">
+        <option value="">Birim seç</option>
+        <option>Güvenlik</option>
+        <option>Teknik</option>
+        <option>Temizlik</option>
+        <option>Saha</option>
+        <option>Muhasebe</option>
+        <option>Yönetim</option>
+        <option>Danışma</option>
+      </select>
+      <button class="btn" onclick="addUser()">Ekle</button>
+    </div>
+    <div class="muted" style="margin-top:8px">
+      Şifre demo için herkes: <b>1234</b>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>👥 Personel Listesi</h3>
+    <div class="muted">Düzenle ile isim/birim güncelleyebilirsin. Sil ile kaydı kaldırırsın.</div>
+    <div id="list"></div>
+  </div>
+
+  <div class="card">
+    <h3>Not</h3>
+    <div class="muted">
+      • Bu demo GitHub Pages üzerinde çalışır.<br>
+      • Şimdilik kayıtlar tarayıcıda çalışır; bir sonraki adımda localStorage ile kalıcı yaparız.<br>
+      • “Resmî çıktı” alınacaksa Akın için resmî ad: <b>Kamil Durmuş</b> kullanılacak şekilde rapor modülü ekleriz.
+    </div>
+  </div>
+
 </div>
 
 <script>
-let personeller = JSON.parse(localStorage.getItem("personeller")) || [
-  {isim:"Seda Zeybek", birim:"Yönetim"},
-  {isim:"Şenol", birim:"Muhasebe"},
-  {isim:"İhsan Ayçi", birim:"Saha"},
-  {isim:"Celal İnce", birim:"Saha"},
-  {isim:"Serkan Keskin", birim:"Güvenlik"},
-  {isim:"Murat Alp", birim:"Teknik"},
-  {isim:"Yüksel", birim:"Temizlik"}
-];
+  // ====== Demo Kullanıcı Oturumu (Giriş sayfası ile bağlanır) ======
+  const LS_CURRENT = "spradon_current_user";
 
-function kaydet(){
-  localStorage.setItem("personeller", JSON.stringify(personeller));
-}
+  // ====== Personel Listesi (DEMO) ======
+  // Şifre herkes için 1234 (pass alanı)
+  // Akın görünen ad; resmî çıktı için legalName kullanılır.
+  let USERS = {
+    "0001": { name:"Seda Zeybek", dept:"Yönetim / Müdür", role:"mudur", pass:"1234" },
+    "0002": { name:"Akın Kamil Durmuş", legalName:"Kamil Durmuş", dept:"Saha / Gece Sorumlu", role:"saha_admin", pass:"1234" },
+    "0003": { name:"İhsan Ayçi", dept:"Saha Sorumlusu", role:"saha", pass:"1234" },
+    "0004": { name:"Celal İnce", dept:"Saha Sorumlusu", role:"saha", pass:"1234" },
 
-function listele(){
-  let html="";
-  personeller.forEach((p,i)=>{
-    html+=`<tr>
-      <td>${p.isim}</td>
-      <td>${p.birim}</td>
-      <td><button class="sil" onclick="sil(${i})">Sil</button></td>
-    </tr>`;
-  });
-  document.getElementById("liste").innerHTML = html;
-}
+    "0401": { name:"Ece Şenol", dept:"Muhasebe", role:"muhasebe", pass:"1234" },
 
-function ekle(){
-  let isim = document.getElementById("isim").value;
-  let birim = document.getElementById("birim").value;
-  if(!isim) return alert("İsim gir");
-  personeller.push({isim, birim});
-  kaydet();
-  listele();
-  document.getElementById("isim").value="";
-}<hr>
+    "0101": { name:"Serkan Keskin", dept:"Güvenlik", role:"guvenlik", pass:"1234" },
+    "0102": { name:"Besna Karaduman", dept:"Güvenlik", role:"guvenlik", pass:"1234" },
 
-<h3>👥 Personel Listesi</h3>
-<div id="personelListesi"></div>
+    "0201": { name:"Murat Alp", dept:"Teknik Şef", role:"teknik_sef", pass:"1234" },
+    "0202": { name:"Selman", dept:"Teknik", role:"teknik", pass:"1234" },
 
-function sil(i){
-  if(confirm("Silinsin mi?")){
-    personeller.splice(i,1);
-    kaydet();
-    listele();
+    "0301": { name:"Yüksel", dept:"Temizlik Şefi", role:"temizlik_sef", pass:"1234" },
+    "0302": { name:"Timur Kul", dept:"Temizlik", role:"temizlik", pass:"1234" }
+  };
+
+  // ====== Yardımcılar ======
+  function currentUser(){
+    const raw = localStorage.getItem(LS_CURRENT);
+    return raw ? JSON.parse(raw) : null;
   }
-}
 
-listele();
+  function roleByDept(dept){
+    if(dept === "Yönetim") return "mudur";
+    if(dept === "Muhasebe") return "muhasebe";
+    if(dept === "Saha") return "saha";
+    if(dept === "Güvenlik") return "guvenlik";
+    if(dept === "Teknik") return "teknik";
+    if(dept === "Temizlik") return "temizlik";
+    if(dept === "Danışma") return "danisma";
+    return "personel";
+  }
+
+  function renderHeader(){
+    const u = currentUser();
+    if(u){
+      document.getElementById("who").innerHTML =
+        <span class="pill">Giriş yapan: <b>${u.name}</b></span> <span class="pill">${u.dept || ""}</span>;
+    } else {
+      document.getElementById("who").innerHTML =
+        <span class="pill">Demo mod: giriş kaydı bulunamadı</span>;
+    }
+  }
+
+  function renderList(){
+    const ids = Object.keys(USERS).sort();
+    let html = `
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Ad Soyad</th>
+            <th>Birim / Görev</th>
+            <th>İşlem</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    for(const id of ids){
+      const p = USERS[id];
+      html += `
+        <tr>
+          <td><b>${id}</b></td>
+          <td>${p.name}</td>
+          <td>${p.dept}</td>
+          <td>
+            <button class="smallBtn btn2" onclick="editUser('${id}')">Düzenle</button>
+            <button class="smallBtn btnRed" onclick="deleteUser('${id}')">Sil</button>
+          </td>
+        </tr>
+      `;
+    }
+
+    html += </tbody></table>;
+    document.getElementById("list").innerHTML = html;
+  }
+
+  // ====== Personel Ekle ======
+  function addUser(){
+    const id = document.getElementById("newId").value.trim();
+    const name = document.getElementById("newName").value.trim();
+    const dept = document.getElementById("newDept").value;
+
+    if(!id || !name || !dept){
+      alert("ID + Ad Soyad + Birim seçilmeli.");
+      return;
+    }
+    if(USERS[id]){
+      alert("Bu ID zaten var. Başka ID seç.");
+      return;
+    }
+
+    USERS[id] = {
+      name,
+      dept,
+      role: roleByDept(dept),
+      pass: "1234"
+    };
+
+    document.getElementById("newId").value = "";
+    document.getElementById("newName").value = "";
+    document.getElementById("newDept").value = "";
+
+    renderList();
+    alert("Eklendi ✅");
+  }
+
+  // ====== Personel Düzenle ======
+  function editUser(id){
+    const p = USERS[id];
+
+    const yeniIsim = prompt("Ad Soyad:", p.name);
+    if(yeniIsim !== null && yeniIsim.trim() !== ""){
+      p.name = yeniIsim.trim();
+    }
+
+    const yeniDept = prompt("Birim / Görev:", p.dept);
+    if(yeniDept !== null && yeniDept.trim() !== ""){
+      p.dept = yeniDept.trim();
+      // Dept değişince rolü de yeniden ata (basit kural)
+      // (İstersen rolü ayrıca sorarız)
+      const basicDept = (p.dept.split("/")[0] || "").trim();
+      p.role = roleByDept(basicDept) || p.role;
+    }
+
+    renderList();
+    alert("Güncellendi ✅");
+  }
+
+  // ====== Personel Sil ======
+  function deleteUser(id){
+    if(!confirm(id + " silinsin mi?")) return;
+    delete USERS[id];
+    renderList();
+    alert("Silindi ✅");
+  }
+
+  // ====== Güvenlik sayfası ======
+  function goSecurity(){
+    window.location.href = "security.html";
+  }
+
+  // ====== Çıkış ======
+  function logout(){
+    localStorage.removeItem(LS_CURRENT);
+    window.location.href = "index.html";
+  }
+
+  // İlk yükleme
+  renderHeader();
+  renderList();
 </script>
 </body>
 </html>
