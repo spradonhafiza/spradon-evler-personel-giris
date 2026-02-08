@@ -1,68 +1,46 @@
-<!doctype html>
-<html lang="tr">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Spradon Evleri | Personel Girişi</title>
-  <style>
-    body{margin:0;font-family:Arial;background:#2f3e3e;display:flex;align-items:center;justify-content:center;height:100vh}
-    .kutu{background:#4a5a5a;color:#fff;padding:22px;border-radius:10px;width:320px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
-    h2{margin:0 0 14px 0}
-    label{display:block;margin-top:10px;font-size:14px;opacity:.9}
-    input{width:100%;padding:10px;border-radius:8px;border:0;margin-top:6px}
-    button{width:100%;padding:11px;border-radius:8px;border:0;margin-top:14px;background:#b7e08a;font-weight:700;cursor:pointer}
-    .note{margin-top:10px;font-size:12px;opacity:.85}
-  </style>
-</head>
-<body>
-  <div class="kutu">
-    <h2>Spradon Evleri</h2>
-
-    <label>Personel ID</label>
-    <input id="pid" placeholder="Örn: 0002" />
-
-    <label>Şifre</label>
-    <input id="pass" type="password" placeholder="1234" />
-
-    <button onclick="login()">GİRİŞ</button>
-
-    <div class="note">
-      Demo: Şifre herkes için <b>1234</b><br/>
-      Not: Giriş başarılı olunca panel sayfasına yönlendirir.
-    </div>
-  </div>
-
 <script>
-  // ---- SABİT BAŞLANGIÇ LİSTESİ (ilk açılışta localStorage'a yazılır) ----
-  const SEED_USERS = {
-    "0001": { name:"Seda Zeybek",  role:"Müdür" },
-    "0002": { name:"Akın Kamil Durmuş", role:"Gece Saha" },
-    "0003": { name:"İhsan Ayçi",   role:"Saha" },
-    "0004": { name:"Celal İnce",   role:"Saha" },
-    "0101": { name:"Serkan Keskin", role:"Güvenlik" },
-    "0102": { name:"Besna Karaduman", role:"Güvenlik" },
-    "0201": { name:"Murat Alp",   role:"Teknik Şefi" },
-    "0202": { name:"Selman",      role:"Teknik" },
-    "0301": { name:"Yüksel",      role:"Temizlik Şefi" },
-    "0302": { name:"Timur",       role:"Temizlik" }
+  // --- Varsayılan kullanıcılar (demo) ---
+  const DEFAULT_USERS = {
+    "0001": { name: "Seda Zeybek", dept: "Yönetim", role: "mudur" },
+    "0002": { name: "Akın Kamil Durmuş", dept: "Saha", role: "saha" },
+    "0003": { name: "İhsan Ayçi", dept: "Saha", role: "saha" },
+    "0004": { name: "Celal İnce", dept: "Saha", role: "saha" },
+
+    "0101": { name: "Serkan Keskin", dept: "Güvenlik", role: "guvenlik" },
+    "0102": { name: "Besna Karaduman", dept: "Güvenlik", role: "guvenlik" },
+
+    "0201": { name: "Murat Alp", dept: "Teknik", role: "teknik_sef" },
+    "0202": { name: "Selman", dept: "Teknik", role: "teknik" },
+
+    "0301": { name: "Yüksel", dept: "Temizlik", role: "temizlik_sef" },
+    "0302": { name: "Timur", dept: "Temizlik", role: "temizlik" },
+
+    "0401": { name: "Ece Şenol", dept: "Muhasebe", role: "muhasebe" }
   };
 
   const LS_USERS = "spradon_users";
   const LS_CURRENT = "spradon_current_user";
 
-  // İlk kurulum: localStorage boşsa seed’i yaz
-  function ensureUsers(){
-    const existing = localStorage.getItem(LS_USERS);
-    if(!existing){
-      localStorage.setItem(LS_USERS, JSON.stringify(SEED_USERS));
+  function loadUsers(){
+    const stored = localStorage.getItem(LS_USERS);
+    if(stored){
+      try { return JSON.parse(stored); } catch(e){}
     }
+    return DEFAULT_USERS;
   }
 
-  function getUsers(){
-    ensureUsers();
-    return JSON.parse(localStorage.getItem(LS_USERS) || "{}");
+  function saveUsers(users){
+    localStorage.setItem(LS_USERS, JSON.stringify(users));
   }
 
+  // İlk açılışta localStorage yoksa varsayılanları yaz
+  (function init(){
+    if(!localStorage.getItem(LS_USERS)){
+      saveUsers(DEFAULT_USERS);
+    }
+  })();
+
+  // Giriş fonksiyonu (butondaki onclick bunu çağırmalı)
   function login(){
     const id = document.getElementById("pid").value.trim();
     const pw = document.getElementById("pass").value.trim();
@@ -72,20 +50,14 @@
       return;
     }
 
-    const users = getUsers();
+    const users = loadUsers();
     if(!users[id]){
       alert("Personel ID bulunamadı!");
       return;
     }
 
-    // giriş yapanı kaydet
     localStorage.setItem(LS_CURRENT, JSON.stringify({ id, ...users[id] }));
-    // panele git
+    // Panel sayfasına yönlendir
     window.location.href = "panel.html";
   }
-
-  // Sayfa açılınca seed garanti olsun
-  ensureUsers();
 </script>
-</body>
-</html>
