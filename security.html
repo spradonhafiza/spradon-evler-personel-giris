@@ -2,180 +2,303 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Güvenlik Bildirimi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Spradon Evleri | Güvenlik Bildirimi</title>
   <style>
-    body{background:#2f3e3e;font-family:Arial;color:#fff;margin:0;padding:18px}
-    .wrap{max-width:520px;margin:0 auto}
-    .card{background:#4a5a5a;border-radius:12px;padding:16px;box-shadow:0 8px 20px rgba(0,0,0,.25)}
-    input,select,button,textarea{width:100%;padding:10px;border-radius:10px;border:0;margin-top:10px}
-    button{cursor:pointer;font-weight:bold}
-    .btn{background:#c9d26a;color:#111}
-    .btn2{background:#7aa0ff;color:#111}
-    .muted{opacity:.85;font-size:12px}
-    .item{background:#3c4a4a;border-radius:10px;padding:10px;margin-top:10px}
-    img{width:100%;border-radius:10px;margin-top:8px}
-    .top{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:10px}
-    .link{color:#c9d26a;cursor:pointer;text-decoration:underline}
+    :root{
+      --bg:#2f3e3e; --card:#445a5a; --card2:#3b5050;
+      --text:#fff; --muted:rgba(255,255,255,.78);
+      --line:rgba(255,255,255,.14); --hover:rgba(255,255,255,.08);
+      --btn:#d6cf72; --btnText:#1c1c1c; --danger:#ff6b6b;
+      --focus:rgba(214,207,114,.35); --inputBg:rgba(255,255,255,.12);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial;background:var(--bg);color:var(--text);min-height:100vh}
+    .wrap{max-width:980px;margin:0 auto;padding:22px 16px 40px}
+    .topbar{
+      background:var(--card);border:1px solid rgba(255,255,255,.08);
+      border-radius:14px;padding:14px 16px;display:flex;gap:12px;
+      align-items:center;justify-content:space-between;box-shadow:0 8px 18px rgba(0,0,0,.18)
+    }
+    .title{font-size:20px;font-weight:900}
+    .btn{
+      border:none;border-radius:12px;padding:10px 14px;cursor:pointer;font-weight:800;
+      background:var(--btn);color:var(--btnText);transition:.15s ease;outline:none;
+    }
+    .btn:hover{filter:brightness(.98)}
+    .btn:focus{box-shadow:0 0 0 3px var(--focus)}
+    .btn.secondary{background:rgba(255,255,255,.15);color:#fff}
+    .btn.secondary:hover{background:rgba(255,255,255,.20)}
+    .btn.danger{background:rgba(255,107,107,.22);color:#fff}
+    .btn.danger:hover{background:rgba(255,107,107,.28)}
+    .card{
+      margin-top:14px;background:var(--card);border-radius:14px;padding:14px 16px;
+      border:1px solid rgba(255,255,255,.08);box-shadow:0 8px 18px rgba(0,0,0,.14)
+    }
+    .sub{margin:0 0 12px;color:var(--muted);font-size:13px;line-height:1.35}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    input, select, textarea{
+      border-radius:12px;border:1px solid rgba(255,255,255,.14);
+      background:var(--inputBg);color:#fff;padding:10px 12px;outline:none;transition:.15s ease;
+    }
+    input:focus, select:focus, textarea:focus{box-shadow:0 0 0 3px var(--focus)}
+    select option{background:#223030;color:#fff}
+    textarea{width:100%;min-height:80px;resize:vertical}
+    .note{
+      margin-top:12px;padding:12px;border-radius:12px;
+      background:rgba(0,0,0,.10);border:1px solid rgba(255,255,255,.10);
+      color:rgba(255,255,255,.88);font-size:13px;line-height:1.45
+    }
+    .kpis{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .kpi{
+      padding:10px 12px;border-radius:12px;background:rgba(0,0,0,.10);
+      border:1px solid rgba(255,255,255,.10);min-width:210px
+    }
+    .kpi b{font-size:16px}
+    .grid{
+      display:grid;grid-template-columns:repeat(3, 1fr);gap:10px;margin-top:12px
+    }
+    @media (max-width:900px){ .grid{grid-template-columns:repeat(2,1fr)} }
+    @media (max-width:560px){ .grid{grid-template-columns:1fr} }
+    .item{
+      background:rgba(0,0,0,.10);border:1px solid rgba(255,255,255,.10);
+      border-radius:14px;overflow:hidden;display:flex;flex-direction:column
+    }
+    .thumb{
+      width:100%;aspect-ratio:16/10;background:#111;display:flex;align-items:center;justify-content:center
+    }
+    .thumb img{width:100%;height:100%;object-fit:cover}
+    .meta{padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+    .meta .line1{display:flex;justify-content:space-between;gap:10px;align-items:center}
+    .tag{font-size:12px;font-weight:800;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.12)}
+    .ops{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+    .mini{
+      padding:7px 10px;border-radius:10px;font-size:12px;font-weight:900;cursor:pointer;
+      border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.12);color:#fff
+    }
+    .mini:hover{background:rgba(255,255,255,.18)}
+    .mini.danger{background:rgba(255,107,107,.18);border-color:rgba(255,107,107,.28)}
+    .mini.danger:hover{background:rgba(255,107,107,.24)}
+    .statusOnline{color:#7fe28f;font-weight:900}
+    .statusOffline{color:#ffb26b;font-weight:900}
   </style>
+
+  <!-- ZIP dışa aktarma için (CDN) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
-<div class="wrap">
-  <div class="top">
-    <div><b>Güvenlik Bildirimi</b> 📸</div>
-    <div class="link" onclick="goBack()">← Panele Dön</div>
-  </div>
-
-  <div class="card">
-    <div class="muted">İnternet olmasa da kayıt cihazda saklanır. İnternet gelince “Bekleyenler” bölümünden dışa aktar / (sonraki adımda) otomatik gönder.</div>
-
-    <input id="photo" type="file" accept="image/*" capture="environment" />
-    <select id="cat">
-      <option value="">Kategori seç</option>
-      <option>Kapısı açık daire</option>
-      <option>Araç farı açık</option>
-      <option>Araç camı açık</option>
-      <option>Aydınlatma yanmıyor</option>
-      <option>Buluntu eşya</option>
-      <option>Diğer</option>
-    </select>
-    <textarea id="note" rows="2" placeholder="Kısa not (opsiyonel)"></textarea>
-
-    <button class="btn" onclick="save()">Kaydet (Bekleyenlere ekle)</button>
-    <button class="btn2" onclick="exportJson()">Bekleyenleri Dışa Aktar (JSON)</button>
-
-    <div class="muted" style="margin-top:10px">
-      Durum: <b id="net"></b> — Bekleyen kayıt: <b id="count"></b>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="title">Güvenlik Bildirimi (Offline Kuyruk)</div>
+      <div class="row">
+        <div id="net" class="tag">Durum: <span id="netTxt">…</span></div>
+        <button class="btn secondary" id="backBtn">Panele dön</button>
+      </div>
     </div>
 
-    <div id="list"></div>
+    <div class="card">
+      <p class="sub">
+        Bu ekran: <b>internet yokken</b> fotoğrafları kuyrukta tutar, internet gelince <b>arşivleme/yükleme</b> için hazır eder.
+        (GitHub Pages statik olduğu için “buluta otomatik yükleme”yi bir sonraki adımda Drive/Firebase ile bağlayacağız.)
+      </p>
+
+      <div class="row">
+        <select id="category" style="min-width:260px">
+          <option value="Kapı açık daire">Kapı açık daire</option>
+          <option value="Araç far/cam açık">Araç far/cam açık</option>
+          <option value="Şüpheli durum">Şüpheli durum</option>
+          <option value="Bulunan eşya">Bulunan eşya</option>
+          <option value="Aydınlatma arızası">Aydınlatma arızası</option>
+          <option value="Diğer">Diğer</option>
+        </select>
+
+        <input id="locationTxt" placeholder="Konum/Not (örn: 553 Ada BB2 önü)" style="flex:1;min-width:240px"/>
+
+        <select id="quality" style="min-width:220px">
+          <option value="1600">Foto küçültme: 1600px (önerilen)</option>
+          <option value="1280">Foto küçültme: 1280px (daha küçük)</option>
+          <option value="1920">Foto küçültme: 1920px (daha net)</option>
+        </select>
+
+        <input id="files" type="file" accept="image/*" multiple />
+        <button class="btn" id="addBtn">Kuyruğa Ekle</button>
+      </div>
+
+      <div class="note">
+        <b>Not:</b> 100 foto da olsa donmaması için:
+        <b>IndexedDB</b> kullanıyoruz + fotoğrafları otomatik küçültüyoruz + ileride “parti parti yükleme” yapacağız.
+      </div>
+
+      <div class="kpis">
+        <div class="kpi"><div class="small">Bekleyen kayıt</div><b id="k_count">0</b></div>
+        <div class="kpi"><div class="small">Tahmini toplam boyut</div><b id="k_size">0 MB</b></div>
+        <div class="kpi"><div class="small">Dışa aktar</div>
+          <div class="row" style="margin-top:8px">
+            <button class="btn secondary" id="exportZip">ZIP indir</button>
+            <button class="btn danger" id="clearAll">Hepsini sil</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="row" style="justify-content:space-between">
+        <div>
+          <b>Bekleyen Bildirimler</b>
+          <div class="sub" style="margin:6px 0 0">
+            Katalog için seçilecek fotoğraflar: yıl sonunda <b>bulut arşivinden</b> çekilecek. Tarayıcıda “sonsuz” tutmuyoruz.
+          </div>
+        </div>
+        <button class="btn secondary" id="refresh">Yenile</button>
+      </div>
+
+      <div id="grid" class="grid"></div>
+    </div>
   </div>
-</div>
 
 <script>
-  const LS_QUEUE = "spradon_security_queue";
-  const LS_CURRENT = "spradon_current_user";
+/* =========================
+   IndexedDB Mini Katmanı
+========================= */
+const DB_NAME = "spradon_media_db_v1";
+const DB_STORE = "security_queue";
 
-  function currentUser(){
-    const raw = localStorage.getItem(LS_CURRENT);
-    return raw ? JSON.parse(raw) : null;
-  }
-
-  function loadQueue(){
-    const raw = localStorage.getItem(LS_QUEUE);
-    return raw ? JSON.parse(raw) : [];
-  }
-  function saveQueue(q){
-    localStorage.setItem(LS_QUEUE, JSON.stringify(q));
-  }
-
-  function updateNet(){
-    document.getElementById("net").textContent = navigator.onLine ? "İnternet var ✅" : "İnternet yok ⛔";
-  }
-
-  function render(){
-    updateNet();
-    const q = loadQueue();
-    document.getElementById("count").textContent = q.length;
-
-    let html = "";
-    q.slice().reverse().forEach((x, idxRev) => {
-      const idx = q.length - 1 - idxRev;
-      html += `
-        <div class="item">
-          <div><b>${x.cat || "Kategori yok"}</b> — <span class="muted">${x.when}</span></div>
-          <div class="muted">Bildiren: ${x.byName} (${x.byDept})</div>
-          ${x.note ? <div style="margin-top:6px">${x.note}</div> : ``}
-          ${x.dataUrl ? <img src="${x.dataUrl}" /> : ``}
-          <div class="muted" style="margin-top:6px">Durum: ${x.status}</div>
-          <button style="margin-top:8px" onclick="removeOne(${idx})">Sil</button>
-        </div>
-      `;
-    });
-    document.getElementById("list").innerHTML = html || <div class="muted" style="margin-top:10px">Bekleyen kayıt yok.</div>;
-  }
-
-  async function fileToDataUrl(file){
-    return new Promise((resolve, reject) => {
-      const r = new FileReader();
-      r.onload = () => resolve(r.result);
-      r.onerror = reject;
-      r.readAsDataURL(file);
-    });
-  }
-
-  async function save(){
-    const u = currentUser();
-    if(!u){
-      alert("Oturum yok. Giriş yapmalısın.");
-      location.href = "index.html";
-      return;
-    }
-
-    const file = document.getElementById("photo").files[0];
-    const cat = document.getElementById("cat").value;
-    const note = document.getElementById("note").value.trim();
-
-    if(!file || !cat){
-      alert("Fotoğraf + kategori seçmelisin.");
-      return;
-    }
-
-    const dataUrl = await fileToDataUrl(file);
-
-    const q = loadQueue();
-    q.push({
-      cat,
-      note,
-      dataUrl,
-      when: new Date().toLocaleString("tr-TR"),
-      byId: u.id,
-      byName: u.name,
-      byDept: u.dept,
-      status: navigator.onLine ? "İnternet var: Gönderime hazır" : "İnternet yok: Beklemede"
-    });
-    saveQueue(q);
-
-    document.getElementById("photo").value = "";
-    document.getElementById("cat").value = "";
-    document.getElementById("note").value = "";
-
-    alert("Kaydedildi ✅");
-    render();
-  }
-
-  function removeOne(i){
-    const q = loadQueue();
-    q.splice(i, 1);
-    saveQueue(q);
-    render();
-  }
-
-  function exportJson(){
-    const q = loadQueue();
-    if(q.length === 0){
-      alert("Bekleyen kayıt yok.");
-      return;
-    }
-    const blob = new Blob([JSON.stringify(q, null, 2)], {type:"application/json"});
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "guvenlik_bekleyen_kayitlar.json";
-    a.click();
-    URL.revokeObjectURL(a.href);
-  }
-
-  // İnternet gelince bekleyenlerin durumunu güncelle (demo)
-  window.addEventListener("online", () => {
-    const q = loadQueue().map(x => ({...x, status:"İnternet var: Gönderime hazır"}));
-    saveQueue(q);
-    render();
+function openDB(){
+  return new Promise((resolve, reject)=>{
+    const req = indexedDB.open(DB_NAME, 1);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if(!db.objectStoreNames.contains(DB_STORE)){
+        const store = db.createObjectStore(DB_STORE, { keyPath:"id" });
+        store.createIndex("createdAt", "createdAt");
+      }
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
   });
-  window.addEventListener("offline", render);
+}
 
-  function goBack(){ location.href = "panel.html"; }
+async function putItem(item){
+  const db = await openDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction(DB_STORE, "readwrite");
+    tx.objectStore(DB_STORE).put(item);
+    tx.oncomplete = () => { db.close(); resolve(); };
+    tx.onerror = () => { db.close(); reject(tx.error); };
+  });
+}
 
-  render();
-</script>
-</body>
-</html>
+async function getAllItems(){
+  const db = await openDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction(DB_STORE, "readonly");
+    const req = tx.objectStore(DB_STORE).getAll();
+    req.onsuccess = () => { const out = req.result || []; db.close(); resolve(out); };
+    req.onerror = () => { db.close(); reject(req.error); };
+  });
+}
+
+async function deleteItem(id){
+  const db = await openDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction(DB_STORE, "readwrite");
+    tx.objectStore(DB_STORE).delete(id);
+    tx.oncomplete = () => { db.close(); resolve(); };
+    tx.onerror = () => { db.close(); reject(tx.error); };
+  });
+}
+
+async function clearStore(){
+  const db = await openDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction(DB_STORE, "readwrite");
+    tx.objectStore(DB_STORE).clear();
+    tx.oncomplete = () => { db.close(); resolve(); };
+    tx.onerror = () => { db.close(); reject(tx.error); };
+  });
+}
+
+/* =========================
+   Foto küçültme (Canvas)
+========================= */
+function fileToImage(file){
+  return new Promise((resolve, reject)=>{
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = ()=>{ URL.revokeObjectURL(url); resolve(img); };
+    img.onerror = (e)=>{ URL.revokeObjectURL(url); reject(e); };
+    img.src = url;
+  });
+}
+
+function canvasToBlob(canvas, quality=0.75){
+  return new Promise((resolve)=> canvas.toBlob(b=>resolve(b), "image/jpeg", quality));
+}
+
+async function compressImage(file, maxSide){
+  const img = await fileToImage(file);
+  const w = img.width, h = img.height;
+  const scale = Math.min(1, maxSide / Math.max(w, h));
+  const nw = Math.round(w * scale);
+  const nh = Math.round(h * scale);
+
+  const c = document.createElement("canvas");
+  c.width = nw; c.height = nh;
+  const ctx = c.getContext("2d");
+  ctx.drawImage(img, 0, 0, nw, nh);
+
+  const blob = await canvasToBlob(c, 0.78);
+  return blob;
+}
+
+/* =========================
+   UI
+========================= */
+const netTxt = document.getElementById("netTxt");
+const netTag = document.getElementById("net");
+function refreshNet(){
+  const online = navigator.onLine;
+  netTxt.textContent = online ? "Online" : "Offline";
+  netTxt.className = online ? "statusOnline" : "statusOffline";
+}
+window.addEventListener("online", refreshNet);
+window.addEventListener("offline", refreshNet);
+refreshNet();
+
+document.getElementById("backBtn").onclick = ()=> location.href = "./panel.html";
+
+const grid = document.getElementById("grid");
+const kCount = document.getElementById("k_count");
+const kSize = document.getElementById("k_size");
+
+function humanMB(bytes){
+  const mb = bytes / (1024*1024);
+  return mb.toFixed(mb < 10 ? 2 : 1) + " MB";
+}
+
+async function render(){
+  const items = await getAllItems();
+  items.sort((a,b)=> b.createdAt - a.createdAt);
+
+  kCount.textContent = String(items.length);
+  const total = items.reduce((s,x)=> s + (x.blobSize||0), 0);
+  kSize.textContent = humanMB(total);
+
+  grid.innerHTML = "";
+  if(items.length === 0){
+    grid.innerHTML = <div class="note">Bekleyen yok. (Offline çekip ekleyebilirsin.)</div>;
+    return;
+  }
+
+  for(const it of items){
+    const url = URL.createObjectURL(it.blob);
+    const el = document.createElement("div");
+    el.className = "item";
+    el.innerHTML = `
+      <div class="thumb"><img alt="thumb" /></div>
+      <div class="meta">
+        <div class="line1">
+          <span class="tag">${escapeHtml(it.category)}</span>
+          <span class="tag">${new Date(it.createdAt).toLocaleString("tr-TR")}</span>
+        </div>
+        <div style="color:rgba(255,255,255,.86); font-size:13
