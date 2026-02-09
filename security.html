@@ -11,41 +11,36 @@
       background: #f4f4f4;
       padding: 20px;
     }
-
-    h2 {
-      text-align: center;
-    }
-
     .box {
       background: #fff;
       padding: 20px;
       border-radius: 8px;
-      max-width: 500px;
+      max-width: 420px;
       margin: auto;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-
-    input, select, button {
+    h2 {
+      text-align: center;
+    }
+    input, button {
       width: 100%;
       padding: 10px;
       margin-top: 10px;
+      font-size: 16px;
     }
-
     button {
       background: #2c7be5;
-      color: white;
+      color: #fff;
       border: none;
       cursor: pointer;
     }
-
     button:hover {
-      background: #1a5fc4;
+      background: #1a5bb8;
     }
-
     .status {
       margin-top: 15px;
-      font-weight: bold;
       text-align: center;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -55,81 +50,62 @@
   <div class="box">
     <h2>Güvenlik Fotoğraf Yükleme</h2>
 
-    <label>Personel Adı</label>
-    <input type="text" id="personel" value="Akın">
-
-    <label>Personel ID</label>
-    <input type="text" id="personelId" value="A101">
-
-    <label>Birim</label>
-    <select id="birim">
-      <option value="Guvenlik">Güvenlik</option>
-      <option value="Teknik">Teknik</option>
-      <option value="Temizlik">Temizlik</option>
-      <option value="Saha">Saha</option>
-      <option value="Yonetim">Yönetim</option>
-      <option value="Muhasebe">Muhasebe</option>
-    </select>
-
-    <label>Fotoğraflar</label>
     <input type="file" id="files" multiple accept="image/*">
-
     <button onclick="upload()">Gönder</button>
 
     <div class="status" id="status"></div>
   </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby0A6mQvJEK9VadLhAhUoiIk2xmDTsVIYT7zbulE7ZKXe24fwnA1bohLuKebV6c1ixulw/exec";
+const ENDPOINT = "https://script.google.com/macros/s/AKfycby0A6mQvJEK9VadLhAhUoiIk2xmDTsVIYT7zbulE7ZKXe24fwnA1bohLuKebV6c1ixulw/exec";
 
 function upload() {
   const files = document.getElementById("files").files;
+  const status = document.getElementById("status");
+
   if (!files.length) {
-    alert("Fotoğraf seçmedin");
+    alert("Lütfen fotoğraf seç");
     return;
   }
 
-  document.getElementById("status").innerText = "Yükleniyor...";
+  status.innerText = "Yükleniyor...";
 
   const readers = [];
   for (let f of files) {
-    readers.push(readFile(f));
+    readers.push(new Promise((resolve) => {
+      const r = new FileReader();
+      r.onload = e => resolve({
+        name: f.name,
+        base64: e.target.result.split(",")[1]
+      });
+      r.readAsDataURL(f);
+    }));
   }
 
   Promise.all(readers).then(images => {
     const payload = {
-      personel: document.getElementById("personel").value,
-      personelId: document.getElementById("personelId").value,
-      birim: document.getElementById("birim").value,
+      personel: "Akın",
+      personelId: "A101",
+      birim: "Guvenlik",
       tarih: new Date().toISOString().slice(0,10),
       fotograflar: images
     };
 
-    fetch(SCRIPT_URL, {
+    fetch(ENDPOINT, {
       method: "POST",
       body: JSON.stringify(payload)
     })
-    .then(r => r.text())
-    .then(() => {
-      document.getElementById("status").innerText = "✅ Yükleme tamamlandı";
-      document.getElementById("files").value = "";
+    .then(r => r.json())
+    .then(res => {
+      if (res.ok) {
+        status.innerText = "✅ Fotoğraflar başarıyla yüklendi";
+      } else {
+        status.innerText = "❌ Hata: " + res.error;
+      }
     })
     .catch(err => {
-      document.getElementById("status").innerText = "❌ Hata: " + err;
+      status.innerText = "❌ Bağlantı hatası";
     });
-  });
-}
-
-function readFile(file) {
-  return new Promise(resolve => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      resolve({
-        name: file.name,
-        base64: e.target.result.split(",")[1]
-      });
-    };
-    reader.readAsDataURL(file);
   });
 }
 </script>
