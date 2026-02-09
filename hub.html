@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Spradon Hafıza - Kontrol Merkezi</title>
+  <style>
+    body{margin:0;font-family:Arial,sans-serif;background:#f3f5f7;color:#111827}
+    .wrap{max-width:980px;margin:0 auto;padding:18px}
+    .card{background:#fff;border:1px solid #e5e7eb;border-radius:18px;box-shadow:0 12px 32px rgba(0,0,0,.1);padding:16px}
+    h1{margin:0 0 6px;font-size:22px}
+    .sub{margin:0 0 14px;color:#6b7280;font-size:13px;line-height:1.4}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    @media (max-width:900px){.grid{grid-template-columns:1fr}}
+    a.btn{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      padding:12px 14px;border:1px solid #e5e7eb;border-radius:16px;
+      text-decoration:none;color:#111827;background:#fff;font-weight:700
+    }
+    a.btn:hover{border-color:#1d4ed8;color:#1d4ed8}
+    .tag{font-size:12px;color:#6b7280;font-weight:400}
+    .mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:#6b7280;word-break:break-word}
+    .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    button{border:none;border-radius:14px;padding:10px 12px;font-weight:700;cursor:pointer}
+    .ghost{background:#fff;border:1px solid #e5e7eb}
+    .ok{background:#16a34a;color:#fff}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Spradon Hafıza – Kontrol Merkezi</h1>
+      <p class="sub">
+        Tek ekrandan tüm modüllere gir. (Bugün burada bırakıyoruz, akşam devam 😄)
+      </p>
+
+      <div class="grid">
+        <div>
+          <a class="btn" href="./index.html">
+            <span>🏠 Ana Panel</span>
+            <span class="tag">personel / panel</span>
+          </a>
+
+          <a class="btn" href="./tespit/tespit.html" style="margin-top:10px">
+            <span>📝 Tespit & Foto</span>
+            <span class="tag">güvenlik/teknik/temizlik/peyza</span>
+          </a>
+
+          <a class="btn" href="./login.html" style="margin-top:10px">
+            <span>🔑 Giriş Ekranı</span>
+            <span class="tag">ID / şifre</span>
+          </a>
+        </div>
+
+        <div>
+          <div class="card" style="box-shadow:none">
+            <b>Bilgi</b>
+            <p class="sub" style="margin-top:8px">
+              Eğer “Ana Panel” ya da “Giriş” sayfanın adı farklıysa (ör: panel.html),
+              sadece linkteki dosya adını değiştirmen yeterli.
+            </p>
+            <div class="mono" id="showUrl"></div>
+
+            <div class="row">
+              <button class="ghost" onclick="localStorage.clear()">🧹 Oturumu Sıfırla</button>
+              <button class="ok" onclick="location.reload()">🔄 Yenile</button>
+            </div>
+
+            <p class="sub" style="margin-top:12px">
+              Not: Tespit modülü klasördeyse link zaten doğru: <b>./tespit/tespit.html</b>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  document.getElementById("showUrl").textContent =
+    "Bu sayfanın linki: " + window.location.href;
+</script>
+</body>
+</html>
