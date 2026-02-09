@@ -1,83 +1,172 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Spradon Hafıza - Kontrol Merkezi</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spradon Hafıza • Merkez</title>
+
   <style>
-    body{margin:0;font-family:Arial,sans-serif;background:#f3f5f7;color:#111827}
-    .wrap{max-width:980px;margin:0 auto;padding:18px}
-    .card{background:#fff;border:1px solid #e5e7eb;border-radius:18px;box-shadow:0 12px 32px rgba(0,0,0,.1);padding:16px}
-    h1{margin:0 0 6px;font-size:22px}
-    .sub{margin:0 0 14px;color:#6b7280;font-size:13px;line-height:1.4}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-    @media (max-width:900px){.grid{grid-template-columns:1fr}}
-    a.btn{
-      display:flex;align-items:center;justify-content:space-between;gap:10px;
-      padding:12px 14px;border:1px solid #e5e7eb;border-radius:16px;
-      text-decoration:none;color:#111827;background:#fff;font-weight:700
+    :root{
+      --bg:#f4f6fb;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --border:#e5e7eb;
+      --blue:#2563eb;
+      --green:#16a34a;
+      --orange:#f59e0b;
+      --shadow:0 10px 25px rgba(0,0,0,.08);
+      --radius:16px;
     }
-    a.btn:hover{border-color:#1d4ed8;color:#1d4ed8}
-    .tag{font-size:12px;color:#6b7280;font-weight:400}
-    .mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:#6b7280;word-break:break-word}
-    .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-    button{border:none;border-radius:14px;padding:10px 12px;font-weight:700;cursor:pointer}
-    .ghost{background:#fff;border:1px solid #e5e7eb}
-    .ok{background:#16a34a;color:#fff}
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Arial, Helvetica, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:24px;
+    }
+    h1{
+      margin:0 0 6px;
+      font-size:22px;
+    }
+    p.sub{
+      margin:0 0 24px;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(240px,1fr));
+      gap:18px;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:20px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      transition:.15s ease;
+    }
+    .card:hover{
+      transform:translateY(-2px);
+    }
+
+    .icon{
+      font-size:34px;
+      margin-bottom:10px;
+    }
+
+    .card h2{
+      margin:0 0 8px;
+      font-size:18px;
+    }
+
+    .card p{
+      margin:0 0 16px;
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.4;
+    }
+
+    a.btn{
+      text-decoration:none;
+      text-align:center;
+      font-weight:700;
+      padding:12px;
+      border-radius:12px;
+      background:var(--blue);
+      color:#fff;
+      display:block;
+    }
+
+    a.green{ background:var(--green); }
+    a.orange{ background:var(--orange); }
+
+    footer{
+      margin-top:32px;
+      text-align:center;
+      font-size:12px;
+      color:var(--muted);
+    }
   </style>
 </head>
+
 <body>
   <div class="wrap">
-    <div class="card">
-      <h1>Spradon Hafıza – Kontrol Merkezi</h1>
-      <p class="sub">
-        Tek ekrandan tüm modüllere gir. (Bugün burada bırakıyoruz, akşam devam 😄)
-      </p>
+    <h1>📊 Spradon Hafıza – Merkez Panel</h1>
+    <p class="sub">
+      Tüm saha, tespit, stok ve rapor işlemleri bu merkezden yönetilir.
+    </p>
 
-      <div class="grid">
+    <div class="grid">
+
+      <!-- TESPİT -->
+      <div class="card">
         <div>
-          <a class="btn" href="./index.html">
-            <span>🏠 Ana Panel</span>
-            <span class="tag">personel / panel</span>
-          </a>
-
-          <a class="btn" href="./tespit/tespit.html" style="margin-top:10px">
-            <span>📝 Tespit & Foto</span>
-            <span class="tag">güvenlik/teknik/temizlik/peyza</span>
-          </a>
-
-          <a class="btn" href="./login.html" style="margin-top:10px">
-            <span>🔑 Giriş Ekranı</span>
-            <span class="tag">ID / şifre</span>
-          </a>
+          <div class="icon">📝</div>
+          <h2>Tespit Bildirimi</h2>
+          <p>
+            Teknik, temizlik, güvenlik ve saha tespitleri.
+            Fotoğraflı kayıt, durum güncelleme ve takip.
+          </p>
         </div>
-
-        <div>
-          <div class="card" style="box-shadow:none">
-            <b>Bilgi</b>
-            <p class="sub" style="margin-top:8px">
-              Eğer “Ana Panel” ya da “Giriş” sayfanın adı farklıysa (ör: panel.html),
-              sadece linkteki dosya adını değiştirmen yeterli.
-            </p>
-            <div class="mono" id="showUrl"></div>
-
-            <div class="row">
-              <button class="ghost" onclick="localStorage.clear()">🧹 Oturumu Sıfırla</button>
-              <button class="ok" onclick="location.reload()">🔄 Yenile</button>
-            </div>
-
-            <p class="sub" style="margin-top:12px">
-              Not: Tespit modülü klasördeyse link zaten doğru: <b>./tespit/tespit.html</b>
-            </p>
-          </div>
-        </div>
+        <a class="btn" href="tespit.html">Tespit Ekranına Git</a>
       </div>
-    </div>
-  </div>
 
-<script>
-  document.getElementById("showUrl").textContent =
-    "Bu sayfanın linki: " + window.location.href;
-</script>
+      <!-- STOK -->
+      <div class="card">
+        <div>
+          <div class="icon">📦</div>
+          <h2>Stok / Depo</h2>
+          <p>
+            Ürün kartı oluştur, stoktan ürün düş,
+            kim aldı – ne kadar aldı takibi.
+          </p>
+        </div>
+        <a class="btn green" href="stok.html">Stok Paneline Git</a>
+      </div>
+
+      <!-- İŞ TAKİP -->
+      <div class="card">
+        <div>
+          <div class="icon">🛠️</div>
+          <h2>İş Takip Panosu</h2>
+          <p>
+            Açılan işler, yapılanlar, ertelenenler.
+            Teknik süreçlerin genel takibi.
+          </p>
+        </div>
+        <a class="btn" href="is-takip.html">İş Takibe Git</a>
+      </div>
+
+      <!-- RAPOR -->
+      <div class="card">
+        <div>
+          <div class="icon">📈</div>
+          <h2>Raporlar</h2>
+          <p>
+            Günlük, aylık, 3-6-9-12 aylık ve yıllık
+            otomatik raporlar (müdür görünümü).
+          </p>
+        </div>
+        <a class="btn orange" href="rapor.html">Raporları Gör</a>
+      </div>
+
+    </div>
+
+    <footer>
+      Spradon Hafıza © 2026 • Akıllı Site Operasyon Sistemi
+    </footer>
+  </div>
 </body>
 </html>
