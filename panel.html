@@ -1,174 +1,652 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<title>Spradon Evleri | Personel Paneli</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Spradon Evleri | Personel Paneli</title>
+  <style>
+    :root{
+      --bg:#2f3e3e;
+      --card:#445a5a;
+      --card2:#3b5050;
+      --text:#ffffff;
+      --muted:rgba(255,255,255,.75);
+      --line:rgba(255,255,255,.14);
+      --hover:rgba(255,255,255,.08); /* mavi yok */
+      --btn:#d6cf72;
+      --btnText:#1c1c1c;
+      --danger:#ff6b6b;
+      --ok:#77d28c;
+      --chip:#6d7bff;
+      --focus:rgba(214,207,114,.35);
+      --inputBg:rgba(255,255,255,.12);
+      --inputBg2:rgba(255,255,255,.16);
+    }
 
-<style>
-*{box-sizing:border-box;font-family:Arial}
-body{
-  margin:0;
-  background:#2f3e3a;
-  color:#fff;
-  display:flex;
-  justify-content:center;
-  padding:30px
-}
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      padding:24px 16px;
+    }
+    .wrap{width:min(980px, 100%);}
 
-/* Hover mavi olayını KAPATTIK */
-a, a:hover, a:visited{color:inherit;text-decoration:none}
-button, select, input{outline:none}
-button:hover{filter:brightness(0.95)}
+    .topbar{
+      background:var(--card);
+      border-radius:14px;
+      padding:14px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      box-shadow:0 8px 18px rgba(0,0,0,.18);
+    }
+    .title{
+      font-size:22px;
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+    .actions{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
 
-.panel{
-  width:900px;
-  background:#3b4b47;
-  border-radius:14px;
-  padding:20px
-}
+    /* ortak buton */
+    .btn{
+      border:none;
+      border-radius:12px;
+      padding:10px 14px;
+      cursor:pointer;
+      font-weight:700;
+      transition:all .15s ease;
+      color:var(--btnText);
+      background:var(--btn);
+      outline:none;
+    }
+    .btn:hover{filter:brightness(.98)}
+    .btn:active{transform:translateY(1px)}
+    .btn:focus{box-shadow:0 0 0 3px var(--focus)}
+    .btn.secondary{
+      background:rgba(255,255,255,.15);
+      color:var(--text);
+    }
+    .btn.secondary:hover{background:rgba(255,255,255,.20)}
+    .btn.danger{
+      background:rgba(255,107,107,.22);
+      color:var(--text);
+    }
+    .btn.danger:hover{background:rgba(255,107,107,.28)}
+    .btn.chip{
+      background:rgba(109,123,255,.20);
+      color:#fff;
+    }
+    .btn.chip:hover{background:rgba(109,123,255,.26)}
 
-.header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:20px
-}
+    /* üç nokta ayar */
+    .dots{
+      width:40px;height:40px;
+      border-radius:12px;
+      background:rgba(255,255,255,.12);
+      color:#fff;
+      display:grid;place-items:center;
+      font-size:18px;
+      border:1px solid rgba(255,255,255,.14);
+      cursor:pointer;
+      transition:.15s ease;
+    }
+    .dots:hover{background:rgba(255,255,255,.18)}
+    .dots:focus{outline:none; box-shadow:0 0 0 3px var(--focus)}
 
-.header h2{margin:0}
+    .card{
+      margin-top:14px;
+      background:var(--card);
+      border-radius:14px;
+      padding:14px 16px;
+      box-shadow:0 8px 18px rgba(0,0,0,.14);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .card h3{
+      margin:0 0 10px 0;
+      font-size:18px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .sub{
+      margin:0 0 12px 0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.35;
+    }
 
-.btn{
-  background:#c9b458;
-  border:none;
-  padding:10px 16px;
-  border-radius:10px;
-  cursor:pointer;
-  font-weight:bold
-}
+    /* form */
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    input, select{
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background:var(--inputBg);
+      color:#fff;
+      padding:10px 12px;
+      outline:none;
+      transition:.15s ease;
+      min-height:40px;
+    }
+    input::placeholder{color:rgba(255,255,255,.55)}
+    input:focus, select:focus{
+      box-shadow:0 0 0 3px var(--focus);
+      background:var(--inputBg2);
+    }
 
-.btn.red{background:#b44}
-.btn.gray{background:#666}
+    /* dropdown seçenekleri görünür olsun */
+    select option{
+      background:#223030; /* beyaz ekranda görünür */
+      color:#fff;
+    }
 
-.section{
-  background:#445652;
-  padding:15px;
-  border-radius:12px;
-  margin-bottom:15px
-}
+    .w-id{width:160px}
+    .w-name{flex:1; min-width:220px}
+    .w-unit{width:220px}
+    .hintline{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:12px;
+      background:rgba(214,207,114,.10);
+      border:1px solid rgba(214,207,114,.20);
+      color:rgba(255,255,255,.92);
+      font-size:13px;
+    }
 
-.section h3{margin-top:0}
+    /* tablo */
+    table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.06);
+    }
+    thead th{
+      text-align:left;
+      font-size:12px;
+      color:rgba(255,255,255,.85);
+      padding:10px 12px;
+      background:rgba(0,0,0,.12);
+      border-bottom:1px solid rgba(255,255,255,.10);
+    }
+    tbody td{
+      padding:10px 12px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      color:#fff;
+      font-size:13px;
+    }
+    tbody tr:hover{background:var(--hover)} /* mavi yok */
+    tbody tr:last-child td{border-bottom:none}
 
-.row{
-  display:flex;
-  gap:10px;
-  margin-top:10px
-}
+    .ops{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .mini{
+      padding:7px 10px;
+      border-radius:10px;
+      font-size:12px;
+      font-weight:800;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.12);
+      color:#fff;
+      cursor:pointer;
+      transition:.15s ease;
+    }
+    .mini:hover{background:rgba(255,255,255,.18)}
+    .mini.danger{
+      background:rgba(255,107,107,.18);
+      border-color:rgba(255,107,107,.28);
+    }
+    .mini.danger:hover{background:rgba(255,107,107,.24)}
 
-input, select{
-  padding:10px;
-  border-radius:10px;
-  border:none;
-  width:100%
-}
+    /* modal */
+    .backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.45);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+    }
+    .modal{
+      width:min(560px, 100%);
+      background:#223030;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:16px;
+      padding:14px;
+      box-shadow:0 18px 50px rgba(0,0,0,.35);
+    }
+    .modalHeader{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:6px 6px 10px 6px;
+    }
+    .modalTitle{font-weight:900;font-size:16px}
+    .xbtn{
+      width:36px;height:36px;border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.10);
+      color:#fff; cursor:pointer;
+    }
+    .xbtn:hover{background:rgba(255,255,255,.16)}
+    .modalBody{padding:6px}
+    .grid2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    .block{
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.06);
+      border-radius:14px;
+      padding:12px;
+    }
+    .block h4{margin:0 0 8px 0;font-size:13px;color:rgba(255,255,255,.9)}
+    .block p{margin:0;color:rgba(255,255,255,.75);font-size:12px;line-height:1.35}
+    .modalActions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
 
-table{
-  width:100%;
-  border-collapse:collapse;
-  margin-top:10px
-}
-
-th,td{
-  padding:10px;
-  border-bottom:1px solid rgba(255,255,255,0.15);
-  text-align:left
-}
-
-.small{font-size:13px;opacity:.8}
-</style>
+    .noteBox{
+      margin-top:12px;
+      padding:12px;
+      border-radius:12px;
+      background:rgba(0,0,0,.10);
+      border:1px solid rgba(255,255,255,.10);
+      color:rgba(255,255,255,.85);
+      font-size:13px;
+      line-height:1.45;
+    }
+    .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+  </style>
 </head>
-
 <body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="title">Spradon Evleri | Personel Paneli</div>
+      <div class="actions">
+        <button class="dots" id="openSettings" title="Ayarlar">•••</button>
+        <button class="btn chip" id="goSecurity">Güvenlik Bildirimi</button>
+        <button class="btn secondary" id="logout">Çıkış</button>
+      </div>
+    </div>
 
-<div class="panel">
+    <div class="card">
+      <h3>➕ Personel Ekle</h3>
+      <p class="sub">Yeni personel eklemek için <b>Ad Soyad</b> + <b>Birim</b> seç. ID otomatik oluşur (AKIN mantığı).</p>
 
-  <div class="header">
-    <h2>Spradon Evleri | Personel Paneli</h2>
-    <div>
-      <button class="btn gray">Güvenlik Bildirimi</button>
-      <button class="btn red" onclick="logout()">Çıkış</button>
+      <div class="row">
+        <input class="w-id" id="pid" placeholder="ID (otomatik)" disabled />
+        <input class="w-name" id="pname" placeholder="Örn: Yüksel Kaya" />
+        <select class="w-unit" id="punit">
+          <option value="">— Seç —</option>
+          <option value="Güvenlik">Güvenlik (A101…)</option>
+          <option value="Teknik">Teknik (K201…)</option>
+          <option value="Temizlik">Temizlik (I301…)</option>
+          <option value="Saha">Saha (N001…)</option>
+          <option value="Yönetim">Yönetim (Y001…)</option>
+          <option value="Muhasebe">Muhasebe (M001…)</option>
+        </select>
+        <button class="btn" id="addBtn">Ekle</button>
+      </div>
+
+      <div class="hintline">
+        Şifre demo için herkes: <b>1234</b> — Bu sayfada personel ekle/sil/düzenle yetkisi <b>sadece yönetici gruptadır</b>.
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>👥 Personel Listesi</h3>
+      <p class="sub">“Düzenle” ile isim/birim güncelleyebilirsin. “Sil” ile kaydı kaldırırsın.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th style="width:150px;">ID</th>
+            <th>Ad Soyad</th>
+            <th style="width:170px;">Birim</th>
+            <th style="width:210px; text-align:right;">İşlem</th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <!-- liste buraya -->
+        </tbody>
+      </table>
+
+      <div class="noteBox">
+        <b>Not:</b> Şimdilik tüm veriler tarayıcıda <span class="mono">localStorage</span> ile tutulur (internet gitse bile kaybolmaz).
+        İleride “merkez veri”ye geçiririz.
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Not</h3>
+      <div class="noteBox">
+        • Bu demo GitHub Pages üzerinde çalışır.<br/>
+        • Resmî çıktı gerekirse: Akın için resmî ad <b>Kamil Durmuş</b> gösterilecek şekilde “rapor modülü” ekleriz.<br/>
+        • Güvenlik bildirimleri için “offline bekleyenler” kuyruğu bir sonraki adımda açılacak.
+      </div>
     </div>
   </div>
 
-  <!-- PERSONEL EKLE -->
-  <div class="section">
-    <h3>➕ Personel Ekle</h3>
-    <div class="row">
-      <input id="name" placeholder="Ad Soyad">
-      <select id="unit">
-        <option value="">Birim Seç</option>
-        <option value="A">Güvenlik</option>
-        <option value="K">Teknik</option>
-        <option value="I">Temizlik</option>
-        <option value="N">Saha</option>
-        <option value="Y">Yönetim</option>
-        <option value="M">Muhasebe</option>
-      </select>
-      <button class="btn" onclick="addPerson()">Ekle</button>
-    </div>
-    <div class="small">Şifre demo için herkes: <b>1234</b></div>
-  </div>
+  <!-- AYAR MODAL -->
+  <div class="backdrop" id="backdrop">
+    <div class="modal">
+      <div class="modalHeader">
+        <div class="modalTitle">Ayarlar</div>
+        <button class="xbtn" id="closeSettings" title="Kapat">✕</button>
+      </div>
+      <div class="modalBody">
+        <div class="grid2">
+          <div class="block">
+            <h4>Veri Yönetimi</h4>
+            <p>Tarayıcıdaki personel listesini dışa aktar / içe aktar veya tamamen temizle.</p>
+            <div class="modalActions">
+              <button class="btn secondary" id="exportBtn">Dışa aktar (JSON)</button>
+              <button class="btn secondary" id="importBtn">İçe aktar (JSON)</button>
+              <button class="btn danger" id="clearBtn">Tüm listeyi temizle</button>
+              <input type="file" id="importFile" accept=".json" style="display:none" />
+            </div>
+          </div>
+          <div class="block">
+            <h4>Görünüm</h4>
+            <p>Mavi hover yerine gri “soft” hover aktif. İstersen daha açık/koyu yapabiliriz.</p>
+            <div class="modalActions">
+              <button class="btn secondary" id="softHoverBtn">Hover: Soft</button>
+              <button class="btn secondary" id="strongHoverBtn">Hover: Daha belirgin</button>
+            </div>
+          </div>
+        </div>
 
-  <!-- PERSONEL LİSTESİ -->
-  <div class="section">
-    <h3>👥 Personel Listesi</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Ad Soyad</th>
-          <th>Birim</th>
-          <th>İşlem</th>
-        </tr>
-      </thead>
-      <tbody id="list"></tbody>
-    </table>
-    <div class="small">
-      Düzenle ile ismi/birimi değiştirirsin – Sil kalıcı kaldırır.<br>
-      Veriler tarayıcıda saklanır (internet gitse bile).
+        <div class="noteBox" style="margin-top:10px;">
+          <b>Yönetici listesi:</b> (şimdilik demo) muhasebe/eciş, müdür, saha sorumlusu gibi roller sonrasında “yönetici PIN” ile ayrılabilir.
+          Şu an herkes <b>1234</b> ile giriyor.
+        </div>
+      </div>
     </div>
   </div>
 
-</div>
+  <script>
+    // ====== AYARLAR ======
+    const LS_KEY = "spradon_personel_list_v1";
+    const HOVER_KEY = "spradon_hover_mode_v1";
 
-<script>
-let data = JSON.parse(localStorage.getItem("personel")) || [];
+    const prefixMap = {
+      "Güvenlik": "A",
+      "Teknik": "K",
+      "Temizlik": "I",
+      "Saha": "N",
+      "Yönetim": "Y",
+      "Muhasebe": "M"
+    };
 
-function save(){
-  localStorage.setItem("personel", JSON.stringify(data));
-  render();
-}
+    // başlangıç personel (istersen burayı boş bırakırız)
+    const defaultPeople = [
+      { id:"Y0011", name:"Seda Zeybek", unit:"Yönetim" },
+      { id:"N0011", name:"Akın Kamil Durmuş", unit:"Saha" },
+      { id:"N0012", name:"İhsan", unit:"Saha" },
+      { id:"N0013", name:"Celal", unit:"Saha" },
+      { id:"A1011", name:"Serkan", unit:"Güvenlik" },
+      { id:"I3011", name:"Yüksel", unit:"Temizlik" },
+      { id:"K2011", name:"Murat", unit:"Teknik" },
+      { id:"M0011", name:"Şenol", unit:"Muhasebe" },
+      { id:"N0014", name:"Besna", unit:"Saha" },
+      { id:"N0015", name:"Selman", unit:"Saha" },
+      { id:"N0016", name:"Timur", unit:"Saha" }
+    ];
 
-function generateID(prefix){
-  let count = data.filter(p=>p.id.startsWith(prefix)).length + 1;
-  return prefix + String(count).padStart(3,"0");
-}
+    function loadList(){
+      try{
+        const raw = localStorage.getItem(LS_KEY);
+        if(!raw){
+          localStorage.setItem(LS_KEY, JSON.stringify(defaultPeople));
+          return [...defaultPeople];
+        }
+        const arr = JSON.parse(raw);
+        return Array.isArray(arr) ? arr : [];
+      }catch(e){
+        return [];
+      }
+    }
 
-function unitName(k){
-  return {
-    A:"Güvenlik",
-    K:"Teknik",
-    I:"Temizlik",
-    N:"Saha",
-    Y:"Yönetim",
-    M:"Muhasebe"
-  }[k];
-}
+    function saveList(arr){
+      localStorage.setItem(LS_KEY, JSON.stringify(arr));
+    }
 
-function addPerson(){
-  let name = document.getElementById("name").value.trim();
-  let unit = document.getElementById("unit").value;
-  if(!name || !unit) return alert("Ad ve birim zorunlu");
-  let id = generateID(unit);
-  data.push({id,name,unit});
-  save();
-  document.getElementById("name").value="";
-  document.getElementById("unit").value
+    function setHoverMode(mode){
+      // mode: "soft" | "strong"
+      localStorage.setItem(HOVER_KEY, mode);
+      const root = document.documentElement;
+      if(mode === "strong"){
+        root.style.setProperty("--hover", "rgba(214,207,114,.14)");
+      }else{
+        root.style.setProperty("--hover", "rgba(255,255,255,.08)");
+      }
+    }
+
+    function initHoverMode(){
+      const mode = localStorage.getItem(HOVER_KEY) || "soft";
+      setHoverMode(mode);
+    }
+
+    // ====== ID OTOMATİK ======
+    function nextIdForUnit(list, unit){
+      const p = prefixMap[unit];
+      if(!p) return "";
+      // aynı birimdeki max numarayı bul
+      let maxN = 0;
+      for(const item of list){
+        if(typeof item.id !== "string") continue;
+        if(item.id.startsWith(p)){
+          // örn A1011 -> p=A, kalan 1011 sayı
+          const num = parseInt(item.id.slice(1), 10);
+          if(!isNaN(num)) maxN = Math.max(maxN, num);
+        }
+      }
+      // ilk atama mantığı: A1011 / K2011 / I3011 / N0011 / Y0011 / M0011
+      // unit bazlı tabanlar:
+      const base = (unit==="Güvenlik")?1010 :
+                   (unit==="Teknik")?2010 :
+                   (unit==="Temizlik")?3010 :
+                   (unit==="Saha")?10 :
+                   (unit==="Yönetim")?10 :
+                   (unit==="Muhasebe")?10 : 10;
+
+      let next = Math.max(maxN, base) + 1;
+
+      // Saha/Yönetim/Muhasebe için 4 haneli 0011 gibi görünsün:
+      if(unit==="Saha" || unit==="Yönetim" || unit==="Muhasebe"){
+        const padded = String(next).padStart(4,"0"); // 0011
+        return p + padded;
+      }
+      // diğerleri zaten 1011 vb
+      return p + String(next);
+    }
+
+    // ====== UI ======
+    const tbody = document.getElementById("tbody");
+    const pid = document.getElementById("pid");
+    const pname = document.getElementById("pname");
+    const punit = document.getElementById("punit");
+    const addBtn = document.getElementById("addBtn");
+
+    let people = loadList();
+
+    function render(){
+      tbody.innerHTML = "";
+      if(!people.length){
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td colspan="4" style="color:rgba(255,255,255,.75); padding:14px;">
+          Henüz kayıt yok. Yukarıdan personel ekleyebilirsin.
+        </td>`;
+        tbody.appendChild(tr);
+        return;
+      }
+
+      // ID’ye göre sırala
+      const sorted = [...people].sort((a,b)=> (a.id||"").localeCompare(b.id||"","tr"));
+      for(const item of sorted){
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="mono">${escapeHtml(item.id||"")}</td>
+          <td>${escapeHtml(item.name||"")}</td>
+          <td>${escapeHtml(item.unit||"")}</td>
+          <td>
+            <div class="ops">
+              <button class="mini" data-act="edit" data-id="${escapeAttr(item.id)}">Düzenle</button>
+              <button class="mini danger" data-act="del" data-id="${escapeAttr(item.id)}">Sil</button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      }
+    }
+
+    function escapeHtml(s){
+      return String(s).replace(/[&<>"']/g, m => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
+      }[m]));
+    }
+    function escapeAttr(s){
+      return String(s).replace(/"/g,"&quot;");
+    }
+
+    // unit seçilince otomatik ID göster
+    punit.addEventListener("change", ()=>{
+      const unit = punit.value;
+      pid.value = unit ? nextIdForUnit(people, unit) : "";
+    });
+
+    addBtn.addEventListener("click", ()=>{
+      const name = (pname.value||"").trim();
+      const unit = punit.value;
+
+      if(!name){ alert("Lütfen Ad Soyad gir."); return; }
+      if(!unit){ alert("Lütfen Birim seç."); return; }
+
+      const newId = nextIdForUnit(people, unit);
+      if(!newId){ alert("ID üretilemedi."); return; }
+
+      if(people.some(p=>p.id===newId)){
+        alert("Bu ID zaten var. Tekrar dene.");
+        return;
+      }
+
+      people.push({ id:newId, name, unit });
+      saveList(people);
+      pname.value = "";
+      punit.value = "";
+      pid.value = "";
+      render();
+    });
+
+    // tablo işlemleri (sil/düzenle)
+    tbody.addEventListener("click", (e)=>{
+      const btn = e.target.closest("button");
+      if(!btn) return;
+      const act = btn.dataset.act;
+      const id = btn.dataset.id;
+
+      const idx = people.findIndex(p=>p.id===id);
+      if(idx < 0) return;
+
+      if(act==="del"){
+        if(confirm(id + " kaydını silmek istiyor musun?")){
+          people.splice(idx,1);
+          saveList(people);
+          render();
+        }
+      }
+
+      if(act==="edit"){
+        const cur = people[idx];
+        const newName = prompt("Yeni Ad Soyad:", cur.name||"");
+        if(newName === null) return;
+
+        const newUnit = prompt("Yeni Birim (Güvenlik / Teknik / Temizlik / Saha / Yönetim / Muhasebe):", cur.unit||"");
+        if(newUnit === null) return;
+
+        const nName = newName.trim();
+        const nUnit = newUnit.trim();
+
+        if(!nName){ alert("Ad Soyad boş olamaz."); return; }
+        if(!prefixMap[nUnit]){ alert("Birim geçersiz."); return; }
+
+        // Birim değiştiyse ID sabit kalsın mı? Şimdilik ID aynı kalsın (daha güvenli).
+        // İstersen birim değişince yeni ID üretiriz.
+        cur.name = nName;
+        cur.unit = nUnit;
+
+        saveList(people);
+        render();
+      }
+    });
+
+    // ====== ÜST BUTONLAR ======
+    document.getElementById("logout").addEventListener("click", ()=>{
+      // demo: login sayfasına dön
+      location.href = "./index.html";
+    });
+
+    document.getElementById("goSecurity").addEventListener("click", ()=>{
+      // security.html varsa oraya gider, yoksa uyarır
+      location.href = "./security.html";
+    });
+
+    // ====== AYAR MODAL ======
+    const backdrop = document.getElementById("backdrop");
+    const openSettings = document.getElementById("openSettings");
+    const closeSettings = document.getElementById("closeSettings");
+
+    function showSettings(){ backdrop.style.display="flex"; }
+    function hideSettings(){ backdrop.style.display="none"; }
+
+    openSettings.addEventListener("click", showSettings);
+    closeSettings.addEventListener("click", hideSettings);
+    backdrop.addEventListener("click", (e)=>{ if(e.target===backdrop) hideSettings(); });
+
+    // Export / Import / Clear
+    document.getElementById("exportBtn").addEventListener("click", ()=>{
+      const data = localStorage.getItem(LS_KEY) || "[]";
+      const blob = new Blob([data], {type:"application/json"});
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "spradon_personel_listesi.json";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    });
+
+    const importFile = document.getElementById("importFile");
+    document.getElementById("importBtn").addEventListener("click", ()=> importFile.click());
+
+    importFile.addEventListener("change", async ()=>{
+      const file = importFile.files && importFile.files[0];
+      if(!file) return;
+      try{
+        const text = await file.text();
+        const arr = JSON.parse(text);
+        if(!Array.isArray(arr)) throw new Error("JSON dizi değil");
+        // basit doğrulama
+        const cleaned = arr
+          .filter(x=>x && typeof x.id==="string" && typeof x.name==="string" && typeof
