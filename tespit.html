@@ -1,383 +1,99 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Tespit Bildirimi</title>
-  <style>
-    :root{
-      --bg:#f3f5f7; --card:#fff; --text:#111827; --muted:#6b7280; --blue:#1d4ed8; --blue2:#2563eb;
-      --border:#e5e7eb; --ok:#16a34a; --warn:#f59e0b; --bad:#dc2626;
-      --shadow: 0 10px 30px rgba(0,0,0,.10);
-      --radius: 18px;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0; font-family: Arial, sans-serif; background:var(--bg); color:var(--text);
-      padding:18px;
-    }
-    .wrap{max-width:900px; margin:0 auto;}
-    .top{
-      display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px;
-    }
-    .brand{
-      display:flex; align-items:center; gap:10px;
-      font-size:18px; font-weight:700;
-    }
-    .chip{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:8px 10px; border:1px solid var(--border); border-radius:999px;
-      background:#fff; color:var(--muted); font-size:12px;
-    }
-    .card{
-      background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
-      box-shadow:var(--shadow); padding:18px;
-    }
-    h1{margin:0 0 6px; font-size:26px;}
-    p.sub{margin:0 0 16px; color:var(--muted)}
-    .grid{
-      display:grid; grid-template-columns: 1fr 1fr; gap:12px;
-    }
-    @media(max-width:720px){ .grid{grid-template-columns:1fr;} }
-    label{display:block; font-size:12px; color:var(--muted); margin:10px 0 6px;}
-    input, select, textarea{
-      width:100%;
-      padding:12px 12px;
-      border:1px solid var(--border);
-      border-radius:12px;
-      outline:none;
-      font-size:14px;
-      background:#fff;
-    }
-    textarea{min-height:110px; resize:vertical;}
-    .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
-    .btn{
-      appearance:none; border:none; border-radius:14px; padding:12px 14px;
-      cursor:pointer; font-weight:700; font-size:14px;
-      background:var(--blue); color:#fff;
-    }
-    .btn:hover{background:var(--blue2);}
-    .btn.secondary{background:#111827;}
-    .btn.ghost{background:#fff; color:var(--text); border:1px solid var(--border);}
-    .btn:disabled{opacity:.55; cursor:not-allowed;}
-    .hint{font-size:12px; color:var(--muted); margin-top:8px;}
-    .statusline{
-      margin-top:12px; padding:12px; border-radius:14px; border:1px solid var(--border);
-      background:#fff;
-      display:none;
-    }
-    .statusline.ok{border-color:rgba(22,163,74,.35); background:rgba(22,163,74,.06);}
-    .statusline.bad{border-color:rgba(220,38,38,.35); background:rgba(220,38,38,.06);}
-    .statusline.warn{border-color:rgba(245,158,11,.35); background:rgba(245,158,11,.06);}
-    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;}
-    .preview{
-      margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;
-    }
-    .thumb{
-      width:92px; height:92px; border-radius:14px; border:1px solid var(--border);
-      background:#fff; overflow:hidden; display:flex; align-items:center; justify-content:center;
-    }
-    .thumb img{width:100%; height:100%; object-fit:cover;}
-    .divider{height:1px; background:var(--border); margin:16px 0;}
-    .small{font-size:12px; color:var(--muted);}
-    .right{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;}
-  </style>
+<meta charset="UTF-8">
+<title>Tespit Bildirimi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body{font-family:Arial;background:#f4f6f8;padding:20px}
+.card{max-width:700px;margin:auto;background:#fff;padding:20px;border-radius:12px;box-shadow:0 10px 25px rgba(0,0,0,.1)}
+h1{text-align:center}
+label{display:block;margin-top:12px;font-weight:bold}
+input,select,textarea,button{
+  width:100%;padding:10px;margin-top:6px;
+  border:1px solid #ccc;border-radius:6px;font-size:14px
+}
+button{background:#0d6efd;color:#fff;border:none;margin-top:18px}
+button:hover{background:#084298}
+.ok{color:green;margin-top:10px}
+.err{color:red;margin-top:10px}
+</style>
 </head>
+
 <body>
-<div class="wrap">
-  <div class="top">
-    <div class="brand">🧾 Spradon — Tespit / İş Bildirimi</div>
-    <div class="chip" id="whoChip">Kullanıcı: <span class="mono" id="whoText">—</span></div>
-  </div>
+<div class="card">
+<h1>📍 Tespit Bildirimi</h1>
 
-  <div class="card">
-    <h1>Tespit Bildirimi</h1>
-    <p class="sub">Bir tespit gir, fotoğraf ekle, ilgili birime düşsün. (Yönetim her şeyi görür.)</p>
+<form id="tespitForm">
 
-    <div class="grid">
-      <div>
-        <label>Ad Soyad</label>
-        <input id="personel" placeholder="Örn: Akın" />
-      </div>
-      <div>
-        <label>Rol</label>
-        <select id="rol">
-          <option value="">Seçiniz…</option>
-          <option>Güvenlik</option>
-          <option>Teknik Personel</option>
-          <option>Teknik Şefi</option>
-          <option>Temizlik Personel</option>
-          <option>Temizlik Şefi</option>
-          <option>Saha Sorumlusu</option>
-          <option>Peyzaj (Saha üzerinden)</option>
-          <option>Yönetim</option>
-        </select>
-      </div>
-      <div>
-        <label>Tespitin Gideceği Birim</label>
-        <select id="hedefBirim">
-          <option value="">Seçiniz…</option>
-          <option>Güvenlik</option>
-          <option>Teknik</option>
-          <option>Temizlik</option>
-          <option>Peyzaj</option>
-          <option>Yönetim</option>
-        </select>
-      </div>
-      <div>
-        <label>Öncelik</label>
-        <select id="oncelik">
-          <option>Normal</option>
-          <option>Acil</option>
-          <option>Kritik</option>
-        </select>
-      </div>
-      <div>
-        <label>Konu</label>
-        <select id="konu">
-          <option value="">Seçiniz…</option>
-          <option>Aydınlatma / Lamba</option>
-          <option>Temizlik / Çöp</option>
-          <option>Yol / Yaya Yolu</option>
-          <option>Otopark</option>
-          <option>Asansör</option>
-          <option>Kamera / Güvenlik</option>
-          <option>Peyzaj</option>
-          <option>Diğer</option>
-        </select>
-      </div>
-      <div>
-        <label>Konum / Ada-Blok / Nokta</label>
-        <input id="konum" placeholder="Örn: 553 Ada, Yürüyüş yolu giriş" />
-      </div>
-    </div>
+<label>Birim</label>
+<select name="birim" required>
+  <option value="">Seçiniz</option>
+  <option>Güvenlik</option>
+  <option>Teknik</option>
+  <option>Temizlik</option>
+  <option>Peyzaj</option>
+</select>
 
-    <label>Açıklama</label>
-    <textarea id="aciklama" placeholder="Ne tespit ettin? Kısa ve net yaz."></textarea>
+<label>Tespit Türü</label>
+<select name="durum" required>
+  <option value="">Seçiniz</option>
+  <option>Yapıldı</option>
+  <option>Ertelendi</option>
+  <option>Parça bekleniyor</option>
+  <option>Malzeme eksik</option>
+  <option>Dış servis çağrılacak</option>
+  <option>Dış servis çağrıldı</option>
+  <option>Teklif bekleniyor</option>
+</select>
 
-    <div class="grid">
-      <div>
-        <label>Fotoğraf(lar)</label>
-        <input id="fotolar" type="file" accept="image/*" multiple />
-        <div class="hint">Telefondan da seçebilirsin. Birden fazla fotoğraf destekli.</div>
-        <div class="preview" id="preview"></div>
-      </div>
+<label>Açıklama</label>
+<textarea name="aciklama" rows="4" required></textarea>
 
-      <div>
-        <label>Durum (Teknik/Temizlik işleri için)</label>
-        <select id="durum">
-          <option value="">(Opsiyonel) Seçiniz…</option>
-          <option>Yeni Tespit</option>
-          <option>Yapıldı</option>
-          <option>Ertelendi</option>
-          <option>Yarın Yapılacak</option>
-          <option>Malzeme Eksikliği</option>
-          <option>Zaman Yetmedi</option>
-          <option>Personel Eksikliği</option>
-          <option>Parça Bekleniyor (Şef)</option>
-          <option>Dış Servis Çağrılacak (Şef)</option>
-          <option>Dış Servis Çağrıldı (Şef)</option>
-          <option>Dış Servis Geldi Onardı (Şef)</option>
-          <option>Teklif Bekleniyor (Şef)</option>
-        </select>
-        <div class="hint">
-          <b>Not:</b> “(Şef)” yazanlar ileride rol bazlı kilitlenecek. Şimdilik açık bırakıyorum ki sistem yürüsün.
-        </div>
-      </div>
-    </div>
+<label>Fotoğraf</label>
+<input type="file" name="foto" accept="image/*" required>
 
-    <div class="divider"></div>
+<button type="submit">Gönder</button>
 
-    <div class="row">
-      <button class="btn" id="btnGonder">Gönder</button>
-      <button class="btn ghost" id="btnTemizle" type="button">Formu Temizle</button>
-      <div class="right" style="margin-left:auto">
-        <button class="btn secondary" id="btnKaydet" type="button">Bu cihazda hatırla</button>
-      </div>
-    </div>
-
-    <div class="statusline" id="statusBox"></div>
-    <div class="small" style="margin-top:10px;">
-      Backend: <span class="mono" id="backendUrl"></span>
-    </div>
-  </div>
+<div id="sonuc"></div>
+</form>
 </div>
 
 <script>
-  // ✅ APPS SCRIPT WEB APP (SENİN YENİ BAĞLANTI)
-  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby0A6mQvJEK9VadLhAhUoiIk2xmDTsVIYT7zbulE7ZKXe24fwnA1bohLuKebV6c1ixulw/exec";
+const FORM_URL = "BURAYA_GOOGLE_SCRIPT_URL_YAZILACAK";
 
-  const els = {
-    personel: document.getElementById("personel"),
-    rol: document.getElementById("rol"),
-    hedefBirim: document.getElementById("hedefBirim"),
-    oncelik: document.getElementById("oncelik"),
-    konu: document.getElementById("konu"),
-    konum: document.getElementById("konum"),
-    aciklama: document.getElementById("aciklama"),
-    durum: document.getElementById("durum"),
-    fotolar: document.getElementById("fotolar"),
-    preview: document.getElementById("preview"),
-    btnGonder: document.getElementById("btnGonder"),
-    btnTemizle: document.getElementById("btnTemizle"),
-    btnKaydet: document.getElementById("btnKaydet"),
-    statusBox: document.getElementById("statusBox"),
-    whoText: document.getElementById("whoText"),
-    backendUrl: document.getElementById("backendUrl"),
-  };
+document.getElementById("tespitForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const sonuc = document.getElementById("sonuc");
+  sonuc.innerHTML = "⏳ Gönderiliyor...";
 
-  els.backendUrl.textContent = WEB_APP_URL;
+  const form = e.target;
+  const file = form.foto.files[0];
+  const reader = new FileReader();
 
-  // Basit cihaz hafızası
-  const LS_KEY = "spradon_user";
-  function loadUser(){
-    try{
-      const u = JSON.parse(localStorage.getItem(LS_KEY) || "null");
-      if(u){
-        els.personel.value = u.personel || "";
-        els.rol.value = u.rol || "";
-      }
-      setWhoChip();
-    }catch(e){}
-  }
-  function saveUser(){
-    const u = { personel: els.personel.value.trim(), rol: els.rol.value };
-    localStorage.setItem(LS_KEY, JSON.stringify(u));
-    setWhoChip("Kaydedildi ✅");
-  }
-  function setWhoChip(extra){
-    const name = els.personel.value.trim() || "—";
-    const role = els.rol.value || "—";
-    els.whoText.textContent = ${name} / ${role} + (extra ? ` • ${extra}` : "");
-  }
-
-  els.personel.addEventListener("input", ()=>setWhoChip());
-  els.rol.addEventListener("change", ()=>setWhoChip());
-
-  // Foto preview + base64 hazırlığı
-  let photoPayload = []; // {name, base64}
-  els.fotolar.addEventListener("change", async () => {
-    photoPayload = [];
-    els.preview.innerHTML = "";
-    const files = Array.from(els.fotolar.files || []);
-    for (const f of files){
-      const b64 = await fileToBase64(f);
-      photoPayload.push({ name: f.name, base64: b64 });
-      const div = document.createElement("div");
-      div.className = "thumb";
-      const img = document.createElement("img");
-      img.src = b64;
-      div.appendChild(img);
-      els.preview.appendChild(div);
-    }
-  });
-
-  function fileToBase64(file){
-    return new Promise((resolve, reject)=>{
-      const reader = new FileReader();
-      reader.onload = ()=> resolve(reader.result); // data:image/...;base64,...
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  }
-
-  function showStatus(msg, type="ok"){
-    els.statusBox.style.display = "block";
-    els.statusBox.className = "statusline " + type;
-    els.statusBox.innerHTML = msg;
-  }
-
-  function validate(){
-    const need = [];
-    if(!els.personel.value.trim()) need.push("Ad Soyad");
-    if(!els.rol.value) need.push("Rol");
-    if(!els.hedefBirim.value) need.push("Tespitin Gideceği Birim");
-    if(!els.konu.value) need.push("Konu");
-    if(!els.konum.value.trim()) need.push("Konum");
-    if(!els.aciklama.value.trim()) need.push("Açıklama");
-    if(need.length){
-      showStatus("Eksik alanlar: <b>" + need.join(", ") + "</b>", "warn");
-      return false;
-    }
-    return true;
-  }
-
-  // Gönder
-  els.btnGonder.addEventListener("click", async ()=>{
-    if(!validate()) return;
-
-    els.btnGonder.disabled = true;
-    showStatus("Gönderiliyor…", "warn");
-
-    const now = new Date();
-    const tarih = now.toISOString().slice(0,10); // YYYY-MM-DD
-    const saat = now.toTimeString().slice(0,5);  // HH:MM
-
+  reader.onload = async () => {
     const payload = {
-      tip: "tespit",
-      personel: els.personel.value.trim(),
-      rol: els.rol.value,
-      hedefBirim: els.hedefBirim.value,
-      oncelik: els.oncelik.value,
-      konu: els.konu.value,
-      konum: els.konum.value.trim(),
-      aciklama: els.aciklama.value.trim(),
-      durum: els.durum.value || "",
-      tarih, saat,
-      fotografSayisi: photoPayload.length,
-      fotografla: photoPayload, // [{name, base64(dataurl)}]
-      kaynak: "github_pages"
+      birim: form.birim.value,
+      durum: form.durum.value,
+      aciklama: form.aciklama.value,
+      fotoBase64: reader.result
     };
 
     try{
-      const res = await fetch(WEB_APP_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+      const r = await fetch(FORM_URL,{
+        method:"POST",
+        body:JSON.stringify(payload)
       });
-
-      // Apps Script bazen JSON döner bazen TEXT; ikisini de yakalıyoruz
-      const text = await res.text();
-      let data = null;
-      try { data = JSON.parse(text); } catch(e){}
-
-      if(!res.ok){
-        showStatus("Hata: Sunucu cevap vermedi. <br><span class='mono'>HTTP " + res.status + "</span><br><span class='mono'>" + escapeHtml(text).slice(0,400) + "</span>", "bad");
-      } else {
-        // başarılı
-        showStatus("✅ Tespit gönderildi. " + (data && data.id ? ("<br>Takip No: <span class='mono'>" + data.id + "</span>") : ""), "ok");
-        // foto seçimini sıfırla ama formu silme (istersen)
-        els.fotolar.value = "";
-        photoPayload = [];
-        els.preview.innerHTML = "";
-      }
+      const j = await r.json();
+      sonuc.innerHTML = j.ok ? "✅ Tespit kaydedildi" : "❌ Hata oluştu";
+      if(j.ok) form.reset();
     }catch(err){
-      showStatus("Hata: <b>Failed to fetch</b><br>Muhtemel sebep: telefon/VPN/şebeke veya Apps Script izin/dağıtım.<br><span class='mono'>" + escapeHtml(String(err)) + "</span>", "bad");
-    }finally{
-      els.btnGonder.disabled = false;
+      sonuc.innerHTML = "❌ Bağlantı hatası";
     }
-  });
-
-  function escapeHtml(s){
-    return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  }
-
-  els.btnTemizle.addEventListener("click", ()=>{
-    els.hedefBirim.value = "";
-    els.oncelik.value = "Normal";
-    els.konu.value = "";
-    els.konum.value = "";
-    els.aciklama.value = "";
-    els.durum.value = "";
-    els.fotolar.value = "";
-    photoPayload = [];
-    els.preview.innerHTML = "";
-    showStatus("Form temizlendi.", "ok");
-  });
-
-  els.btnKaydet.addEventListener("click", saveUser);
-
-  loadUser();
+  };
+  reader.readAsDataURL(file);
+});
 </script>
 </body>
 </html>
