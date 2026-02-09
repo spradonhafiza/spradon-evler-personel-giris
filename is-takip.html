@@ -222,7 +222,7 @@ function getSession(){
 
 function setWhoChip(){
   const s = getSession();
-  document.getElementById("whoChip").textContent = `👤 Oturum: ${s.name} (${s.role})`;
+  document.getElementById("whoChip").textContent = 👤 Oturum: ${s.name} (${s.role});
   // gelişmiş kutu
   const adv = document.getElementById("advancedBox");
   if (ADVANCED_ROLES.has(s.role)) adv.style.display = "block";
@@ -269,13 +269,13 @@ function showFiles(inputEl, listEl, max=3){
   files.slice(0,max).forEach(f=>{
     const div = document.createElement("div");
     div.className = "fileItem";
-    div.textContent = `• ${f.name}`;
+    div.textContent = • ${f.name};
     listEl.appendChild(div);
   });
   if(files.length > max){
     const div = document.createElement("div");
     div.className = "fileItem";
-    div.innerHTML = `<span class="danger">• En fazla ${max} dosya gönderilir. Fazlası yok sayılır.</span>`;
+    div.innerHTML = <span class="danger">• En fazla ${max} dosya gönderilir. Fazlası yok sayılır.</span>;
     listEl.appendChild(div);
   }
 }
@@ -356,7 +356,7 @@ document.getElementById("sendBtn").addEventListener("click", async ()=>{
     const data = await postJSON(payload);
     const caseId = data.caseId || data.id || "(id dönmedi)";
 
-    showMsg(msgEl, "ok", `✅ Tespit kaydedildi. ID: ${caseId}`);
+    showMsg(msgEl, "ok", ✅ Tespit kaydedildi. ID: ${caseId});
     // form sıfırla
     document.getElementById("title").value = "";
     document.getElementById("location").value = "";
