@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Peyzaj Fotoğraf Yükleme</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body{font-family:Arial,sans-serif;background:#f4f4f4;padding:20px}
+    .box{background:#fff;padding:20px;border-radius:10px;max-width:520px;margin:auto;box-shadow:0 0 10px rgba(0,0,0,.1)}
+    h2{text-align:center;margin:0 0 10px}
+    label{font-weight:bold;display:block;margin-top:10px}
+    input,select,textarea,button{width:100%;padding:10px;margin-top:6px;font-size:16px}
+    textarea{min-height:70px;resize:vertical}
+    button{background:#1e5bb8;color:#fff;border:none;border-radius:6px;cursor:pointer}
+    button:hover{background:#174a95}
+    .row{display:flex;gap:10px}
+    .row > div{flex:1}
+    .result{margin-top:12px;text-align:center;font-weight:bold}
+    .small{font-size:12px;color:#555;margin-top:8px}
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>🌿 Peyzaj Yükleme</h2>
+    <div class="small">Not: Peyzaj ekibi sisteme giremiyorsa WhatsApp’tan gelen fotoğrafları saha sorumlusu buradan yükler. “Yapan ekip: Peyzaj” sabittir.</div>
+
+    <label>Yükleyen (Saha Sorumlusu)</label>
+    <select id="uploader">
+      <option value="Akın (Saha Sorumlusu)">Akın (Saha Sorumlusu)</option>
+      <option value="İhsan (Saha Sorumlusu)">İhsan (Saha Sorumlusu)</option>
+      <option value="Celal (Saha Sorumlusu)">Celal (Saha Sorumlusu)</option>
+    </select>
+
+    <div class="row">
+      <div>
+        <label>Durum</label>
+        <select id="weather">
+          <option value="Normal">Normal</option>
+          <option value="Yağmur / hava nedeniyle ertelendi">Yağmur / hava nedeniyle ertelendi</option>
+          <option value="Hafta sonu / çalışma yok">Hafta sonu / çalışma yok</option>
+        </select>
+      </div>
+      <div>
+        <label>Alan / Konum</label>
+        <input id="location" placeholder="Örn: 553 Ada - Yeşil alan / yürüyüş yolu" />
+      </div>
+    </div>
+
+    <label>Kısa Not (opsiyonel)</label>
+    <textarea id="note" placeholder="Örn: çim biçme, budama, sulama arızası, ilaçlama vb."></textarea>
+
+    <label>Fotoğraflar</label>
+    <input type="file" id="files" multiple accept="image/*" />
+
+    <button id="btn" onclick="upload()">Gönder</button>
+    <div class="result" id="result"></div>
+  </div>
+
+<script>
+const ENDPOINT = "https://script.google.com/macros/s/AKfycby0A6mQvJEK9VadLhAhUoiIk2xmDTsVIYT7zbulE7ZKXe24fwnA1bohLuKebV6c1ixulw/exec";
+
+function upload(){
+  const files = document.getElementById("files").files;
+  const result = document.getElementById("result");
+  const btn = document.getElementById("btn");
+  if(!files.length){ alert("Fotoğraf seçmedin"); return; }
+
+  btn.disabled = true;
+  result.innerText = "Yükleniyor...";
+
+  const uploader = document.getElementById("uploader").value;
+  const weather = document.getElementById("weather").value;
+  const location = document.getElementById("location").value.trim();
+  const note = document.getElementById("note").value.trim();
+
+  const readers = Array.from(files).map((f,i)=> new Promise((resolve)=>{
+    const r = new FileReader();
+    r.onload = e => resolve({ name: f.name || ("img_"+(i+1)+".jpg"), base64: e.target.result.split(",")[1] });
+    r.readAsDataURL(f);
+  }));
+
+  Promise.all(readers).then(images=>{
+    const payload = {
+      mode: "FAALIYET",
+      birim: "Peyzaj",
+      yapanEkip: "Peyzaj",
+      yukleyen: uploader,
+      konum: location,
+      durum: weather,
+      aciklama: note,
+      tarih: new Date().toISOString().slice(0,10),
+      fotograflar: images
+    };
+
+    fetch(ENDPOINT, { method:"POST", body: JSON.stringify(payload) })
+      .then(r=>r.json())
+      .then(res=>{
+        if(res && res.ok){
+          result.innerText = "✅ Gönderildi (" + (res.savedCount || 0) + " foto)";
+          document.getElementById("files").value = "";
+          document.getElementById("note").value = "";
+        } else {
+          result.innerText = "❌ Hata: " + (res && res.error ? res.error : "Bilinmeyen hata");
+        }
+      })
+      .catch(err=>{
+        result.innerText = "❌ Bağlantı hatası";
+      })
+      .finally(()=>{
+        btn.disabled = false;
+      });
+  });
+}
+</script>
+</body>
+</html>
