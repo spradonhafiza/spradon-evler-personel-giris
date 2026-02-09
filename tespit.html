@@ -1,1 +1,462 @@
-update tespit form
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tespit Bildirimi</title>
+  <style>
+    :root{
+      --bg:#f3f5f7; --card:#fff; --text:#1c1f24; --muted:#6b7280;
+      --border:#e5e7eb; --brand:#1d4ed8; --brand2:#2563eb;
+      --ok:#16a34a; --warn:#f59e0b; --bad:#dc2626;
+      --shadow: 0 12px 32px rgba(0,0,0,.10);
+      --radius: 18px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0; font-family: Arial, sans-serif; background:var(--bg); color:var(--text);}
+    .wrap{max-width:980px; margin:0 auto; padding:18px;}
+    .top{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px;}
+    .brand{display:flex; align-items:center; gap:10px; font-weight:700; font-size:18px;}
+    .chip{
+      display:inline-flex; align-items:center; gap:8px; padding:8px 10px;
+      border:1px solid var(--border); background:#fff; border-radius:999px; font-size:12px; color:var(--muted);
+      white-space:nowrap;
+    }
+    .grid{display:grid; grid-template-columns: 1fr 1fr; gap:14px;}
+    @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+    .card{
+      background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+      box-shadow:var(--shadow); padding:16px;
+    }
+    h1{margin:0 0 6px 0; font-size:22px;}
+    .sub{margin:0 0 12px 0; color:var(--muted); font-size:13px;}
+    label{display:block; font-size:12px; color:var(--muted); margin:10px 0 6px;}
+    input[type="text"], textarea, select{
+      width:100%; padding:11px 12px; border:1px solid var(--border); border-radius:12px; outline:none;
+      font-size:14px; background:#fff;
+    }
+    textarea{min-height:92px; resize:vertical;}
+    .row{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+    @media (max-width:520px){ .row{grid-template-columns:1fr;} }
+    .unitbar{display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;}
+    .btnUnit{
+      border:1px solid var(--border); background:#fff; border-radius:999px; padding:9px 12px;
+      cursor:pointer; font-size:13px;
+    }
+    .btnUnit.active{border-color:var(--brand); color:var(--brand); font-weight:700;}
+    .actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;}
+    button{border:none; border-radius:14px; padding:12px 14px; cursor:pointer; font-weight:700; font-size:14px;}
+    .primary{background:var(--brand); color:#fff;}
+    .primary:hover{background:var(--brand2);}
+    .primary:disabled{opacity:.55; cursor:not-allowed;}
+    .ghost{background:#fff; border:1px solid var(--border); color:var(--text);}
+    .danger{background:var(--bad); color:#fff;}
+    .note{font-size:12px; color:var(--muted); margin-top:10px;}
+    .statusLine{
+      margin-top:12px; padding:10px 12px; border-radius:14px; border:1px dashed var(--border); color:var(--muted);
+      background:#fff; word-break:break-word;
+    }
+    .ok{border-color: rgba(22,163,74,.35); background: rgba(22,163,74,.06); color:#14532d;}
+    .bad{border-color: rgba(220,38,38,.35); background: rgba(220,38,38,.06); color:#7f1d1d;}
+    .warn{border-color: rgba(245,158,11,.35); background: rgba(245,158,11,.08); color:#7c2d12;}
+    .small{font-size:12px;}
+    .sep{height:1px; background:var(--border); margin:12px 0;}
+    .kv{display:grid; grid-template-columns:140px 1fr; gap:8px; font-size:13px; color:var(--muted);}
+    @media (max-width:520px){ .kv{grid-template-columns:1fr;} }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px; padding:8px 10px; border-radius:999px;
+      background:#fff; border:1px solid var(--border); font-size:12px;
+    }
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">📝 Tespit Bildirimi</div>
+      <div class="chip" id="whoChip">Kullanıcı: <b>—</b> · Rol: <b>—</b></div>
+    </div>
+
+    <div class="grid">
+      <!-- FORM -->
+      <div class="card">
+        <h1>Yeni Tespit</h1>
+        <p class="sub">Tespit → ilgili birime düşsün. Fotoğraf ekle. Durum güncelle.</p>
+
+        <div class="sep"></div>
+
+        <div class="row">
+          <div>
+            <label>Hedef Birim</label>
+            <select id="targetUnit">
+              <option value="Güvenlik">Güvenlik</option>
+              <option value="Teknik">Teknik</option>
+              <option value="Temizlik">Temizlik</option>
+              <option value="Peyzaj">Peyzaj</option>
+              <option value="Saha">Saha</option>
+              <option value="Yönetim">Yönetim</option>
+            </select>
+
+            <div class="unitbar" id="unitBar">
+              <button type="button" class="btnUnit" data-unit="Güvenlik">🛡️ Güvenlik</button>
+              <button type="button" class="btnUnit" data-unit="Teknik">🛠️ Teknik</button>
+              <button type="button" class="btnUnit" data-unit="Temizlik">🧹 Temizlik</button>
+              <button type="button" class="btnUnit" data-unit="Peyzaj">🌿 Peyzaj</button>
+              <button type="button" class="btnUnit" data-unit="Saha">📍 Saha</button>
+            </div>
+          </div>
+
+          <div>
+            <label>Tespit Türü</label>
+            <select id="issueType">
+              <option value="Arıza/Teknik">Arıza / Teknik</option>
+              <option value="Temizlik">Temizlik</option>
+              <option value="Güvenlik Tespiti">Güvenlik Tespiti</option>
+              <option value="Peyzaj">Peyzaj</option>
+              <option value="Genel">Genel</option>
+            </select>
+
+            <label>Konum (Blok / Ada / Alan)</label>
+            <input id="location" type="text" placeholder="Örn: 550 Ada - Blok A - Yürüyüş Yolu" />
+          </div>
+        </div>
+
+        <label>Açıklama</label>
+        <textarea id="desc" placeholder="Kısa ve net: Ne var? Nerede? Ne yapılmalı?"></textarea>
+
+        <div class="row">
+          <div>
+            <label>Durum (Rol bazlı)</label>
+            <select id="statusSel"></select>
+            <div class="note">
+              “Parça / Dış Servis / Teklif” seçenekleri: <b>Teknik Şef + Saha Sorumlusu/Amiri</b>
+            </div>
+          </div>
+          <div>
+            <label>Fotoğraf(lar)</label>
+            <input id="photos" type="file" accept="image/*" multiple />
+            <div class="note">Telefon + bilgisayar uyumlu. En fazla 10 foto.</div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="primary" id="sendBtn">Gönder</button>
+          <button class="ghost" id="clearBtn" type="button">Temizle</button>
+          <button class="danger" id="logoutBtn" type="button">Çıkış</button>
+        </div>
+
+        <div id="msg" class="statusLine small">Hazır. Birim seç → açıklama yaz → foto ekle → gönder.</div>
+      </div>
+
+      <!-- INFO -->
+      <div class="card">
+        <h1>Bilgi / Kontrol</h1>
+        <p class="sub">Ekran GitHub’da. Kayıt/Drive işlemleri Google Apps Script’te.</p>
+
+        <div class="sep"></div>
+
+        <div class="kv">
+          <div>GAS URL</div>
+          <div class="mono" id="gasUrlView"></div>
+
+          <div>Oturum</div>
+          <div id="sessionView"></div>
+
+          <div>Yetki</div>
+          <div id="authView"></div>
+
+          <div>Gönderim</div>
+          <div class="pill"><span>📨</span><span>JSON + Foto Base64</span></div>
+
+          <div>Not</div>
+          <div class="small" style="color:var(--muted); line-height:1.45">
+            • Herkes tespit açar.<br/>
+            • Teknik şef + saha: Parça/Dış servis/Teklif.<br/>
+            • 17:00 & 00:00 mail trigger (Apps Script).
+          </div>
+        </div>
+
+        <div class="sep"></div>
+        <div class="note">“Failed to fetch” görürsen: şebeke/VPN/engel olabilir.</div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  /********
+   * AYARLAR
+   ********/
+  const GAS_URL = "https://script.google.com/macros/s/AKfycby0A6mQvJEK9VadLhAhUoiIk2xmDTsVIYT7zbulE7ZKXe24fwnA1bohLuKebV6c1ixulw/exec";
+
+  /********
+   * OTURUM
+   ********/
+  function getSession(){
+    let raw = localStorage.getItem("spradon_session");
+    if(raw){
+      try { return JSON.parse(raw); } catch(e){}
+    }
+    const name = localStorage.getItem("spradon_name");
+    const role = localStorage.getItem("spradon_role");
+    const id = localStorage.getItem("spradon_id");
+    if(name || role || id){
+      return { name: name || "Bilinmeyen", role: role || "Bilinmeyen", id: id || "" };
+    }
+    return null;
+  }
+  function saveSession(s){ localStorage.setItem("spradon_session", JSON.stringify(s)); }
+
+  let session = getSession();
+  if(!session){
+    const name = prompt("Ad Soyad (ör: Akın)") || "Bilinmeyen";
+    const role = prompt("Rol (Güvenlik / Teknik / Temizlik / Saha Sorumlusu / Teknik Şef / Peyzaj / Yönetim)") || "Bilinmeyen";
+    session = { name, role, id: "" };
+    saveSession(session);
+  }
+
+  /********
+   * UI
+   ********/
+  const whoChip = document.getElementById("whoChip");
+  const gasUrlView = document.getElementById("gasUrlView");
+  const sessionView = document.getElementById("sessionView");
+  const authView = document.getElementById("authView");
+
+  const targetUnit = document.getElementById("targetUnit");
+  const issueType = document.getElementById("issueType");
+  const locationEl = document.getElementById("location");
+  const descEl = document.getElementById("desc");
+  const statusSel = document.getElementById("statusSel");
+  const photosEl = document.getElementById("photos");
+
+  const msg = document.getElementById("msg");
+  const sendBtn = document.getElementById("sendBtn");
+  const clearBtn = document.getElementById("clearBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  gasUrlView.textContent = GAS_URL;
+
+  function escapeHtml(s){
+    return (s ?? "").toString().replace(/[&<>"']/g, m => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    }[m]));
+  }
+  function setMsg(text, kind=""){
+    msg.className = "statusLine small";
+    if(kind==="ok") msg.classList.add("ok");
+    if(kind==="bad") msg.classList.add("bad");
+    if(kind==="warn") msg.classList.add("warn");
+    msg.textContent = text;
+  }
+  function prettyRole(r){ return (r||"").trim(); }
+
+  /********
+   * YETKİ: Teknik Şef + Saha Sorumlusu/Amiri = Privileged
+   ********/
+  function isPrivileged(role){
+    const r = (role||"").toLowerCase();
+
+    const isTechChief =
+      r.includes("teknik şef") || r.includes("teknik sef") ||
+      r.includes("teknik şefi") || r.includes("teknik sefi") ||
+      r.includes("teknik amir") || r.includes("teknik şefi");
+
+    const isFieldChief =
+      r.includes("saha sorumlusu") || r.includes("saha amiri") ||
+      r.includes("saha şefi") || r.includes("saha sefi") ||
+      r.includes("gece saha sorumlusu") || r.includes("saha");
+
+    return isTechChief || isFieldChief;
+  }
+
+  function setInfo(){
+    whoChip.innerHTML = Kullanıcı: <b>${escapeHtml(session.name)}</b> · Rol: <b>${escapeHtml(prettyRole(session.role))}</b>;
+    sessionView.innerHTML = `<span class="pill">👤 <b>${escapeHtml(session.name)}</b></span>
+      <span class="pill">🎭 <b>${escapeHtml(prettyRole(session.role))}</b></span>`;
+    authView.innerHTML = isPrivileged(session.role)
+      ? <span class="pill">✅ Yetki: <b>Şef/Saha</b></span>
+      : <span class="pill">🔒 Yetki: <b>Standart</b></span>;
+  }
+  setInfo();
+
+  function defaultTargetFromRole(role){
+    const r = (role||"").toLowerCase();
+    if(r.includes("güven")) return "Güvenlik";
+    if(r.includes("temiz")) return "Temizlik";
+    if(r.includes("peyza")) return "Peyzaj";
+    if(r.includes("teknik")) return "Teknik";
+    if(r.includes("saha")) return "Saha";
+    if(r.includes("yönet")) return "Yönetim";
+    return "Saha";
+  }
+  targetUnit.value = defaultTargetFromRole(session.role);
+
+  /********
+   * DURUM SEÇENEKLERİ
+   ********/
+  function buildStatusOptions(){
+    const base = [
+      {v:"Tespit", t:"Tespit (Yeni)"},
+      {v:"İletildi", t:"İletildi"},
+      {v:"Yapıldı", t:"Yapıldı ✅"},
+      {v:"Ertelendi", t:"Ertelendi ⏳"},
+      {v:"Malzeme Eksik", t:"Malzeme Eksik"},
+      {v:"Personel Eksik", t:"Personel Eksik"},
+      {v:"Zaman Yetmedi", t:"Zaman Yetmedi"}
+    ];
+
+    const priv = [
+      {v:"Parça Bekleniyor", t:"Parça Bekleniyor (Şef/Saha)"},
+      {v:"Malzeme Bekleniyor", t:"Malzeme Bekleniyor (Şef/Saha)"},
+      {v:"Dış Servis Çağrılacak", t:"Dış Servis Çağrılacak (Şef/Saha)"},
+      {v:"Dış Servis Çağrıldı", t:"Dış Servis Çağrıldı (Şef/Saha)"},
+      {v:"Dış Servis Geldi/Onardı", t:"Dış Servis Geldi/Onardı (Şef/Saha)"},
+      {v:"Teklif Bekleniyor", t:"Teklif Bekleniyor (Şef/Saha)"},
+      {v:"Teklif Alındı", t:"Teklif Alındı (Şef/Saha)"}
+    ];
+
+    statusSel.innerHTML = "";
+    base.forEach(o=>{
+      const opt=document.createElement("option");
+      opt.value=o.v; opt.textContent=o.t;
+      statusSel.appendChild(opt);
+    });
+
+    if(isPrivileged(session.role)){
+      const sep=document.createElement("option");
+      sep.disabled=true; sep.textContent="──────── ŞEF/SAHA SEÇENEKLERİ ────────";
+      statusSel.appendChild(sep);
+
+      priv.forEach(o=>{
+        const opt=document.createElement("option");
+        opt.value=o.v; opt.textContent=o.t;
+        statusSel.appendChild(opt);
+      });
+    }
+
+    statusSel.value = "Tespit";
+  }
+  buildStatusOptions();
+
+  /********
+   * Unit quick buttons
+   ********/
+  const unitButtons = [...document.querySelectorAll(".btnUnit")];
+  function syncUnitButtons(){
+    unitButtons.forEach(b=>{
+      b.classList.toggle("active", b.dataset.unit === targetUnit.value);
+    });
+  }
+  unitButtons.forEach(b=>{
+    b.addEventListener("click", ()=>{
+      targetUnit.value = b.dataset.unit;
+      syncUnitButtons();
+      const u = targetUnit.value;
+      if(u==="Teknik") issueType.value="Arıza/Teknik";
+      if(u==="Temizlik") issueType.value="Temizlik";
+      if(u==="Güvenlik") issueType.value="Güvenlik Tespiti";
+      if(u==="Peyzaj") issueType.value="Peyzaj";
+      if(u==="Saha") issueType.value="Genel";
+    });
+  });
+  targetUnit.addEventListener("change", syncUnitButtons);
+  syncUnitButtons();
+
+  /********
+   * FILES -> BASE64
+   ********/
+  function readFilesAsBase64(files){
+    return Promise.all([...files].map(file => new Promise((resolve, reject)=>{
+      const reader = new FileReader();
+      reader.onload = () => {
+        const dataUrl = reader.result;
+        const base64 = (dataUrl || "").toString().split(",")[1] || "";
+        resolve({ name:file.name, type:file.type || "image/jpeg", size:file.size, base64 });
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    })));
+  }
+
+  /********
+   * SEND
+   ********/
+  async function send(){
+    const payload = {
+      birim: defaultTargetFromRole(session.role),   // gönderenin birimi (yaklaşık)
+      personel: session.name,
+      aciklama: descEl.value.trim(),
+      tarih: new Date().toISOString().slice(0,10),
+      saat: new Date().toTimeString().slice(0,8),
+      hedefBirim: targetUnit.value,
+      tespitTuru: issueType.value,
+      konum: locationEl.value.trim(),
+      durum: statusSel.value,
+      fotograflar: []
+    };
+
+    if(!payload.aciklama){
+      setMsg("Açıklama boş olmaz. 1-2 cümle yaz.", "warn");
+      return;
+    }
+
+    const files = photosEl.files;
+    if(files && files.length){
+      if(files.length > 10){
+        setMsg("En fazla 10 fotoğraf seçebilirsin.", "warn");
+        return;
+      }
+      payload.fotograflar = await readFilesAsBase64(files);
+    }
+
+    sendBtn.disabled = true;
+    setMsg("Gönderiliyor... 🌪️", "");
+
+    try{
+      const res = await fetch(GAS_URL, {
+        method: "POST",
+        headers: { "Content-Type":"application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const text = await res.text();
+      let json = null;
+      try { json = JSON.parse(text); } catch(e){}
+
+      if(!res.ok) throw new Error(HTTP ${res.status} - ${text.slice(0,180)});
+      if(json && json.ok === false) throw new Error(json.error || "Sunucu hata döndürdü.");
+
+      setMsg("✅ Gönderildi. Fotoğraflar Drive’a kaydoldu.", "ok");
+      descEl.value = "";
+      locationEl.value = "";
+      photosEl.value = "";
+      statusSel.value = "Tespit";
+
+    }catch(err){
+      console.error(err);
+      setMsg("❌ Gönderilemedi: " + (err.message || err), "bad");
+    }finally{
+      sendBtn.disabled = false;
+    }
+  }
+
+  sendBtn.addEventListener("click", send);
+
+  clearBtn.addEventListener("click", ()=>{
+    locationEl.value = "";
+    descEl.value = "";
+    photosEl.value = "";
+    statusSel.value = "Tespit";
+    setMsg("Temizlendi.", "");
+  });
+
+  logoutBtn.addEventListener("click", ()=>{
+    localStorage.removeItem("spradon_session");
+    localStorage.removeItem("spradon_name");
+    localStorage.removeItem("spradon_role");
+    localStorage.removeItem("spradon_id");
+    setMsg("Çıkış yapıldı. Sayfayı yenile.", "warn");
+  });
+</script>
+</body>
+</html>
