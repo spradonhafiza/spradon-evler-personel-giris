@@ -1,1 +1,62 @@
-https://script.google.com/macros/s/AKfycbwYmp7E-HNUeACOp-z8G1MU_Qf2kb7w4NWvuP8e24MYg7iPFOrJ6McrtHs60gsWB4cKSQ/exec
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Güvenlik Fotoğraf Yükleme</title>
+</head>
+<body>
+
+<h2>Güvenlik Fotoğraf Yükleme</h2>
+
+<input type="file" id="photos" multiple accept="image/*">
+<br><br>
+<button onclick="upload()">Gönder</button>
+
+<script>
+const ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbwYmp7E-HNUeACOp-z8G1MU_Qf2kb7w4NWvuP8e24MYg7iPFOrJ6McrtHs60gsWB4cKSQ/exec";
+
+function upload() {
+  const files = document.getElementById("photos").files;
+  if (!files.length) {
+    alert("Fotoğraf seçilmedi");
+    return;
+  }
+
+  const photos = [];
+  let loaded = 0;
+
+  Array.from(files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      photos.push({
+        name: file.name,
+        base64: e.target.result.split(",")[1]
+      });
+      loaded++;
+      if (loaded === files.length) sendPhotos(photos);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function sendPhotos(photos) {
+  const payload = {
+    personel: "Akın",
+    personelId: "A101",
+    birim: "Guvenlik",
+    tarih: new Date().toISOString().slice(0,10),
+    fotograflar: photos
+  };
+
+  fetch(ENDPOINT_URL, {
+    method: "POST",
+    body: JSON.stringify(payload)
+  })
+  .then(r => r.text())
+  .then(() => alert("Fotoğraflar gönderildi"))
+  .catch(err => alert("Hata: " + err));
+}
+</script>
+
+</body>
+</html>
