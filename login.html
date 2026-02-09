@@ -1,0 +1,80 @@
+[05:53, 09.02.2026] ♾ AKIN ♾: <!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Peyzaj Fotoğraf Yükleme</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body{font-family:Arial,sans-serif;background:#f4f4f4;padding:20px}
+    .box{background:#fff;padding:20px;border-radius:10px;max-width:520px;margin:auto;box-shadow:0 0 10px rgba(0,0,0,.1)}
+    h2{text-align:center;margin:0 0 10px}
+    label{font-weight:bold;display:block;margin-top:10px}
+    input,select,textarea,button{width:100%;padding:10px;margin-top:6px;font-size:16px}
+    textarea{min-height:70px;resize:vertical}
+    button{background:#1e5bb8;color:#fff;border:none;border-radius:6px;cursor:pointer}
+    button:hover{background:#174a95}
+    .row{display:flex;gap:1…
+[06:16, 09.02.2026] ♾ AKIN ♾: <!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Personel Giriş</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{font-family:Arial;background:#f4f4f4;padding:20px}
+.box{background:#fff;padding:20px;border-radius:10px;max-width:420px;margin:auto;box-shadow:0 0 10px rgba(0,0,0,.1)}
+h2{text-align:center}
+label{font-weight:bold;display:block;margin-top:12px}
+select,button{width:100%;padding:10px;margin-top:6px;font-size:16px}
+button{background:#1e5bb8;color:#fff;border:none;border-radius:6px;cursor:pointer}
+button:hover{background:#174a95}
+.small{font-size:12px;color:#555;margin-top:10px}
+</style>
+</head>
+<body>
+
+<div class="box">
+  <h2>🔐 Personel Giriş</h2>
+
+  <label>Ad Soyad</label>
+  <select id="user">
+    <option>Akın (Saha Sorumlusu)</option>
+    <option>İhsan (Saha Sorumlusu)</option>
+    <option>Celal (Saha Sorumlusu)</option>
+    <option>Murat Alp (Teknik Şefi)</option>
+    <option>Teknik Personel</option>
+    <option>Yüksel (Temizlik Şefi)</option>
+    <option>Temizlik Personel</option>
+    <option>Güvenlik Personel</option>
+    <option>Yönetim / Müdür</option>
+  </select>
+
+  <label>Rol</label>
+  <select id="role">
+    <option value="saha">Saha Sorumlusu</option>
+    <option value="teknik_sef">Teknik Şefi</option>
+    <option value="teknik">Teknik Personel</option>
+    <option value="temizlik_sef">Temizlik Şefi</option>
+    <option value="temizlik">Temizlik Personel</option>
+    <option value="guvenlik">Güvenlik</option>
+    <option value="yonetim">Yönetim</option>
+  </select>
+
+  <button onclick="login()">Giriş Yap</button>
+  <div class="small">Bu giriş bir kez yapılır. Çıkış yapmadıkça sistem seni tanır.</div>
+</div>
+
+<script>
+function login(){
+  const user = document.getElementById("user").value;
+  const role = document.getElementById("role").value;
+
+  localStorage.setItem("AKIN_user", user);
+  localStorage.setItem("AKIN_role", role);
+
+  window.location.href = "tespit.html";
+}
+</script>
+
+</body>
+</html>
