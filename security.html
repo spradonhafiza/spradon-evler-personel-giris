@@ -3,58 +3,134 @@
 <head>
   <meta charset="UTF-8">
   <title>Güvenlik Fotoğraf Yükleme</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    .box {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 500px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+    }
+
+    button {
+      background: #2c7be5;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1a5fc4;
+    }
+
+    .status {
+      margin-top: 15px;
+      font-weight: bold;
+      text-align: center;
+    }
+  </style>
 </head>
+
 <body>
 
-<h2>Güvenlik Fotoğraf Yükleme</h2>
+  <div class="box">
+    <h2>Güvenlik Fotoğraf Yükleme</h2>
 
-<input type="file" id="photos" multiple accept="image/*">
-<br><br>
-<button onclick="upload()">Gönder</button>
+    <label>Personel Adı</label>
+    <input type="text" id="personel" value="Akın">
+
+    <label>Personel ID</label>
+    <input type="text" id="personelId" value="A101">
+
+    <label>Birim</label>
+    <select id="birim">
+      <option value="Guvenlik">Güvenlik</option>
+      <option value="Teknik">Teknik</option>
+      <option value="Temizlik">Temizlik</option>
+      <option value="Saha">Saha</option>
+      <option value="Yonetim">Yönetim</option>
+      <option value="Muhasebe">Muhasebe</option>
+    </select>
+
+    <label>Fotoğraflar</label>
+    <input type="file" id="files" multiple accept="image/*">
+
+    <button onclick="upload()">Gönder</button>
+
+    <div class="status" id="status"></div>
+  </div>
 
 <script>
-const ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbwYmp7E-HNUeACOp-z8G1MU_Qf2kb7w4NWvuP8e24MYg7iPFOrJ6McrtHs60gsWB4cKSQ/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwYmp7E-HNUeACOp-z8G1MU_Qf2kb7w4NWvuP8e24MYg7iPFOrJ6McrtHs60gsWB4cKSQ/exec";
 
 function upload() {
-  const files = document.getElementById("photos").files;
+  const files = document.getElementById("files").files;
   if (!files.length) {
-    alert("Fotoğraf seçilmedi");
+    alert("Fotoğraf seçmedin");
     return;
   }
 
-  const photos = [];
-  let loaded = 0;
+  document.getElementById("status").innerText = "Yükleniyor...";
 
-  Array.from(files).forEach(file => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      photos.push({
-        name: file.name,
-        base64: e.target.result.split(",")[1]
-      });
-      loaded++;
-      if (loaded === files.length) sendPhotos(photos);
+  const readers = [];
+  for (let f of files) {
+    readers.push(readFile(f));
+  }
+
+  Promise.all(readers).then(images => {
+    const payload = {
+      personel: document.getElementById("personel").value,
+      personelId: document.getElementById("personelId").value,
+      birim: document.getElementById("birim").value,
+      tarih: new Date().toISOString().slice(0,10),
+      fotograflar: images
     };
-    reader.readAsDataURL(file);
+
+    fetch(SCRIPT_URL, {
+      method: "POST",
+      body: JSON.stringify(payload)
+    })
+    .then(r => r.text())
+    .then(() => {
+      document.getElementById("status").innerText = "✅ Yükleme tamamlandı";
+      document.getElementById("files").value = "";
+    })
+    .catch(err => {
+      document.getElementById("status").innerText = "❌ Hata: " + err;
+    });
   });
 }
 
-function sendPhotos(photos) {
-  const payload = {
-    personel: "Akın",
-    personelId: "A101",
-    birim: "Guvenlik",
-    tarih: new Date().toISOString().slice(0,10),
-    fotograflar: photos
-  };
-
-  fetch(ENDPOINT_URL, {
-    method: "POST",
-    body: JSON.stringify(payload)
-  })
-  .then(r => r.text())
-  .then(() => alert("Fotoğraflar gönderildi"))
-  .catch(err => alert("Hata: " + err));
+function readFile(file) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      resolve({
+        name: file.name,
+        base64: e.target.result.split(",")[1]
+      });
+    };
+    reader.readAsDataURL(file);
+  });
 }
 </script>
 
