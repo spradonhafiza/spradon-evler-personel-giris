@@ -1,1 +1,434 @@
-Add Teknik Is Takip Panosu
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tespit Bildirimi</title>
+  <style>
+    :root{
+      --bg:#f4f6f9; --card:#fff; --text:#101828; --muted:#667085;
+      --border:#e5e7eb; --blue:#1d4ed8; --blue2:#2563eb;
+      --ok:#16a34a; --warn:#f59e0b; --bad:#dc2626;
+      --shadow:0 10px 28px rgba(16,24,40,.08);
+      --r:18px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:var(--text);padding:18px}
+    .wrap{max-width:980px;margin:0 auto}
+    .top{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:14px}
+    .brand{display:flex;gap:10px;align-items:center}
+    .logo{width:38px;height:38px;border-radius:12px;background:#111827;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800}
+    h1{margin:0;font-size:18px}
+    .chip{display:inline-flex;gap:8px;align-items:center;padding:8px 10px;border:1px solid var(--border);border-radius:999px;background:#fff;color:var(--muted);font-size:12px}
+    .grid{display:grid;grid-template-columns:1fr;gap:12px}
+    @media(min-width:860px){ .grid{grid-template-columns:1fr 1fr} }
+    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);padding:16px}
+    .card h2{margin:0 0 10px;font-size:15px}
+    .sub{margin:0 0 12px;color:var(--muted);font-size:12px}
+    label{display:block;font-size:12px;color:var(--muted);margin:10px 0 6px}
+    input,select,textarea{
+      width:100%;padding:10px 12px;border:1px solid var(--border);
+      border-radius:12px;background:#fff;font-size:14px;outline:none
+    }
+    textarea{min-height:92px;resize:vertical}
+    .row{display:grid;grid-template-columns:1fr;gap:10px}
+    @media(min-width:520px){ .row{grid-template-columns:1fr 1fr} }
+    .btn{
+      width:100%;padding:12px 14px;border:0;border-radius:14px;cursor:pointer;
+      background:var(--blue);color:#fff;font-weight:700;font-size:14px
+    }
+    .btn:hover{background:var(--blue2)}
+    .btn2{
+      width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:14px;
+      background:#fff;color:var(--text);font-weight:700;cursor:pointer
+    }
+    .btn2:hover{background:#f9fafb}
+    .hint{font-size:12px;color:var(--muted);margin-top:8px}
+    .msg{margin-top:10px;padding:10px 12px;border-radius:14px;border:1px solid var(--border);background:#fff;font-size:13px}
+    .ok{border-color:#bbf7d0;background:#ecfdf5}
+    .warn{border-color:#fde68a;background:#fffbeb}
+    .bad{border-color:#fecaca;background:#fef2f2}
+    .pillbar{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+    .pill{
+      padding:8px 10px;border-radius:999px;border:1px solid var(--border);background:#fff;
+      font-size:12px;color:var(--muted)
+    }
+    .mini{font-size:11px;color:var(--muted)}
+    .files{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+    .fileItem{font-size:12px;color:var(--muted)}
+    .sep{height:1px;background:var(--border);margin:12px 0}
+    .danger{color:var(--bad);font-weight:700}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">
+      <div class="logo">S</div>
+      <div>
+        <h1>Tespit Bildirim Ekranı</h1>
+        <div class="mini">Tespit → İlgili birime düşer. Yapıldı/ertelendi/eksik vb. güncellenebilir.</div>
+      </div>
+    </div>
+    <div class="chip" id="whoChip">👤 Oturum: -</div>
+  </div>
+
+  <div class="grid">
+    <!-- SOL: TESPİT OLUŞTUR -->
+    <div class="card">
+      <h2>📌 Yeni Tespit Oluştur</h2>
+      <p class="sub">Herkes tespit girebilir. Hedef birim seçilir, açıklama + yer + fotoğraf eklenebilir.</p>
+
+      <div class="row">
+        <div>
+          <label>Hedef Birim</label>
+          <select id="targetUnit">
+            <option value="Teknik">Teknik</option>
+            <option value="Temizlik">Temizlik</option>
+            <option value="Güvenlik">Güvenlik</option>
+            <option value="Saha">Saha</option>
+            <option value="Peyzaj">Peyzaj</option>
+            <option value="Yönetim">Yönetim</option>
+          </select>
+        </div>
+        <div>
+          <label>Öncelik</label>
+          <select id="priority">
+            <option value="Normal">Normal</option>
+            <option value="Acil">Acil</option>
+            <option value="Düşük">Düşük</option>
+          </select>
+        </div>
+      </div>
+
+      <label>Konu / Başlık</label>
+      <input id="title" placeholder="Örn: 550 Ada yürüyüş yolu lamba yanmıyor" />
+
+      <label>Konum / Alan</label>
+      <input id="location" placeholder="Örn: 550 Ada - Yürüyüş yolu - Blok A önü" />
+
+      <label>Açıklama</label>
+      <textarea id="desc" placeholder="Kısa ve net yaz: Ne gördün? Ne gerekiyor?"></textarea>
+
+      <label>Fotoğraf(lar) (opsiyonel) - En fazla 3 adet</label>
+      <input id="photos" type="file" accept="image/*" multiple />
+      <div class="files" id="fileList"></div>
+      <div class="hint">Not: Fotoğraflar otomatik küçültülerek gönderilir (mobil için hız).</div>
+
+      <div class="sep"></div>
+
+      <button class="btn" id="sendBtn">Gönder</button>
+      <div id="sendMsg" class="msg" style="display:none"></div>
+    </div>
+
+    <!-- SAĞ: DURUM GÜNCELLE -->
+    <div class="card">
+      <h2>✅ Durum Güncelle / Sonuç Ekle</h2>
+      <p class="sub">
+        Teknik/Temizlik işleri için: <b>Yapıldı</b>, <b>Ertelendi</b>, <b>Malzeme/Parça</b>, <b>Dış servis</b>, <b>Teklif</b> gibi seçenekler.
+        <span class="danger">Gelişmiş seçenekler</span> sadece <b>Teknik Şef</b> + <b>Saha Amir</b> için açıktır.
+      </p>
+
+      <label>Tespit ID (varsa)</label>
+      <input id="caseId" placeholder="Örn: TSP-20260209-001 gibi (yoksa boş bırakabilirsin)" />
+
+      <label>İlgili Birim</label>
+      <select id="caseUnit">
+        <option value="Teknik">Teknik</option>
+        <option value="Temizlik">Temizlik</option>
+        <option value="Güvenlik">Güvenlik</option>
+        <option value="Saha">Saha</option>
+        <option value="Peyzaj">Peyzaj</option>
+        <option value="Yönetim">Yönetim</option>
+      </select>
+
+      <label>Durum</label>
+      <select id="status">
+        <option value="Yapıldı">Yapıldı</option>
+        <option value="Ertelendi">Ertelendi</option>
+        <option value="Yarın Yapılacak">Yarın Yapılacak</option>
+        <option value="Zaman Yetmedi">Zaman Yetmedi</option>
+        <option value="Personel Eksik">Personel Eksik</option>
+        <option value="Malzeme Eksik">Malzeme Eksik</option>
+      </select>
+
+      <div id="advancedBox" style="display:none">
+        <label>Gelişmiş (Teknik Şef / Saha Amir)</label>
+        <select id="advancedStatus">
+          <option value="">Seç (opsiyonel)</option>
+          <option value="Dış Servis Çağrılacak">Dış Servis Çağrılacak</option>
+          <option value="Dış Servis Çağrıldı">Dış Servis Çağrıldı</option>
+          <option value="Dış Servis Geldi-Onardı">Dış Servis Geldi / Onardı</option>
+          <option value="Teklif Bekleniyor">Teklif Bekleniyor</option>
+          <option value="Teklif Alındı">Teklif Alındı</option>
+          <option value="Parça Bekleniyor">Parça Bekleniyor</option>
+        </select>
+        <div class="hint">Bu alanı personel görmez. Teknik Şef yoksa Saha Amir devralır.</div>
+      </div>
+
+      <label>Not / Açıklama</label>
+      <textarea id="statusNote" placeholder="Örn: Lamba değişti, foto eklendi / Yarın saat 10:00 planlandı"></textarea>
+
+      <label>Fotoğraf (opsiyonel) - 1 adet</label>
+      <input id="statusPhoto" type="file" accept="image/*" />
+      <div class="files" id="statusFileList"></div>
+
+      <div class="sep"></div>
+      <button class="btn2" id="updateBtn">Durumu Kaydet</button>
+      <div id="updateMsg" class="msg" style="display:none"></div>
+
+      <div class="pillbar">
+        <span class="pill">📩 17:00 yapılmayanlar (mail)</span>
+        <span class="pill">🕛 00:00 günlük rapor (mail)</span>
+        <span class="pill">⏱️ 24 saat SLA uyarı</span>
+      </div>
+      <div class="hint">Mail/rapor/SLA tarafı Apps Script’te tetikleyicilerle çalışır. Bu sayfa sadece veri gönderir.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+/** =========================
+ *  AYARLAR
+ *  ========================= */
+const API_URL = "https://script.google.com/macros/s/AKfycby0A6mQvJEK9VadLhAhUoiIk2xmDTsVIYT7zbulE7ZKXe24fwnA1bohLuKebV6c1ixulw/exec";
+
+/**
+ * Rol bazlı gelişmiş izin:
+ * - Teknik Şef
+ * - Saha Sorumlusu / Saha Amir (senin modelin)
+ */
+const ADVANCED_ROLES = new Set([
+  "Teknik Şef",
+  "Saha Sorumlusu",
+  "Saha Amir",
+  "Saha Amiri",
+  "Yönetim"
+]);
+
+/** =========================
+ *  OTURUM (login.html tarafında localStorage'a yazıldığı varsayımı)
+ *  Beklenen anahtarlar:
+ *  - se_user_name
+ *  - se_user_role
+ *  - se_user_unit
+ *  ========================= */
+function getSession(){
+  const name = localStorage.getItem("se_user_name") || "Bilinmiyor";
+  const role = localStorage.getItem("se_user_role") || "Personel";
+  const unit = localStorage.getItem("se_user_unit") || "";
+  return { name, role, unit };
+}
+
+function setWhoChip(){
+  const s = getSession();
+  document.getElementById("whoChip").textContent = `👤 Oturum: ${s.name} (${s.role})`;
+  // gelişmiş kutu
+  const adv = document.getElementById("advancedBox");
+  if (ADVANCED_ROLES.has(s.role)) adv.style.display = "block";
+}
+
+setWhoChip();
+
+/** =========================
+ *  FOTOĞRAF KÜÇÜLTME (mobil için)
+ *  - maxEdge: 1280
+ *  - kalite: 0.8
+ *  ========================= */
+function fileToResizedDataUrl(file, maxEdge=1280, quality=0.8){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error("Dosya okunamadı"));
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error("Görsel okunamadı"));
+      img.onload = () => {
+        let { width:w, height:h } = img;
+        const scale = Math.min(1, maxEdge / Math.max(w,h));
+        const nw = Math.round(w * scale);
+        const nh = Math.round(h * scale);
+
+        const canvas = document.createElement("canvas");
+        canvas.width = nw;
+        canvas.height = nh;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, nw, nh);
+
+        const dataUrl = canvas.toDataURL("image/jpeg", quality);
+        resolve(dataUrl);
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function showFiles(inputEl, listEl, max=3){
+  const files = Array.from(inputEl.files || []);
+  listEl.innerHTML = "";
+  files.slice(0,max).forEach(f=>{
+    const div = document.createElement("div");
+    div.className = "fileItem";
+    div.textContent = `• ${f.name}`;
+    listEl.appendChild(div);
+  });
+  if(files.length > max){
+    const div = document.createElement("div");
+    div.className = "fileItem";
+    div.innerHTML = `<span class="danger">• En fazla ${max} dosya gönderilir. Fazlası yok sayılır.</span>`;
+    listEl.appendChild(div);
+  }
+}
+
+document.getElementById("photos").addEventListener("change", e=>{
+  showFiles(e.target, document.getElementById("fileList"), 3);
+});
+document.getElementById("statusPhoto").addEventListener("change", e=>{
+  showFiles(e.target, document.getElementById("statusFileList"), 1);
+});
+
+/** =========================
+ *  API çağrısı (JSON POST)
+ *  ========================= */
+async function postJSON(payload){
+  const res = await fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type":"application/json" },
+    body: JSON.stringify(payload)
+  });
+  // Apps Script bazen HTML döndürürse hata yakalayalım
+  const text = await res.text();
+  let data;
+  try { data = JSON.parse(text); }
+  catch(e){ throw new Error("Sunucu JSON döndürmedi: " + text.slice(0,120)); }
+  if(!data.ok) throw new Error(data.error || "Bilinmeyen hata");
+  return data;
+}
+
+function showMsg(el, type, text){
+  el.style.display = "block";
+  el.className = "msg " + (type || "");
+  el.textContent = text;
+}
+
+/** =========================
+ *  1) TESPİT GÖNDER
+ *  ========================= */
+document.getElementById("sendBtn").addEventListener("click", async ()=>{
+  const msgEl = document.getElementById("sendMsg");
+  msgEl.style.display = "none";
+
+  const s = getSession();
+  const targetUnit = document.getElementById("targetUnit").value;
+  const priority = document.getElementById("priority").value;
+  const title = document.getElementById("title").value.trim();
+  const location = document.getElementById("location").value.trim();
+  const desc = document.getElementById("desc").value.trim();
+
+  if(!title || !desc){
+    showMsg(msgEl, "warn", "Başlık ve açıklama zorunlu.");
+    return;
+  }
+
+  const files = Array.from(document.getElementById("photos").files || []).slice(0,3);
+
+  try{
+    showMsg(msgEl, "", "Gönderiliyor…");
+
+    const photos = [];
+    for(const f of files){
+      const dataUrl = await fileToResizedDataUrl(f);
+      photos.push({ name: f.name, dataUrl }); // base64 dataUrl
+    }
+
+    const payload = {
+      action: "createCase",
+      createdAt: new Date().toISOString(),
+      createdBy: { name: s.name, role: s.role, unit: s.unit },
+      targetUnit,
+      priority,
+      title,
+      location,
+      desc,
+      photos
+    };
+
+    const data = await postJSON(payload);
+    const caseId = data.caseId || data.id || "(id dönmedi)";
+
+    showMsg(msgEl, "ok", `✅ Tespit kaydedildi. ID: ${caseId}`);
+    // form sıfırla
+    document.getElementById("title").value = "";
+    document.getElementById("location").value = "";
+    document.getElementById("desc").value = "";
+    document.getElementById("photos").value = "";
+    document.getElementById("fileList").innerHTML = "";
+    // ID'yi sağ tarafa da yaz
+    document.getElementById("caseId").value = caseId;
+
+  }catch(err){
+    showMsg(msgEl, "bad", "❌ Hata: " + err.message);
+  }
+});
+
+/** =========================
+ *  2) DURUM GÜNCELLE
+ *  ========================= */
+document.getElementById("updateBtn").addEventListener("click", async ()=>{
+  const msgEl = document.getElementById("updateMsg");
+  msgEl.style.display = "none";
+
+  const s = getSession();
+  const caseId = document.getElementById("caseId").value.trim();
+  const caseUnit = document.getElementById("caseUnit").value;
+  const status = document.getElementById("status").value;
+  const advancedStatus = (document.getElementById("advancedStatus").value || "").trim();
+  const note = document.getElementById("statusNote").value.trim();
+
+  if(!caseId){
+    showMsg(msgEl, "warn", "Tespit ID girmen lazım (yoksa önce tespit oluştur).");
+    return;
+  }
+
+  // gelişmiş statü yetki kontrolü
+  if(advancedStatus && !ADVANCED_ROLES.has(s.role)){
+    showMsg(msgEl, "bad", "Bu gelişmiş seçenek sadece Teknik Şef / Saha Amir için açık.");
+    return;
+  }
+
+  const file = (document.getElementById("statusPhoto").files || [])[0];
+
+  try{
+    showMsg(msgEl, "", "Kaydediliyor…");
+
+    let photo = null;
+    if(file){
+      const dataUrl = await fileToResizedDataUrl(file);
+      photo = { name:file.name, dataUrl };
+    }
+
+    const payload = {
+      action: "updateCase",
+      updatedAt: new Date().toISOString(),
+      updatedBy: { name: s.name, role: s.role, unit: s.unit },
+      caseId,
+      caseUnit,
+      status,
+      advancedStatus,
+      note,
+      photo
+    };
+
+    const data = await postJSON(payload);
+    showMsg(msgEl, "ok", "✅ Durum kaydedildi.");
+    document.getElementById("statusNote").value = "";
+    document.getElementById("statusPhoto").value = "";
+    document.getElementById("statusFileList").innerHTML = "";
+
+  }catch(err){
+    showMsg(msgEl, "bad", "❌ Hata: " + err.message);
+  }
+});
+</script>
+</body>
+</html>
