@@ -1,78 +1,133 @@
 <!doctype html>
 <html lang="tr">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Spradon Hafıza • Ürün Kartı</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Spradon Hafıza • Stok / Depo Yönetimi</title>
   <style>
     :root{
-      --bg:#f4f6fb; --text:#111827; --muted:#6b7280; --card:#fff;
-      --border:#e5e7eb; --primary:#1d4ed8; --primary2:#2563eb;
-      --danger:#dc2626; --shadow:0 10px 25px rgba(0,0,0,.08);
-      --radius:16px;
+      --bg:#f4f6fb; --text:#111827; --muted:#6b7280; --card:#ffffff; --line:#e5e7eb;
+      --pri:#2563eb; --pri2:#1d4ed8; --ok:#16a34a; --warn:#f59e0b;
+      --r:16px; --shadow:0 10px 25px rgba(0,0,0,.08);
     }
     *{box-sizing:border-box}
     body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
-    .wrap{max-width:980px;margin:28px auto;padding:0 16px}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px}
-    h1{margin:0 0 6px;font-size:26px}
-    .sub{color:var(--muted);margin:0 0 18px}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-    label{font-size:13px;color:var(--muted);display:block;margin:0 0 6px}
-    input,select,textarea{
-      width:100%;padding:12px 12px;border:1px solid var(--border);border-radius:12px;
-      outline:none;font-size:14px;background:#fff;
+    .wrap{max-width:980px;margin:0 auto;padding:24px}
+    h1{margin:0;font-size:22px}
+    .sub{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.4}
+    .top{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+    .pill{display:inline-flex;gap:8px;align-items:center;background:#eef2ff;color:#3730a3;
+      padding:8px 10px;border-radius:999px;font-size:12px;border:1px solid #e0e7ff}
+    .grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:16px}
+    @media (max-width:920px){.grid{grid-template-columns:1fr}}
+    .card{
+      background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+      box-shadow:var(--shadow);padding:18px;display:flex;flex-direction:column;gap:10px;
+      min-height:170px
     }
-    textarea{min-height:92px;resize:vertical}
-    .row{margin-top:10px}
-    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .card h2{margin:0;font-size:16px;display:flex;gap:8px;align-items:center}
+    .card p{margin:0;color:var(--muted);font-size:13px;line-height:1.4}
+    .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:auto}
     .btn{
-      border:0;border-radius:12px;padding:12px 14px;font-weight:700;cursor:pointer;
-      display:inline-flex;align-items:center;gap:8px
+      border:0;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer;
+      display:inline-flex;gap:8px;align-items:center;text-decoration:none;justify-content:center
     }
-    .btn.primary{background:var(--primary);color:#fff}
-    .btn.primary:hover{background:var(--primary2)}
+    .btn.pri{background:var(--pri);color:#fff}
+    .btn.pri:hover{background:var(--pri2)}
     .btn.gray{background:#e5e7eb;color:#111827}
-    .btn.danger{background:var(--danger);color:#fff}
-    .note{margin-top:10px;color:var(--muted);font-size:13px}
-    .ok{color:#065f46}
+    .btn.gray:hover{background:#d1d5db}
+    .kpi{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .k{background:#f9fafb;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:12px;color:var(--muted)}
+    .k b{color:var(--text)}
+    .foot{margin-top:14px;color:var(--muted);font-size:12px;text-align:center}
+    .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace}
     .warn{color:#92400e}
-    .err{color:#991b1b}
-    .bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;padding:12px;border:1px dashed var(--border);border-radius:12px;background:#fafafa}
-    .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-size:12px}
-    @media (max-width:820px){ .grid{grid-template-columns:1fr} }
   </style>
 </head>
 <body>
-  <div class="wrap">
+<div class="wrap">
+
+  <div class="top">
+    <div>
+      <h1>📦 Stok / Depo Yönetimi</h1>
+      <div class="sub">
+        Ürün kartı (foto zorunlu) → stoktan düşüm → offline kayıt → müdür onay & rapor akışı.
+      </div>
+      <div class="kpi">
+        <div class="k">Offline bekleyen (ürün kartı): <b id="qUrun">0</b></div>
+        <div class="k">Offline bekleyen (stok çıkış): <b id="qCikis">0</b></div>
+        <div class="k">Bağlantı: <b id="netState">?</b></div>
+      </div>
+    </div>
+    <div class="pill">
+      <span>Modül:</span>
+      <span class="mono">STOK v1</span>
+    </div>
+  </div>
+
+  <div class="grid">
     <div class="card">
-      <h1>📦 Ürün Kartı Oluştur</h1>
-      <p class="sub">Fotoğraf zorunlu. Ürün kartı oluşturulunca stok panelinde seçilebilir hale gelecek.</p>
+      <h2>🧾 Ürün Kartı Oluştur</h2>
+      <p>Her ürün için fotoğraf zorunlu. Ürün adı + birim + başlangıç stok + minimum stok girilir.</p>
+      <div class="btns">
+        <a class="btn pri" href="stok-urun.html">Aç</a>
+      </div>
+    </div>
 
-      <div class="grid">
-        <div>
-          <label>Ürün Adı (zorunlu)</label>
-          <input id="urun" placeholder="Örn: 45’lik maşon" />
-        </div>
+    <div class="card">
+      <h2>📤 Stoktan Ürün Çıkışı</h2>
+      <p>Ürünü kim aldı (zorunlu) + miktar + ekip + açıklama. İnternet yoksa cihazda saklar.</p>
+      <div class="btns">
+        <a class="btn pri" href="stok-cikis.html">Aç</a>
+      </div>
+    </div>
 
-        <div>
-          <label>Birim (zorunlu)</label>
-          <select id="birim">
-            <option value="">Seçiniz</option>
-            <option>Adet</option>
-            <option>Kutu</option>
-            <option>Paket</option>
-            <option>Metre</option>
-            <option>Kilogram</option>
-            <option>Litre</option>
-            <option>Rulo</option>
-          </select>
-        </div>
+    <div class="card">
+      <h2>✅ Müdür Onay & Rapor</h2>
+      <p class="warn">Bir sonraki adımda açıyoruz: Onay kutusu + not + günlük/aylık rapor ekranı.</p>
+      <div class="btns">
+        <a class="btn gray" href="stok-rapor.html">Hazırlanıyor</a>
+      </div>
+    </div>
+  </div>
 
-        <div>
-          <label>Başlangıç Miktarı (zorunlu)</label>
-          <input id="miktar" type="number" min="0" step="1" placeholder="Örn: 50" />
-        </div>
+  <div class="btns" style="margin-top:14px">
+    <a class="btn gray" href="merkez.html">↩️ Merkez Panele Dön</a>
+  </div>
 
-        <div>
-          <label>
+  <div class="foot">Spradon Hafıza © 2026 • Akıllı Site Operasyon Sistemi</div>
+</div>
+
+<script>
+  // Offline queue key’leri (sayfalardakiyle uyumlu)
+  const Q_URUN  = "SPRADON_STOK_URUN_QUEUE_V1";
+  const Q_CIKIS = "SPRADON_STOK_CIKIS_QUEUE_V1"; // stok-cikis.html sayfasında bunu kullanacağız
+
+  const el = (id)=>document.getElementById(id);
+
+  function safeCount(key){
+    try{
+      const arr = JSON.parse(localStorage.getItem(key)||"[]");
+      return Array.isArray(arr) ? arr.length : 0;
+    }catch(e){ return 0; }
+  }
+
+  function netUpdate(){
+    el("netState").textContent = navigator.onLine ? "Online" : "Offline";
+  }
+
+  (function init(){
+    el("qUrun").textContent = String(safeCount(Q_URUN));
+    el("qCikis").textContent = String(safeCount(Q_CIKIS));
+    netUpdate();
+    window.addEventListener("online", ()=>{ netUpdate(); });
+    window.addEventListener("offline", ()=>{ netUpdate(); });
+    // panel açıkken sayılar değişirse (diğer sekmede kayıt)
+    window.addEventListener("storage", ()=>{
+      el("qUrun").textContent = String(safeCount(Q_URUN));
+      el("qCikis").textContent = String(safeCount(Q_CIKIS));
+    });
+  })();
+</script>
+</body>
+</html>
