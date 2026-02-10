@@ -1,153 +1,123 @@
-<!doctype html>
-<html lang="tr" translate="no">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="UTF-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spradon Hafıza – Güvenlik</title>
 
-  <!-- TRANSLATION HARDENING (cross-browser best effort) -->
-  <meta http-equiv="Content-Language" content="tr" />
-  <meta name="google" content="notranslate" />
-  <meta name="robots" content="notranslate" />
-  <meta name="bingbot" content="notranslate" />
-  <meta name="yandex" content="notranslate" />
-  <!-- Some translators respect this -->
-  <meta name="translation" content="no" />
-  <meta name="x-translate" content="no" />
-
-  <title>Security Photo Upload</title>
-
-  <style>
-    /* Make sure translator overlays do not reflow core UI */
-    html,body{margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#0b1220;color:#e5e7eb}
-    .wrap{max-width:760px;margin:0 auto;padding:16px}
-    .card{background:#111827;border:1px solid rgba(148,163,184,.18);border-radius:16px;padding:14px;margin:10px 0}
-    label{display:block;font-size:12px;color:#94a3b8;margin:10px 0 6px}
-    input,select,textarea{width:100%;box-sizing:border-box;background:#0b1220;color:#e5e7eb;border:1px solid rgba(148,163,184,.22);border-radius:12px;padding:12px;font-size:14px}
-    button{border:0;border-radius:12px;padding:12px 14px;font-weight:700;cursor:pointer}
-    .primary{background:#2563eb;color:#fff}
-    .secondary{background:#334155;color:#e2e8f0}
-    .status{margin-top:10px;font-weight:700}
-    .ok{color:#86efac}.warn{color:#fde68a}.bad{color:#fecaca}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    @media(max-width:640px){.row{grid-template-columns:1fr}}
-    /* Notranslate class (many translators respect this) */
-    .notranslate{translate:no}
-  </style>
+<style>
+body { font-family: Arial, sans-serif; background:#f4f6f8; padding:20px; }
+h1 { font-size:20px; }
+button { padding:10px 14px; margin-top:10px; }
+input, textarea, select { width:100%; margin-top:6px; padding:8px; }
+.log { margin-top:10px; font-size:13px; }
+.ok { color:green; }
+.err { color:red; }
+</style>
 </head>
 
 <body>
-  <!-- Keep app inside a single root and mark it notranslate -->
-  <div id="appRoot" class="wrap notranslate" translate="no" data-no-translate="1">
-    <div class="card">
-      <div style="font-weight:900;font-size:18px">📸 Security Photo Upload</div>
-      <div style="margin-top:6px;color:#94a3b8;font-size:13px;line-height:1.45">
-        This page is translation-hardened. Even if a browser tries to translate, inputs/events are bound by <b>IDs</b>
-        and core blocks are marked <b>notranslate</b>.
-      </div>
-    </div>
+<h1>Güvenlik Tespit Bildirimi</h1>
 
-    <div class="card notranslate" translate="no">
-      <div class="row">
-        <div>
-          <label for="personName">Person Name</label>
-          <input id="personName" autocomplete="off" placeholder="e.g., Akin Durmus" />
-        </div>
-        <div>
-          <label for="personId">Person ID</label>
-          <input id="personId" autocomplete="off" placeholder="e.g., A101" />
-        </div>
-      </div>
+<label>Birim</label>
+<select id="birim">
+  <option value="Guvenlik">Güvenlik</option>
+  <option value="Teknik">Teknik</option>
+  <option value="Temizlik">Temizlik</option>
+  <option value="Peyzaj">Peyzaj</option>
+</select>
 
-      <div class="row">
-        <div>
-          <label for="unit">Unit</label>
-          <select id="unit">
-            <option value="">— Select —</option>
-            <option>Security</option>
-            <option>Technical</option>
-            <option>Cleaning</option>
-            <option>Management</option>
-          </select>
-        </div>
-        <div>
-          <label for="date">Date</label>
-          <input id="date" type="date" />
-        </div>
-      </div>
+<label>Açıklama</label>
+<textarea id="aciklama" placeholder="Kısa açıklama"></textarea>
 
-      <label for="note">Note (optional)</label>
-      <textarea id="note" placeholder="Short note…"></textarea>
+<label>Fotoğraf</label>
+<input type="file" id="foto" accept="image/*" capture="environment">
 
-      <label for="photos">Photos (optional)</label>
-      <input id="photos" type="file" accept="image/*" multiple />
+<button onclick="submitForm()">Gönder</button>
 
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
-        <button id="btnSend" class="primary" type="button">Send</button>
-        <button id="btnClear" class="secondary" type="button">Clear</button>
-      </div>
-
-      <div id="status" class="status"></div>
-    </div>
-
-    <div class="card notranslate" translate="no">
-      <div style="font-weight:900;margin-bottom:8px">⚙️ Backend (GAS) URL</div>
-      <input id="gasUrl" placeholder="https://script.google.com/macros/s/XXXX/exec" />
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
-        <button id="btnSave" class="secondary" type="button">Save</button>
-        <button id="btnTest" class="secondary" type="button">Test (GET)</button>
-        <button id="btnFlush" class="primary" type="button">Send Offline Queue</button>
-      </div>
-      <div id="testOut" style="margin-top:10px;color:#94a3b8;font-size:12px"></div>
-      <div id="qOut" style="margin-top:6px;color:#94a3b8;font-size:12px"></div>
-    </div>
-  </div>
+<div class="log" id="log"></div>
 
 <script>
-/**
- * WHY THIS WORKS (cross-browser):
- * - We do NOT rely on visible text (which translators change). Only element IDs.
- * - We mark app blocks translate="no" + class notranslate (best-effort across engines).
- * - We keep all controls inside one root container, reducing translator DOM rewrite risk.
- * - Offline queue uses localStorage (works on iOS Safari too).
- * - We never depend on Chrome-only APIs.
- */
+/**** CONFIG (DOLDURULMUŞ) ****/
+const GAS_WEBAPP_URL =
+"https://script.google.com/macros/s/AKfycbxnORQbPdpPw9KuvskTWeT1LtucQPoeOqg6pn78BIYoHu8LBD8TpGCa8A0AuAhjqwPnxg/exec";
 
-const LS_GAS_URL = "spradon_gas_url";
-const LS_Q = "spradon_offline_queue_v1";
-
-const $ = (id)=> document.getElementById(id);
-
-function setStatus(msg, kind){
-  const el = $("status");
-  el.textContent = msg || "";
-  el.className = "status " + (kind || "");
+/**** OFFLINE STORE ****/
+function getQueue(){
+  return JSON.parse(localStorage.getItem("offlineQueue") || "[]");
+}
+function saveQueue(q){
+  localStorage.setItem("offlineQueue", JSON.stringify(q));
 }
 
-function setTest(msg){ $("testOut").textContent = msg || ""; }
-
-function isoDate(d=new Date()){
-  const z=n=>String(n).padStart(2,"0");
-  return ${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())};
+/**** IMAGE ****/
+function fileToBase64(file){
+  return new Promise((resolve,reject)=>{
+    const r = new FileReader();
+    r.onload = ()=>resolve(r.result.split(",")[1]);
+    r.onerror = reject;
+    r.readAsDataURL(file);
+  });
 }
 
-function loadGasUrl(){
-  const v = localStorage.getItem(LS_GAS_URL) || "";
-  $("gasUrl").value = v;
-  return v;
-}
-function saveGasUrl(v){
-  localStorage.setItem(LS_GAS_URL, (v||"").trim());
-}
-
-function loadQ(){
-  try { return JSON.parse(localStorage.getItem(LS_Q) || "[]"); }
-  catch { return []; }
-}
-function saveQ(q){
-  localStorage.setItem(LS_Q, JSON.stringify(q || []));
-  $("qOut").textContent = Offline queue: ${loadQ().length};
+/**** SEND ****/
+async function send(payload){
+  await fetch(GAS_WEBAPP_URL,{
+    method:"POST",
+    mode:"no-cors",
+    body:JSON.stringify(payload)
+  });
+  return true;
 }
 
-function getGasOrThrow(){
-  const url = (localStorage.getItem(LS_GAS_URL) || "").trim();
-  if(!url
+/**** SUBMIT ****/
+async function submitForm(){
+  const birim = document.getElementById("birim").value;
+  const aciklama = document.getElementById("aciklama").value;
+  const fotoInput = document.getElementById("foto");
+  const log = document.getElementById("log");
+
+  let foto64 = "";
+  if (fotoInput.files[0]){
+    foto64 = await fileToBase64(fotoInput.files[0]);
+  }
+
+  const payload = {
+    action: "TESPIT",
+    birim,
+    aciklama,
+    foto: foto64,
+    time: new Date().toISOString()
+  };
+
+  try{
+    await send(payload);
+    log.innerHTML = "<span class='ok'>Gönderildi</span>";
+  }catch(e){
+    const q = getQueue();
+    q.push(payload);
+    saveQueue(q);
+    log.innerHTML = "<span class='err'>Offline kaydedildi</span>";
+  }
+}
+
+/**** RESEND OFFLINE ****/
+async function resendOffline(){
+  let q = getQueue();
+  if (!q.length) return;
+  let sent = [];
+  for (let i=0;i<q.length;i++){
+    try{
+      await send(q[i]);
+      sent.push(i);
+    }catch(e){}
+  }
+  q = q.filter((_,i)=>!sent.includes(i));
+  saveQueue(q);
+}
+
+window.addEventListener("online", resendOffline);
+</script>
+</body>
+</html>
