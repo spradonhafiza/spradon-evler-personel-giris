@@ -1,133 +1,219 @@
 <!doctype html>
 <html lang="tr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Spradon Hafıza • Stok / Depo Yönetimi</title>
-  <style>
-    :root{
-      --bg:#f4f6fb; --text:#111827; --muted:#6b7280; --card:#ffffff; --line:#e5e7eb;
-      --pri:#2563eb; --pri2:#1d4ed8; --ok:#16a34a; --warn:#f59e0b;
-      --r:16px; --shadow:0 10px 25px rgba(0,0,0,.08);
-    }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
-    .wrap{max-width:980px;margin:0 auto;padding:24px}
-    h1{margin:0;font-size:22px}
-    .sub{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.4}
-    .top{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
-    .pill{display:inline-flex;gap:8px;align-items:center;background:#eef2ff;color:#3730a3;
-      padding:8px 10px;border-radius:999px;font-size:12px;border:1px solid #e0e7ff}
-    .grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:16px}
-    @media (max-width:920px){.grid{grid-template-columns:1fr}}
-    .card{
-      background:var(--card);border:1px solid var(--line);border-radius:var(--r);
-      box-shadow:var(--shadow);padding:18px;display:flex;flex-direction:column;gap:10px;
-      min-height:170px
-    }
-    .card h2{margin:0;font-size:16px;display:flex;gap:8px;align-items:center}
-    .card p{margin:0;color:var(--muted);font-size:13px;line-height:1.4}
-    .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:auto}
-    .btn{
-      border:0;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer;
-      display:inline-flex;gap:8px;align-items:center;text-decoration:none;justify-content:center
-    }
-    .btn.pri{background:var(--pri);color:#fff}
-    .btn.pri:hover{background:var(--pri2)}
-    .btn.gray{background:#e5e7eb;color:#111827}
-    .btn.gray:hover{background:#d1d5db}
-    .kpi{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-    .k{background:#f9fafb;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:12px;color:var(--muted)}
-    .k b{color:var(--text)}
-    .foot{margin-top:14px;color:var(--muted);font-size:12px;text-align:center}
-    .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace}
-    .warn{color:#92400e}
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Spradon Hafıza • Stok Paneli</title>
+<style>
+:root{
+  --bg:#f4f6fb; --text:#111827; --muted:#6b7280;
+  --card:#ffffff; --line:#e5e7eb;
+  --pri:#2563eb; --pri2:#1d4ed8; --gray:#e5e7eb;
+  --ok:#16a34a; --warn:#b45309; --bad:#b91c1c;
+  --r:16px; --shadow:0 10px 25px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
+.wrap{max-width:980px;margin:0 auto;padding:24px}
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap}
+h1{margin:0;font-size:22px}
+.sub{color:var(--muted);font-size:13px;margin-top:6px;line-height:1.4}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:18px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(240px,1fr));gap:14px;margin-top:14px}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.item{display:flex;flex-direction:column;gap:10px}
+.item h2{margin:0;font-size:16px}
+.item p{margin:0;color:var(--muted);font-size:13px;line-height:1.4}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+button,a{
+  border:0;border-radius:12px;padding:10px 14px;font-weight:800;
+  cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px
+}
+.primary{background:var(--pri);color:#fff}
+.primary:hover{background:var(--pri2)}
+.gray{background:var(--gray);color:#111827}
+.small{font-size:12px;color:var(--muted);line-height:1.4}
+.msg{margin-top:10px;font-size:13px}
+.ok{color:var(--ok)} .warn{color:var(--warn)} .bad{color:var(--bad)}
+input{
+  width:100%;border:1px solid var(--line);border-radius:12px;
+  padding:10px 12px;margin-top:6px;font-size:14px;background:#fff
+}
+.hr{height:1px;background:var(--line);margin:14px 0}
+</style>
 </head>
+
 <body>
 <div class="wrap">
-
-  <div class="top">
-    <div>
-      <h1>📦 Stok / Depo Yönetimi</h1>
-      <div class="sub">
-        Ürün kartı (foto zorunlu) → stoktan düşüm → offline kayıt → müdür onay & rapor akışı.
+  <div class="card">
+    <div class="top">
+      <div>
+        <h1>📦 Stok / Depo Yönetimi</h1>
+        <div class="sub">
+          Ürün kartı oluştur → stoktan düş → offline kayıtları gönder → rapor/denetim altyapısı.
+        </div>
       </div>
-      <div class="kpi">
-        <div class="k">Offline bekleyen (ürün kartı): <b id="qUrun">0</b></div>
-        <div class="k">Offline bekleyen (stok çıkış): <b id="qCikis">0</b></div>
-        <div class="k">Bağlantı: <b id="netState">?</b></div>
+      <a class="gray" href="merkez.html">↩️ Merkez Panele Dön</a>
+    </div>
+
+    <div class="grid">
+      <div class="card item" style="box-shadow:none">
+        <h2>🧾 1) Ürün Kartı Oluştur</h2>
+        <p>Fotoğraf zorunlu. Ürün adı + birim + başlangıç miktarı. Ürün, diğer ekranlarda listede görünür.</p>
+        <div class="row">
+          <a class="primary" href="stok-urun.html">Aç</a>
+        </div>
+        <div class="small">Dosya: <b>stok-urun.html</b></div>
+      </div>
+
+      <div class="card item" style="box-shadow:none">
+        <h2>⬇️ 2) Stoktan Ürün Çıkışı</h2>
+        <p>Ürün + miktar + ürünü alan kişi zorunlu. İnternet yoksa cihazda saklar.</p>
+        <div class="row">
+          <a class="primary" href="stok-cikis.html">Aç</a>
+        </div>
+        <div class="small">Dosya: <b>stok-cikis.html</b></div>
+      </div>
+
+      <div class="card item" style="box-shadow:none">
+        <h2>📤 3) Offline Kayıtları Gönder</h2>
+        <p>Depoda offline kalan ürün kartı/çıkış kayıtlarını tek tuşla backend’e yollar.</p>
+
+        <label class="small"><b>GAS URL</b> (…/exec)</label>
+        <input id="gasUrl" placeholder="https://script.google.com/macros/s/.../exec">
+
+        <div class="row" style="margin-top:10px">
+          <button class="gray" onclick="saveGas()">💾 Kaydet</button>
+          <button class="primary" onclick="flushOffline()">Gönder</button>
+        </div>
+
+        <div id="syncMsg" class="msg"></div>
+        <div class="small">Not: Gönderim başarısız olursa kayıtları <b>silmez</b>, tekrar deneyebilirsin.</div>
       </div>
     </div>
-    <div class="pill">
-      <span>Modül:</span>
-      <span class="mono">STOK v1</span>
+
+    <div class="hr"></div>
+    <div class="small">
+      <b>Sonraki adım:</b> Müdür onayı + rapor ekranı (rol bazlı görünürlük) + aylık/yıllık rapor otomasyonu.
     </div>
   </div>
-
-  <div class="grid">
-    <div class="card">
-      <h2>🧾 Ürün Kartı Oluştur</h2>
-      <p>Her ürün için fotoğraf zorunlu. Ürün adı + birim + başlangıç stok + minimum stok girilir.</p>
-      <div class="btns">
-        <a class="btn pri" href="stok-urun.html">Aç</a>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>📤 Stoktan Ürün Çıkışı</h2>
-      <p>Ürünü kim aldı (zorunlu) + miktar + ekip + açıklama. İnternet yoksa cihazda saklar.</p>
-      <div class="btns">
-        <a class="btn pri" href="stok-cikis.html">Aç</a>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>✅ Müdür Onay & Rapor</h2>
-      <p class="warn">Bir sonraki adımda açıyoruz: Onay kutusu + not + günlük/aylık rapor ekranı.</p>
-      <div class="btns">
-        <a class="btn gray" href="stok-rapor.html">Hazırlanıyor</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="btns" style="margin-top:14px">
-    <a class="btn gray" href="merkez.html">↩️ Merkez Panele Dön</a>
-  </div>
-
-  <div class="foot">Spradon Hafıza © 2026 • Akıllı Site Operasyon Sistemi</div>
 </div>
 
 <script>
-  // Offline queue key’leri (sayfalardakiyle uyumlu)
-  const Q_URUN  = "SPRADON_STOK_URUN_QUEUE_V1";
-  const Q_CIKIS = "SPRADON_STOK_CIKIS_QUEUE_V1"; // stok-cikis.html sayfasında bunu kullanacağız
+const KEY_PRODUCTS_QUEUE = "SPRADON_STOK_URUN_QUEUE_V1";
+const KEY_OUT_QUEUE      = "SPRADON_STOK_CIKIS_QUEUE_V1";
+const KEY_GAS_URL        = "SPRADON_GAS_URL_V1";
 
-  const el = (id)=>document.getElementById(id);
+const $ = (id)=>document.getElementById(id);
+function setMsg(html){ $("syncMsg").innerHTML = html; }
 
-  function safeCount(key){
+function loadJson(key, fallback){
+  try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
+  catch(e){ return fallback; }
+}
+function saveJson(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
+
+function saveGas(){
+  const url = $("gasUrl").value.trim();
+  if(!url || !url.includes("/exec")){
+    setMsg("<div class='bad'>⚠️ Link boş ya da /exec değil gibi.</div>");
+    return;
+  }
+  localStorage.setItem(KEY_GAS_URL, url);
+  setMsg("<div class='ok'>✅ GAS linki kaydedildi.</div>");
+}
+
+function getGas(){ return localStorage.getItem(KEY_GAS_URL) || ""; }
+
+async function postJson(url, obj){
+  const res = await fetch(url, {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify(obj)
+  });
+  const txt = await res.text();
+  if(!res.ok) throw new Error("HTTP "+res.status+": "+txt);
+  return txt;
+}
+
+async function flushOffline(){
+  const url = getGas() || $("gasUrl").value.trim();
+  if(!url){
+    setMsg("<div class='bad'>⚠️ Önce GAS linki girip kaydet.</div>");
+    return;
+  }
+
+  const prodQ = loadJson(KEY_PRODUCTS_QUEUE, []);
+  const outQ  = loadJson(KEY_OUT_QUEUE, []);
+
+  if(!prodQ.length && !outQ.length){
+    setMsg("<div class='warn'>ℹ️ Gönderilecek offline kayıt yok.</div>");
+    return;
+  }
+
+  setMsg("<div class='warn'>⏳ Gönderiliyor…</div>");
+
+  let sent=0, fail=0;
+
+  // Ürün kartları
+  for(const p of prodQ){
     try{
-      const arr = JSON.parse(localStorage.getItem(key)||"[]");
-      return Array.isArray(arr) ? arr.length : 0;
-    }catch(e){ return 0; }
+      let base64 = "";
+      if(p.foto && String(p.foto).startsWith("data:")){
+        base64 = String(p.foto).split(",")[1] || "";
+      }
+      const payload = {
+        action: "STOK_URUN",
+        urun: p.urun || "",
+        birim: p.birim || "",
+        baslangic: Number(p.miktar || 0),
+        zaman: p.zaman || new Date().toISOString(),
+        foto: base64 ? { base64, mimeType:"image/jpeg", name:(p.urun||"urun")+".jpg" } : null
+      };
+      await postJson(url, payload);
+      sent++;
+    }catch(e){ fail++; }
   }
 
-  function netUpdate(){
-    el("netState").textContent = navigator.onLine ? "Online" : "Offline";
+  // Çıkışlar
+  for(const r of outQ){
+    try{
+      let base64 = "";
+      if(r.fotoBase64 && String(r.fotoBase64).startsWith("data:")){
+        base64 = String(r.fotoBase64).split(",")[1] || "";
+      }
+      const payload = {
+        action: "STOK_CIKIS",
+        id: r.id,
+        urun: r.urun,
+        miktar: r.miktar,
+        birim: r.birim,
+        ekip: r.ekip,
+        alanKisi: r.alanKisi,
+        aciklama: r.aciklama,
+        zaman: r.zaman,
+        foto: base64 ? { base64, mimeType:"image/jpeg", name:r.id+".jpg" } : null
+      };
+      await postJson(url, payload);
+      sent++;
+    }catch(e){ fail++; }
   }
 
-  (function init(){
-    el("qUrun").textContent = String(safeCount(Q_URUN));
-    el("qCikis").textContent = String(safeCount(Q_CIKIS));
-    netUpdate();
-    window.addEventListener("online", ()=>{ netUpdate(); });
-    window.addEventListener("offline", ()=>{ netUpdate(); });
-    // panel açıkken sayılar değişirse (diğer sekmede kayıt)
-    window.addEventListener("storage", ()=>{
-      el("qUrun").textContent = String(safeCount(Q_URUN));
-      el("qCikis").textContent = String(safeCount(Q_CIKIS));
-    });
-  })();
+  if(fail===0){
+    saveJson(KEY_PRODUCTS_QUEUE, []);
+    saveJson(KEY_OUT_QUEUE, []);
+    localStorage.setItem(KEY_GAS_URL, url);
+    $("gasUrl").value = url;
+    setMsg("<div class='ok'>✅ Hepsi gönderildi. ("+sent+")</div>");
+  }else{
+    setMsg("<div class='warn'>⚠️ Kısmi gönderim. Gönderilen "+sent+", hata "+fail+
+      ". (Güvenlik için kayıtlar silinmedi.)</div>");
+  }
+}
+
+(function init(){
+  $("gasUrl").value = getGas() || "";
+})();
 </script>
 </body>
 </html>
