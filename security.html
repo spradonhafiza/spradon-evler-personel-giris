@@ -1,312 +1,153 @@
-<!DOCTYPE html>
-<html lang="tr">
+<!doctype html>
+<html lang="tr" translate="no">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Güvenlik Bildirimi (Fotoğraflı)</title>
+
+  <!-- TRANSLATION HARDENING (cross-browser best effort) -->
+  <meta http-equiv="Content-Language" content="tr" />
+  <meta name="google" content="notranslate" />
+  <meta name="robots" content="notranslate" />
+  <meta name="bingbot" content="notranslate" />
+  <meta name="yandex" content="notranslate" />
+  <!-- Some translators respect this -->
+  <meta name="translation" content="no" />
+  <meta name="x-translate" content="no" />
+
+  <title>Security Photo Upload</title>
+
   <style>
-    body { font-family: Arial, sans-serif; background:#f4f4f4; padding:20px; }
-    .kutu { background:#fff; padding:16px; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,.08); max-width:520px; margin:0 auto 14px; }
-    h2 { margin:0 0 10px; }
-    label { font-weight:600; display:block; margin:10px 0 6px; }
-    input, select, textarea, button { width:100%; padding:12px; border-radius:10px; border:1px solid #ddd; font-size:16px; box-sizing:border-box; }
-    textarea { min-height:90px; resize:vertical; }
-    .row { display:flex; gap:10px; }
-    .row > * { flex:1; }
-    button { cursor:pointer; border:none; font-weight:700; }
-    .btn { background:#2563eb; color:#fff; }
-    .btn2 { background:#e5e7eb; color:#111827; }
-    .btnWarn { background:#0ea5e9; color:#fff; }
-    .mini { font-size:13px; color:#6b7280; margin-top:6px; }
-    .ok { color:#16a34a; font-weight:700; }
-    .err { color:#dc2626; font-weight:700; }
-    .warn { color:#b45309; font-weight:700; }
-    .line { height:1px; background:#eee; margin:14px 0; }
-    .pill { display:inline-block; padding:6px 10px; border-radius:999px; background:#f3f4f6; font-size:13px; }
-    .smallBtnRow { display:flex; gap:10px; }
-    .smallBtnRow button { width:auto; flex:1; }
-    .kv { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size:12px; background:#0b1220; color:#c7d2fe; padding:10px; border-radius:10px; overflow:auto; }
+    /* Make sure translator overlays do not reflow core UI */
+    html,body{margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#0b1220;color:#e5e7eb}
+    .wrap{max-width:760px;margin:0 auto;padding:16px}
+    .card{background:#111827;border:1px solid rgba(148,163,184,.18);border-radius:16px;padding:14px;margin:10px 0}
+    label{display:block;font-size:12px;color:#94a3b8;margin:10px 0 6px}
+    input,select,textarea{width:100%;box-sizing:border-box;background:#0b1220;color:#e5e7eb;border:1px solid rgba(148,163,184,.22);border-radius:12px;padding:12px;font-size:14px}
+    button{border:0;border-radius:12px;padding:12px 14px;font-weight:700;cursor:pointer}
+    .primary{background:#2563eb;color:#fff}
+    .secondary{background:#334155;color:#e2e8f0}
+    .status{margin-top:10px;font-weight:700}
+    .ok{color:#86efac}.warn{color:#fde68a}.bad{color:#fecaca}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media(max-width:640px){.row{grid-template-columns:1fr}}
+    /* Notranslate class (many translators respect this) */
+    .notranslate{translate:no}
   </style>
 </head>
 
 <body>
-
-  <!-- AYAR -->
-  <script>
-    // ✅ Burayı doldur: GAS Web App /exec linkin
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbxnORQbPdpPw9KuvskTWeT1LtucQPoeOqg6pn78BIYoHu8LBD8TpGCa8A0AuAhjqwPnxg/exec";
-
-    const OFFLINE_KEY = "spradon_offline_guvenlik_v1";
-
-    function $(id){ return document.getElementById(id); }
-
-    function setStatus(type, msg, extraObj){
-      const el = $("durum");
-      el.className = (type==="ok") ? "ok" : (type==="warn" ? "warn" : "err");
-      el.textContent = msg;
-      const dbg = $("debug");
-      if(extraObj){
-        dbg.style.display = "block";
-        dbg.textContent = JSON.stringify(extraObj, null, 2);
-      } else {
-        dbg.style.display = "none";
-        dbg.textContent = "";
-      }
-    }
-
-    function isOnline(){
-      return navigator.onLine;
-    }
-
-    function loadOffline(){
-      try{
-        return JSON.parse(localStorage.getItem(OFFLINE_KEY) || "[]");
-      }catch(e){
-        return [];
-      }
-    }
-
-    function saveOffline(list){
-      localStorage.setItem(OFFLINE_KEY, JSON.stringify(list || []));
-      renderOfflineCount();
-    }
-
-    function pushOffline(item){
-      const list = loadOffline();
-      list.push(item);
-      saveOffline(list);
-    }
-
-    function renderOfflineCount(){
-      const n = loadOffline().length;
-      $("offlineCount").textContent = n;
-    }
-
-    function nowIso(){
-      return new Date().toISOString();
-    }
-
-    function toYMD(iso){
-      try { return iso.slice(0,10); } catch(e){ return ""; }
-    }
-
-    // Dosyayı base64 DataURL olarak oku
-    function readFileAsDataURL(file){
-      return new Promise((resolve, reject)=>{
-        const r = new FileReader();
-        r.onload = ()=> resolve(String(r.result || ""));
-        r.onerror = ()=> reject(new Error("FILE_READ_ERROR"));
-        r.readAsDataURL(file);
-      });
-    }
-
-    // DataURL -> { base64, mimeType, name }
-    function dataUrlToBase64Obj(dataUrl, nameFallback){
-      // data:image/jpeg;base64,XXXX
-      const s = String(dataUrl || "");
-      const m = s.match(/^data:([^;]+);base64,(.*)$/);
-      if(!m) return null;
-      return { base64: m[2], mimeType: m[1], name: nameFallback || "foto.jpg" };
-    }
-
-    async function gasGetTest(){
-      if(!GAS_URL || GAS_URL.indexOf("script.google.com") === -1){
-        setStatus("err", "GAS linki tanımlı değil / hatalı.", { GAS_URL });
-        return;
-      }
-      try{
-        const r = await fetch(GAS_URL, { method:"GET" });
-        const j = await r.json();
-        setStatus("ok", "✅ Cevap geldi (OK).", j);
-      }catch(e){
-        setStatus("err", "❌ Test başarısız: Failed to fetch", { error: String(e) });
-      }
-    }
-
-    // Tek kayıt gönder
-    async function sendOne(payload){
-      const r = await fetch(GAS_URL, {
-        method:"POST",
-        headers:{ "Content-Type":"application/json" },
-        body: JSON.stringify(payload)
-      });
-      // GAS bazen text döner, biz güvene alalım:
-      const txt = await r.text();
-      try { return JSON.parse(txt); } catch(e){ return { ok:false, msg:"NON_JSON_RESPONSE", raw: txt }; }
-    }
-
-    // Offline kayıtları gönder
-    async function sendOfflineAll(){
-      if(!isOnline()){
-        setStatus("warn", "⚠️ İnternet yok. Offline kayıtlar cihazda duruyor.");
-        return;
-      }
-      const list = loadOffline();
-      if(list.length === 0){
-        setStatus("ok", "Gönderilecek offline kayıt yok.");
-        return;
-      }
-
-      let ok = 0, fail = 0;
-      const keep = [];
-
-      for(const item of list){
-        try{
-          const res = await sendOne(item);
-          if(res && res.ok){
-            ok++;
-          } else {
-            fail++;
-            keep.push(item);
-          }
-        }catch(e){
-          fail++;
-          keep.push(item);
-        }
-      }
-
-      saveOffline(keep);
-
-      if(fail === 0){
-        setStatus("ok", ✅ Offline gönderim tamam: gönderilen ${ok}, başarısız ${fail}.);
-      } else {
-        setStatus("warn", ⚠️ Kısmi gönderim: gönderilen ${ok}, başarısız ${fail}. (Kayıtlar cihazda duruyor, tekrar deneyebilirsin.));
-      }
-    }
-
-    async function handleSubmit(){
-      // Zorunlular
-      const personel = $("personel").value.trim();
-      const personelId = $("personelId").value.trim();
-      const birim = $("birim").value.trim();
-      const aciklama = $("aciklama").value.trim();
-
-      if(!personel || !birim){
-        setStatus("err", "❌ Personel ve Birim zorunlu.");
-        return;
-      }
-
-      // Foto (opsiyonel ama seçildiyse mutlaka okunacak)
-      const f = $("foto").files && $("foto").files[0] ? $("foto").files[0] : null;
-
-      let fotoObj = null;
-      if(f){
-        try{
-          const dataUrl = await readFileAsDataURL(f);
-          fotoObj = dataUrlToBase64Obj(dataUrl, f.name);
-          if(!fotoObj || !fotoObj.base64){
-            setStatus("err", "❌ Foto okunamadı (base64 oluşmadı).");
-            return;
-          }
-        }catch(e){
-          setStatus("err", "❌ Foto okunamadı.");
-          return;
-        }
-      }
-
-      // Payload (GAS tarafı esnek alan eşleme yapıyor diye tasarlamıştık)
-      const payload = {
-        kaynak: "web",
-        tarih: toYMD(nowIso()),
-        personel: personel,
-        personelId: personelId || "",
-        birim: birim,
-        aciklama: aciklama || "",
-        // Foto alanları (GAS tarafında photoBase64 / fotoBase64 / imageBase64 gibi yakalanıyordu)
-        photoBase64: fotoObj ? fotoObj.base64 : "",
-        photoName: fotoObj ? (fotoObj.name || "foto.jpg") : "",
-        photoMime: fotoObj ? (fotoObj.mimeType || "image/jpeg") : ""
-      };
-
-      // Online ise direkt gönder, değilse offline kaydet
-      if(!isOnline()){
-        pushOffline(payload);
-        setStatus("warn", "✅ Kayıt alındı (offline). İnternet gelince 'Offline Kayıtları Gönder' ile yollarsın.");
-        return;
-      }
-
-      try{
-        const res = await sendOne(payload);
-        if(res && res.ok){
-          setStatus("ok", "✅ Kayıt gönderildi.");
-          // Formu temizle
-          $("aciklama").value = "";
-          $("foto").value = "";
-        } else {
-          // Gönderemedi -> offline’a al
-          pushOffline(payload);
-          setStatus("warn", "⚠️ Sunucuya gidemedim. Kayıt offline'a alındı, internet gelince gönderebilirsin.", res);
-        }
-      }catch(e){
-        pushOffline(payload);
-        setStatus("warn", "⚠️ Bağlantı hatası. Kayıt offline'a alındı, internet gelince gönderebilirsin.", { error: String(e) });
-      }
-    }
-
-    window.addEventListener("online", ()=>{
-      renderOfflineCount();
-    });
-    window.addEventListener("offline", ()=>{
-      renderOfflineCount();
-    });
-  </script>
-
-  <div class="kutu">
-    <h2>🛡️ Güvenlik Bildirimi</h2>
-    <div class="pill">Backend: <b>GAS</b> / Offline kayıt: <b id="offlineCount">0</b></div>
-
-    <label>Personel (zorunlu)</label>
-    <input id="personel" placeholder="Örn: Akın" value="Akın" />
-
-    <label>Personel ID (opsiyonel)</label>
-    <input id="personelId" placeholder="Örn: A101" />
-
-    <label>Birim (zorunlu)</label>
-    <select id="birim">
-      <option value="Güvenlik">Güvenlik</option>
-      <option value="Teknik">Teknik</option>
-      <option value="Temizlik">Temizlik</option>
-      <option value="Yönetim">Yönetim</option>
-    </select>
-
-    <label>Açıklama</label>
-    <textarea id="aciklama" placeholder="Bildirimi yaz..."></textarea>
-
-    <label>Fotoğraf (opsiyonel)</label>
-    <input id="foto" type="file" accept="image/*" />
-
-    <div class="row" style="margin-top:12px;">
-      <button class="btn" onclick="handleSubmit()">📩 Gönder</button>
-      <button class="btn2" onclick="location.href='panel.html'">↩️ Panele Dön</button>
+  <!-- Keep app inside a single root and mark it notranslate -->
+  <div id="appRoot" class="wrap notranslate" translate="no" data-no-translate="1">
+    <div class="card">
+      <div style="font-weight:900;font-size:18px">📸 Security Photo Upload</div>
+      <div style="margin-top:6px;color:#94a3b8;font-size:13px;line-height:1.45">
+        This page is translation-hardened. Even if a browser tries to translate, inputs/events are bound by <b>IDs</b>
+        and core blocks are marked <b>notranslate</b>.
+      </div>
     </div>
 
-    <div class="line"></div>
+    <div class="card notranslate" translate="no">
+      <div class="row">
+        <div>
+          <label for="personName">Person Name</label>
+          <input id="personName" autocomplete="off" placeholder="e.g., Akin Durmus" />
+        </div>
+        <div>
+          <label for="personId">Person ID</label>
+          <input id="personId" autocomplete="off" placeholder="e.g., A101" />
+        </div>
+      </div>
 
-    <h3 style="margin:0 0 8px;">🧠 Offline & Gönderim</h3>
-    <div class="mini">
-      Depoda internet çekmiyorsa sorun değil: kayıtlar cihazda saklanır. İnternet gelince aşağıdaki butonla toplu gönderirsin.
+      <div class="row">
+        <div>
+          <label for="unit">Unit</label>
+          <select id="unit">
+            <option value="">— Select —</option>
+            <option>Security</option>
+            <option>Technical</option>
+            <option>Cleaning</option>
+            <option>Management</option>
+          </select>
+        </div>
+        <div>
+          <label for="date">Date</label>
+          <input id="date" type="date" />
+        </div>
+      </div>
+
+      <label for="note">Note (optional)</label>
+      <textarea id="note" placeholder="Short note…"></textarea>
+
+      <label for="photos">Photos (optional)</label>
+      <input id="photos" type="file" accept="image/*" multiple />
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+        <button id="btnSend" class="primary" type="button">Send</button>
+        <button id="btnClear" class="secondary" type="button">Clear</button>
+      </div>
+
+      <div id="status" class="status"></div>
     </div>
 
-    <div class="row" style="margin-top:10px;">
-      <button class="btnWarn" onclick="sendOfflineAll()">📤 Offline Kayıtları Gönder</button>
+    <div class="card notranslate" translate="no">
+      <div style="font-weight:900;margin-bottom:8px">⚙️ Backend (GAS) URL</div>
+      <input id="gasUrl" placeholder="https://script.google.com/macros/s/XXXX/exec" />
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+        <button id="btnSave" class="secondary" type="button">Save</button>
+        <button id="btnTest" class="secondary" type="button">Test (GET)</button>
+        <button id="btnFlush" class="primary" type="button">Send Offline Queue</button>
+      </div>
+      <div id="testOut" style="margin-top:10px;color:#94a3b8;font-size:12px"></div>
+      <div id="qOut" style="margin-top:6px;color:#94a3b8;font-size:12px"></div>
     </div>
-
-    <div class="smallBtnRow" style="margin-top:10px;">
-      <button class="btn2" onclick="localStorage.removeItem(OFFLINE_KEY); renderOfflineCount(); setStatus('ok','Offline kayıtlar temizlendi.');">🧹 Offline Temizle</button>
-      <button class="btn2" onclick="gasGetTest()">🔎 GET Test</button>
-    </div>
-
-    <div class="line"></div>
-
-    <div id="durum" class="mini">Durum mesajı burada görünecek.</div>
-    <pre id="debug" class="kv" style="display:none;"></pre>
   </div>
 
-  <script>
-    // ilk yükleme
-    renderOfflineCount();
-    setStatus("ok", "Hazır. GET Test ile bağlantıyı doğrulayabilirsin.");
-  </script>
+<script>
+/**
+ * WHY THIS WORKS (cross-browser):
+ * - We do NOT rely on visible text (which translators change). Only element IDs.
+ * - We mark app blocks translate="no" + class notranslate (best-effort across engines).
+ * - We keep all controls inside one root container, reducing translator DOM rewrite risk.
+ * - Offline queue uses localStorage (works on iOS Safari too).
+ * - We never depend on Chrome-only APIs.
+ */
 
-</body>
-</html>
+const LS_GAS_URL = "spradon_gas_url";
+const LS_Q = "spradon_offline_queue_v1";
+
+const $ = (id)=> document.getElementById(id);
+
+function setStatus(msg, kind){
+  const el = $("status");
+  el.textContent = msg || "";
+  el.className = "status " + (kind || "");
+}
+
+function setTest(msg){ $("testOut").textContent = msg || ""; }
+
+function isoDate(d=new Date()){
+  const z=n=>String(n).padStart(2,"0");
+  return ${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())};
+}
+
+function loadGasUrl(){
+  const v = localStorage.getItem(LS_GAS_URL) || "";
+  $("gasUrl").value = v;
+  return v;
+}
+function saveGasUrl(v){
+  localStorage.setItem(LS_GAS_URL, (v||"").trim());
+}
+
+function loadQ(){
+  try { return JSON.parse(localStorage.getItem(LS_Q) || "[]"); }
+  catch { return []; }
+}
+function saveQ(q){
+  localStorage.setItem(LS_Q, JSON.stringify(q || []));
+  $("qOut").textContent = Offline queue: ${loadQ().length};
+}
+
+function getGasOrThrow(){
+  const url = (localStorage.getItem(LS_GAS_URL) || "").trim();
+  if(!url
