@@ -1,114 +1,148 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Güvenlik Fotoğraf Yükleme</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      padding: 20px;
-    }
-    .box {
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      max-width: 420px;
-      margin: auto;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    h2 {
-      text-align: center;
-    }
-    input, button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      font-size: 16px;
-    }
-    button {
-      background: #2c7be5;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #1a5bb8;
-    }
-    .status {
-      margin-top: 15px;
-      text-align: center;
-      font-weight: bold;
-    }
+    body{font-family:Arial,sans-serif;background:#f4f4f4;padding:20px}
+    .kutu{background:#fff;border-radius:12px;max-width:520px;margin:0 auto;padding:18px;box-shadow:0 10px 25px rgba(0,0,0,.08)}
+    h2{margin:0 0 12px}
+    label{display:block;margin-top:10px;font-weight:700}
+    input,select,button{width:100%;padding:10px;margin-top:6px;border-radius:10px;border:1px solid #ddd;box-sizing:border-box}
+    button{border:none;cursor:pointer;font-weight:800}
+    .btn{background:#2563eb;color:#fff;margin-top:14px}
+    .durum{margin-top:14px;padding:12px;border-radius:10px;background:#f8fafc;border:1px dashed #cbd5e1;min-height:24px}
+    .mini{font-size:12px;color:#64748b;margin-top:10px}
   </style>
 </head>
-
 <body>
+  <div class="kutu">
+    <h2>🛡️ Güvenlik Bildirimi (Fotoğraf)</h2>
 
-  <div class="box">
-    <h2>Güvenlik Fotoğraf Yükleme</h2>
+    <label>Personel</label>
+    <input id="personel" placeholder="Örn: Akın" value="Akın" />
 
-    <input type="file" id="files" multiple accept="image/*">
-    <button onclick="upload()">Gönder</button>
+    <label>Personel ID</label>
+    <input id="personelId" placeholder="Örn: A101" value="A101" />
 
-    <div class="status" id="status"></div>
+    <label>Birim</label>
+    <select id="birim">
+      <option>Güvenlik</option>
+      <option>Teknik</option>
+      <option>Temizlik</option>
+      <option>Yönetim</option>
+    </select>
+
+    <label>Tarih</label>
+    <input id="tarih" />
+
+    <label>Fotoğraflar</label>
+    <input id="foto" type="file" accept="image/*" multiple />
+
+    <button class="btn" id="gonder">📤 Fotoğrafları Gönder</button>
+
+    <div class="durum" id="durum">Hazır.</div>
+    <div class="mini">Backend: Google Apps Script Web App (/exec)</div>
   </div>
 
-<script>
-const ENDPOINT = "https://script.google.com/macros/s/AKfycby0A6mQvJEK9VadLhAhUoiIk2xmDTsVIYT7zbulE7ZKXe24fwnA1bohLuKebV6c1ixulw/exec";
+  <script>
+    /* === GAS BACKEND (SENİN LİNKİN) === */
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbxnORQbPdpPw9KuvskTWeT1LtucQPoeOqg6pn78BIYoHu8LBD8TpGCa8A0AuAhjqwPnxg/exec";
 
-function upload() {
-  const files = document.getElementById("files").files;
-  const status = document.getElementById("status");
+    // Tarih input default
+    const tarihEl = document.getElementById("tarih");
+    const bugün = new Date();
+    const yyyy = bugün.getFullYear();
+    const mm = String(bugün.getMonth()+1).padStart(2,"0");
+    const dd = String(bugün.getDate()).padStart(2,"0");
+    tarihEl.value = ${yyyy}-${mm}-${dd};
 
-  if (!files.length) {
-    alert("Lütfen fotoğraf seç");
-    return;
-  }
+    const durum = document.getElementById("durum");
+    const btn = document.getElementById("gonder");
 
-  status.innerText = "Yükleniyor...";
+    function setDurum(msg){ durum.textContent = msg; }
 
-  const readers = [];
-  for (let f of files) {
-    readers.push(new Promise((resolve) => {
-      const r = new FileReader();
-      r.onload = e => resolve({
-        name: f.name,
-        base64: e.target.result.split(",")[1]
+    function fileToBase64(file){
+      return new Promise((resolve,reject)=>{
+        const r = new FileReader();
+        r.onload = ()=> {
+          const dataUrl = String(r.result || "");
+          // "data:image/jpeg;base64,XXXX" -> sadece XXXX
+          const base64 = dataUrl.split(",")[1] || "";
+          resolve({
+            name: file.name || ("foto_"+Date.now()+".jpg"),
+            mimeType: file.type || "image/jpeg",
+            base64
+          });
+        };
+        r.onerror = reject;
+        r.readAsDataURL(file);
       });
-      r.readAsDataURL(f);
-    }));
-  }
+    }
 
-  Promise.all(readers).then(images => {
-    const payload = {
-      personel: "Akın",
-      personelId: "A101",
-      birim: "Guvenlik",
-      tarih: new Date().toISOString().slice(0,10),
-      fotograflar: images
-    };
+    btn.addEventListener("click", async ()=>{
+      try{
+        btn.disabled = true;
 
-    fetch(ENDPOINT, {
-      method: "POST",
-      body: JSON.stringify(payload)
-    })
-    .then(r => r.json())
-    .then(res => {
-      if (res.ok) {
-        status.innerText = "✅ Fotoğraflar başarıyla yüklendi";
-      } else {
-        status.innerText = "❌ Hata: " + res.error;
+        const personel = document.getElementById("personel").value.trim();
+        const personelId = document.getElementById("personelId").value.trim();
+        const birim = document.getElementById("birim").value.trim();
+        const tarih = document.getElementById("tarih").value.trim();
+
+        const files = Array.from(document.getElementById("foto").files || []);
+        if(!personel || !personelId || !birim){
+          setDurum("❌ Lütfen Personel / Personel ID / Birim doldur.");
+          btn.disabled = false;
+          return;
+        }
+        if(files.length === 0){
+          setDurum("❌ En az 1 fotoğraf seç.");
+          btn.disabled = false;
+          return;
+        }
+
+        setDurum("⏳ Fotoğraflar hazırlanıyor...");
+        const resimler = [];
+        for(const f of files){
+          resimler.push(await fileToBase64(f));
+        }
+
+        // GAS tarafı bu alan adlarını kabul ediyor: birim/personel/miktar... + fotoBase64/fotoAdi/mimeType
+        // Biz çoklu foto için items array gönderiyoruz:
+        const items = resimler.map((img, i)=>({
+          birim,
+          alan: "Güvenlik Bildirimi",
+          urun: Fotoğraf ${i+1},   // zorunlu alanlara takılmamak için
+          miktar: 1,
+          aciklama: ${personel} (${personelId}) - ${tarih},
+          fotoBase64: img.base64,
+          fotoAdi: img.name,
+          mimeType: img.mimeType
+        }));
+
+        const payload = { items };
+
+        setDurum("📤 Gönderiliyor...");
+        const r = await fetch(GAS_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const out = await r.json().catch(()=>null);
+
+        if(out && out.ok){
+          setDurum("✅ Gönderildi. Sheet + Drive kontrol et.");
+        }else{
+          setDurum("❌ Hata: " + ((out && (out.msg || out.error)) || "Bilinmeyen"));
+        }
+      }catch(e){
+        setDurum("❌ Bağlantı hatası / CORS: " + (e && e.message ? e.message : e));
+      }finally{
+        btn.disabled = false;
       }
-    })
-    .catch(err => {
-      status.innerText = "❌ Bağlantı hatası";
     });
-  });
-}
-</script>
-
+  </script>
 </body>
 </html>
