@@ -1,181 +1,400 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <title>Spradon Hafıza – Stok Çıkış</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f6fb;color:#1f2937}
-    .container{max-width:1000px;margin:auto;padding:32px}
-    h1{margin:0 0 6px 0;font-size:26px}
-    .sub{color:#6b7280;font-size:14px;margin:0 0 18px 0}
-    .card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 10px 25px rgba(0,0,0,.08);border:1px solid #e5e7eb;margin-bottom:18px}
-    label{font-weight:bold;font-size:14px;display:block;margin-top:12px}
-    input,select,textarea{width:100%;padding:10px;margin-top:6px;border-radius:8px;border:1px solid #d1d5db;font-size:14px}
-    textarea{resize:vertical}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-    @media (max-width:820px){.row{grid-template-columns:1fr}}
-    button{margin-top:18px;padding:12px 20px;border:none;border-radius:10px;background:#2563eb;color:#fff;font-size:15px;cursor:pointer}
-    button.secondary{background:#6b7280;margin-left:10px}
-    .hint{font-size:13px;color:#6b7280;margin-top:10px}
-    .ok{display:none;background:#ecfdf5;color:#065f46;padding:12px;border-radius:10px;margin-top:14px}
-    .warn{display:none;background:#fff7ed;color:#9a3412;padding:12px;border-radius:10px;margin-top:14px}
-    .pill{display:inline-block;background:#eef2ff;color:#3730a3;border:1px solid #c7d2fe;padding:6px 10px;border-radius:999px;font-size:12px;margin-top:10px}
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Spradon Hafıza • Stok Çıkış</title>
+<style>
+:root{
+  --bg:#f4f6fb; --text:#111827; --muted:#6b7280;
+  --card:#ffffff; --line:#e5e7eb;
+  --pri:#2563eb; --pri2:#1d4ed8; --gray:#e5e7eb;
+  --ok:#16a34a; --warn:#b45309; --bad:#b91c1c;
+  --r:16px; --shadow:0 10px 25px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
+.wrap{max-width:980px;margin:0 auto;padding:24px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:18px}
+h1{margin:0 0 6px;font-size:22px}
+.sub{color:var(--muted);font-size:13px;margin-bottom:14px;line-height:1.4}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:860px){.grid{grid-template-columns:1fr}}
+label{font-size:13px;font-weight:700;display:block;margin-top:10px}
+input,select,textarea{
+  width:100%;border:1px solid var(--line);border-radius:12px;
+  padding:10px 12px;margin-top:6px;font-size:14px;background:#fff
+}
+textarea{min-height:92px;resize:vertical}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+button,a{
+  border:0;border-radius:12px;padding:10px 14px;font-weight:800;
+  cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px
+}
+.primary{background:var(--pri);color:#fff}
+.primary:hover{background:var(--pri2)}
+.gray{background:var(--gray);color:#111827}
+.pill{font-size:12px;color:var(--muted)}
+.msg{margin-top:10px;font-size:13px}
+.ok{color:var(--ok)} .warn{color:var(--warn)} .bad{color:var(--bad)}
+.hr{height:1px;background:var(--line);margin:14px 0}
+.small{font-size:12px;color:var(--muted);line-height:1.4}
+kbd{background:#111827;color:#fff;border-radius:6px;padding:2px 6px;font-size:11px}
+</style>
 </head>
+
 <body>
-
-<div class="container">
-  <h1>📤 Stoktan Ürün Çıkışı</h1>
-  <p class="sub">Ürünü kim aldı (zorunlu) + miktar + açıklama + (opsiyonel) foto. İnternet yoksa cihazda saklar.</p>
-
+<div class="wrap">
   <div class="card">
-    <div class="row">
-      <div>
-        <label>Ürün (zorunlu)</label>
-        <input id="urun" type="text" placeholder="Örn: 45'lik maşon">
-      </div>
-      <div>
-        <label>Birim (zorunlu)</label>
-        <select id="birim">
-          <option>Adet</option>
-          <option>Kilo</option>
-          <option>Litre</option>
-        </select>
-      </div>
+    <h1>📦 Stoktan Ürün Çıkışı</h1>
+    <div class="sub">
+      <b>Zorunlu:</b> Ürün + Çıkış miktarı + Ürünü alan kişi. <br>
+      <span class="pill">İnternet yoksa cihazda saklar. İnternet gelince “Offline Kayıtları Gönder” ile yollar.</span>
     </div>
 
-    <div class="row">
+    <div class="grid">
+      <!-- SOL: Çıkış formu -->
       <div>
-        <label>Çıkış Miktarı (zorunlu)</label>
-        <input id="miktar" type="number" min="0" step="1" placeholder="Örn: 5">
-      </div>
-      <div>
+        <label>Ürün (zorunlu)</label>
+        <select id="urunSelect"></select>
+        <div class="small">Listede yoksa alttan manuel yazabilirsin.</div>
+        <input id="urunManual" placeholder="(Opsiyonel) Manuel ürün adı">
+
+        <div class="grid">
+          <div>
+            <label>Çıkış Miktarı (zorunlu)</label>
+            <input id="cikisMiktar" type="number" min="0" step="0.01" placeholder="Örn: 5">
+          </div>
+          <div>
+            <label>Birim (zorunlu)</label>
+            <select id="birim">
+              <option value="">Seçiniz</option>
+              <option>Adet</option>
+              <option>Kutu</option>
+              <option>Kg</option>
+              <option>Litre</option>
+            </select>
+          </div>
+        </div>
+
         <label>Hangi ekip?</label>
-        <select id="kategori">
+        <select id="ekip">
           <option value="">Seçiniz</option>
           <option>Teknik</option>
           <option>Temizlik</option>
           <option>Güvenlik</option>
-          <option>Peyzaj</option>
           <option>Saha</option>
-          <option>Muhasebe/Satınalma</option>
+          <option>Muhasebe / Satın Alma</option>
         </select>
+
+        <label>Ürünü Alan Kişi (zorunlu)</label>
+        <input id="alanKisi" placeholder="Örn: Akın / Ali / Mehmet">
+
+        <label>Açıklama (nerede kullanıldı?)</label>
+        <textarea id="aciklama" placeholder="Örn: 553 Ada - blok girişi aydınlatma tamiri için kullanıldı"></textarea>
+
+        <label>Fotoğraf (opsiyonel)</label>
+        <input id="foto" type="file" accept="image/*">
+
+        <div class="row">
+          <button class="primary" onclick="stoktanDus()">⬇️ Stoktan Düş</button>
+          <a class="gray" href="stok.html">↩️ Stok Paneline Dön</a>
+        </div>
+
+        <div id="formMsg" class="msg"></div>
+      </div>
+
+      <!-- SAĞ: Offline / Ayarlar -->
+      <div>
+        <div class="card" style="box-shadow:none;border-radius:14px">
+          <b>🧠 Offline & Gönderim</b>
+          <div class="small">
+            Depoda internet çekmiyorsa sorun değil: kayıtlar cihazda saklanır. <br>
+            İnternet gelince aşağıdaki butonla hepsini backend’e gönderirsin.
+          </div>
+
+          <div class="hr"></div>
+
+          <button class="primary" onclick="flushOffline()">📤 Offline Kayıtları Gönder</button>
+          <div id="syncMsg" class="msg"></div>
+
+          <div class="hr"></div>
+
+          <b>⚙️ Backend (GAS) Ayarı</b>
+          <div class="small">
+            Apps Script Web App (…/exec) linkini buraya bir kez girmen yeter.
+          </div>
+          <input id="gasUrl" placeholder="https://script.google.com/macros/s/....../exec">
+          <div class="row">
+            <button class="gray" onclick="saveGas()">💾 Kaydet</button>
+            <button class="gray" onclick="testGas()">🔎 Test</button>
+          </div>
+          <div class="small">
+            Test: <kbd>GET</kbd> atar, cevap gelirse bağlantı tamam.
+          </div>
+          <div id="gasMsg" class="msg"></div>
+
+          <div class="hr"></div>
+
+          <b>📌 Not</b>
+          <div class="small">
+            Ürün listesi, “Ürün Kartı” sayfasında eklenen kayıtların cihazdaki listesinden gelir.
+            (Aynı cihazda kullanıyorsan otomatik görürsün.)
+          </div>
+        </div>
       </div>
     </div>
-
-    <label>Ürünü Alan Kişi (zorunlu)</label>
-    <input id="kisi" type="text" placeholder="Örn: Akın / Ali / Mehmet">
-
-    <label>Açıklama (nerede kullanıldı?)</label>
-    <textarea id="aciklama" rows="3" placeholder="Örn: 553 Ada – blok giriş aydınlatma tamiri için kullanıldı"></textarea>
-
-    <label>Fotoğraf (opsiyonel)</label>
-    <input id="foto" type="file" accept="image/*">
-
-    <div class="pill">📌 Not: Depoda internet çekmiyorsa sorun değil—kayıt yedekte kalır.</div>
-
-    <button onclick="cikisKaydet()">Stoktan Düş</button>
-    <button class="secondary" onclick="location.href='stok.html'">← Stok Paneline Dön</button>
-
-    <div class="ok" id="okMsg">✔ Çıkış kaydedildi.</div>
-    <div class="warn" id="warnMsg">⚠ İnternet yok. Kayıt cihazda saklandı, bağlantı gelince gönderilir.</div>
-  </div>
-
-  <div class="card">
-    <h3 style="margin-top:0">🧪 Offline kayıtları şimdi gönder</h3>
-    <p class="sub" style="margin-top:0">İnternet geldiğinde bir tıkla içeride kalan kayıtları backend'e yollar.</p>
-    <button onclick="flushOffline()">Offline Kayıtları Gönder</button>
-    <div class="ok" id="flushOk">✔ Offline kayıtlar gönderildi.</div>
   </div>
 </div>
 
 <script>
-  const BACKEND_URL = "https://script.google.com/macros/s/AKfycbwZGhMDzmSt8PaZsQfbVPOkcEtecD2R1ASJd-6bJUjzKnof6FGwtdkoVDk_fuoJ_AAp2g/exec";
-  const OFFLINE_KEY_PREFIX = "stok_cikis_yedek_";
+/* LOCAL KEYS */
+const KEY_PRODUCTS_QUEUE = "SPRADON_STOK_URUN_QUEUE_V1";   // ürün kartı (offline eklenenler)
+const KEY_OUT_QUEUE      = "SPRADON_STOK_CIKIS_QUEUE_V1";  // çıkış kayıtları
+const KEY_GAS_URL        = "SPRADON_GAS_URL_V1";
 
-  function show(id, on=true){ document.getElementById(id).style.display = on ? "block" : "none"; }
+/* Helpers */
+const $ = (id)=>document.getElementById(id);
+function setMsg(id, html){ $(id).innerHTML = html; }
+function nowISO(){ return new Date().toISOString(); }
 
-  function fileToBase64(file){
-    return new Promise((resolve, reject) => {
-      if(!file) return resolve("");
-      const reader = new FileReader();
-      reader.onload = () => resolve(String(reader.result).split(",")[1] || "");
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
+function loadJson(key, fallback){
+  try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
+  catch(e){ return fallback; }
+}
+function saveJson(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
+
+/* PRODUCT DROPDOWN */
+function rebuildProductSelect(){
+  const sel = $("urunSelect");
+  const productsQueue = loadJson(KEY_PRODUCTS_QUEUE, []);
+  const uniq = new Map();
+
+  // Ürün kuyruğundan (ürün kartı) isimleri çek
+  productsQueue.forEach(p=>{
+    const name = String(p.urun||"").trim();
+    if(name) uniq.set(name, p);
+  });
+
+  sel.innerHTML = "";
+  const opt0 = document.createElement("option");
+  opt0.value = "";
+  opt0.textContent = "Seçiniz (ürün kartlarından)";
+  sel.appendChild(opt0);
+
+  Array.from(uniq.keys()).sort((a,b)=>a.localeCompare(b,'tr')).forEach(name=>{
+    const o = document.createElement("option");
+    o.value = name;
+    o.textContent = name;
+    sel.appendChild(o);
+  });
+}
+
+function pickProductName(){
+  const a = $("urunSelect").value.trim();
+  const b = $("urunManual").value.trim();
+  // manuel doluysa manueli tercih et
+  return b || a;
+}
+
+/* FOTO -> BASE64 */
+function fileToBase64(file){
+  return new Promise((resolve, reject)=>{
+    if(!file) return resolve("");
+    const r = new FileReader();
+    r.onload = ()=>resolve(String(r.result||""));
+    r.onerror = ()=>reject(new Error("Dosya okunamadı"));
+    r.readAsDataURL(file);
+  });
+}
+
+/* GAS URL */
+function saveGas(){
+  const url = $("gasUrl").value.trim();
+  if(!url || !url.includes("/exec")){
+    setMsg("gasMsg", "<div class='bad'>⚠️ Link boş ya da /exec değil gibi görünüyor.</div>");
+    return;
+  }
+  localStorage.setItem(KEY_GAS_URL, url);
+  setMsg("gasMsg", "<div class='ok'>✅ Kaydedildi.</div>");
+}
+function getGas(){
+  return localStorage.getItem(KEY_GAS_URL) || "";
+}
+async function testGas(){
+  const url = getGas() || $("gasUrl").value.trim();
+  if(!url){
+    setMsg("gasMsg", "<div class='bad'>⚠️ Önce GAS linki gir.</div>");
+    return;
+  }
+  try{
+    setMsg("gasMsg", "<div class='warn'>⏳ Test ediliyor...</div>");
+    const res = await fetch(url, { method:"GET" });
+    const txt = await res.text();
+    setMsg("gasMsg", "<div class='ok'>✅ Cevap geldi. (OK)</div><div class='small'>"+escapeHtml(txt).slice(0,220)+"</div>");
+  }catch(e){
+    setMsg("gasMsg", "<div class='bad'>❌ Test başarısız: "+escapeHtml(String(e))+"</div>");
+  }
+}
+function escapeHtml(s){
+  return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
+}
+
+/* MAIN: stoktan düş */
+async function stoktanDus(){
+  setMsg("formMsg","");
+
+  const urun = pickProductName();
+  const miktar = $("cikisMiktar").value;
+  const birim = $("birim").value;
+  const ekip = $("ekip").value;
+  const alanKisi = $("alanKisi").value.trim();
+  const aciklama = $("aciklama").value.trim();
+  const fotoFile = $("foto").files[0] || null;
+
+  if(!urun || !miktar || !birim || !alanKisi){
+    setMsg("formMsg", "<div class='bad'>⚠️ Ürün + Çıkış miktarı + Birim + Ürünü alan kişi zorunlu.</div>");
+    return;
   }
 
-  async function cikisKaydet(){
-    show("okMsg", false); show("warnMsg", false);
-
-    const urun = document.getElementById("urun").value.trim();
-    const birim = document.getElementById("birim").value;
-    const miktar = Number(document.getElementById("miktar").value);
-    const kategori = document.getElementById("kategori").value;
-    const kisi = document.getElementById("kisi").value.trim();
-    const aciklama = document.getElementById("aciklama").value.trim();
-    const fotoFile = document.getElementById("foto").files[0];
-
-    if(!urun || !kisi || !miktar || miktar <= 0){
-      alert("Ürün, miktar ve ürünü alan kişi zorunludur.");
-      return;
-    }
-
-    const fotoBase64 = await fileToBase64(fotoFile);
-
-    const payload = {
-      action: "STOK_CIKIS",
-      urun, birim, miktar,
-      kategori,
-      kisi,
-      aciklama,
-      foto: fotoBase64 ? { base64: fotoBase64, mimeType: fotoFile.type || "image/jpeg", name: fotoFile.name || "cikis.jpg" } : null,
-      clientTime: new Date().toISOString()
-    };
-
-    try{
-      const r = await fetch(BACKEND_URL, { method:"POST", body: JSON.stringify(payload) });
-      const d = await r.json();
-      show("okMsg", true);
-      // Formu temizle
-      document.getElementById("miktar").value = "";
-      document.getElementById("aciklama").value = "";
-      document.getElementById("foto").value = "";
-    }catch(e){
-      localStorage.setItem(OFFLINE_KEY_PREFIX + Date.now(), JSON.stringify(payload));
-      show("warnMsg", true);
-    }
+  let foto64 = "";
+  try{ foto64 = await fileToBase64(fotoFile); }
+  catch(e){
+    setMsg("formMsg", "<div class='bad'>❌ Foto okunamadı.</div>");
+    return;
   }
 
-  async function flushOffline(){
-    show("flushOk", false);
-    const keys = [];
-    for(let i=0; i<localStorage.length; i++){
-      const k = localStorage.key(i);
-      if(k && k.startsWith(OFFLINE_KEY_PREFIX)) keys.push(k);
-    }
-    if(keys.length === 0){
-      alert("Offline kayıt yok.");
-      return;
-    }
+  const rec = {
+    action: "STOK_CIKIS",
+    id: "CIK-" + Date.now(),
+    urun, miktar: Number(miktar), birim,
+    ekip, alanKisi,
+    aciklama,
+    fotoBase64: foto64 || "",
+    zaman: nowISO()
+  };
 
-    let sent = 0;
-    for(const k of keys){
+  // her durumda offline kuyruğa yaz
+  const q = loadJson(KEY_OUT_QUEUE, []);
+  q.push(rec);
+  saveJson(KEY_OUT_QUEUE, q);
+
+  // form temizle
+  $("cikisMiktar").value="";
+  $("birim").value="";
+  $("ekip").value="";
+  $("alanKisi").value="";
+  $("aciklama").value="";
+  $("foto").value="";
+  $("urunManual").value="";
+  $("urunSelect").value="";
+
+  setMsg("formMsg", "<div class='ok'>✅ Çıkış kaydı alındı (offline). İnternet varsa şimdi göndermeyi deniyorum…</div>");
+
+  // online ise anında flush dene
+  await flushOffline(true);
+}
+
+/* flush offline */
+async function flushOffline(silent=false){
+  const url = getGas();
+  const outQ = loadJson(KEY_OUT_QUEUE, []);
+  const prodQ = loadJson(KEY_PRODUCTS_QUEUE, []);
+
+  if(!outQ.length && !prodQ.length){
+    if(!silent) setMsg("syncMsg", "<div class='warn'>ℹ️ Gönderilecek offline kayıt yok.</div>");
+    return;
+  }
+
+  if(!url){
+    if(!silent) setMsg("syncMsg", "<div class='bad'>⚠️ GAS linki tanımlı değil. Sağdan kaydet.</div>");
+    return;
+  }
+
+  let sent = 0, fail = 0;
+
+  // 1) Ürün kartları (varsa) — backend’de action adı STOK_URUN olarak gönderiyoruz
+  // (Backend tarafında karşılığı yoksa bile, offline kayıtlar cihazda kalır; zarar vermez.)
+  if(prodQ.length){
+    for(const p of prodQ){
       try{
-        const payload = JSON.parse(localStorage.getItem(k));
-        const r = await fetch(BACKEND_URL, { method:"POST", body: JSON.stringify(payload) });
-        await r.json();
-        localStorage.removeItem(k);
+        // DataURL -> base64
+        let base64 = "";
+        if(p.foto && String(p.foto).startsWith("data:")){
+          base64 = String(p.foto).split(",")[1] || "";
+        }
+        const payload = {
+          action: "STOK_URUN",
+          urun: p.urun || "",
+          birim: p.birim || "",
+          baslangic: Number(p.miktar || 0),
+          zaman: p.zaman || nowISO(),
+          foto: base64 ? { base64: base64, mimeType: "image/jpeg", name: (p.urun||"urun")+".jpg" } : null
+        };
+        await postJson(url, payload);
         sent++;
-      }catch(e){
-        // bu key kalsın
-      }
+      }catch(e){ fail++; }
     }
-    if(sent > 0) show("flushOk", true);
-    alert("Gönderilen: " + sent + " / " + keys.length);
   }
-</script>
 
+  // 2) Çıkış kayıtları
+  if(outQ.length){
+    for(const r of outQ){
+      try{
+        let base64 = "";
+        if(r.fotoBase64 && String(r.fotoBase64).startsWith("data:")){
+          base64 = String(r.fotoBase64).split(",")[1] || "";
+        }
+        const payload = {
+          action: "STOK_CIKIS",
+          id: r.id,
+          urun: r.urun,
+          miktar: r.miktar,
+          birim: r.birim,
+          ekip: r.ekip,
+          alanKisi: r.alanKisi,
+          aciklama: r.aciklama,
+          zaman: r.zaman,
+          foto: base64 ? { base64: base64, mimeType: "image/jpeg", name: r.id+".jpg" } : null
+        };
+        await postJson(url, payload);
+        sent++;
+      }catch(e){ fail++; }
+    }
+  }
+
+  // Eğer hiç hata yoksa kuyrukları temizle (en temiz yöntem)
+  if(fail === 0){
+    saveJson(KEY_PRODUCTS_QUEUE, []);
+    saveJson(KEY_OUT_QUEUE, []);
+    if(!silent) setMsg("syncMsg", "<div class='ok'>✅ Tüm offline kayıtlar gönderildi. ("+sent+")</div>");
+    else setMsg("syncMsg", "<div class='ok'>✅ Gönderildi. ("+sent+")</div>");
+  }else{
+    // Hata varsa: kayıtları SİLME, güvenli olsun
+    if(!silent) setMsg("syncMsg",
+      "<div class='warn'>⚠️ Kısmi gönderim: gönderilen "+sent+", başarısız "+fail+
+      ". (Güvenlik için kayıtları cihazda tuttum, tekrar deneyebilirsin.)</div>");
+  }
+}
+
+async function postJson(url, obj){
+  const res = await fetch(url, {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify(obj)
+  });
+  // GAS bazen text döndürür, yine de oku
+  const txt = await res.text();
+  if(!res.ok) throw new Error("HTTP "+res.status+": "+txt);
+  return txt;
+}
+
+/* init */
+(function init(){
+  const url = getGas();
+  $("gasUrl").value = url || "";
+  rebuildProductSelect();
+})();
+</script>
 </body>
 </html>
