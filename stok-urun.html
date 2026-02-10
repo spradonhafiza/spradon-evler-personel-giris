@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Spradon Hafıza • Ürün Kartı Oluştur</title>
+  <style>
+    :root{
+      --bg:#f4f6fb; --text:#111827; --muted:#6b7280; --card:#ffffff; --line:#e5e7eb;
+      --ok:#16a34a; --warn:#f59e0b; --bad:#dc2626; --pri:#2563eb; --pri2:#1d4ed8;
+      --r:16px; --shadow:0 10px 25px rgba(0,0,0,.08);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
+    .wrap{max-width:980px;margin:0 auto;padding:24px}
+    .top{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+    h1{margin:0;font-size:22px}
+    .sub{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.35}
+    .pill{display:inline-flex;gap:8px;align-items:center;background:#eef2ff;color:#3730a3;
+      padding:8px 10px;border-radius:999px;font-size:12px;border:1px solid #e0e7ff}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+    @media (max-width:900px){.grid{grid-template-columns:1fr}}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:18px}
+    .card h2{margin:0 0 12px;font-size:16px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media (max-width:700px){.row{grid-template-columns:1fr}}
+    label{display:block;font-size:12px;color:var(--muted);margin:10px 0 6px}
+    input,select,textarea{
+      width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;
+      font-size:14px;outline:none;background:#fff
+    }
+    textarea{min-height:92px;resize:vertical}
+    input:focus,select:focus,textarea:focus{border-color:#c7d2fe;box-shadow:0 0 0 3px rgba(99,102,241,.15)}
+    .req{color:var(--bad);font-weight:700}
+    .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .btn{
+      border:0;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer;
+      display:inline-flex;gap:8px;align-items:center
+    }
+    .btn.pri{background:var(--pri);color:#fff}
+    .btn.pri:hover{background:var(--pri2)}
+    .btn.gray{background:#e5e7eb
