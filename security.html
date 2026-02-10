@@ -1,148 +1,64 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Güvenlik Fotoğraf Yükleme</title>
-  <style>
-    body{font-family:Arial,sans-serif;background:#f4f4f4;padding:20px}
-    .kutu{background:#fff;border-radius:12px;max-width:520px;margin:0 auto;padding:18px;box-shadow:0 10px 25px rgba(0,0,0,.08)}
-    h2{margin:0 0 12px}
-    label{display:block;margin-top:10px;font-weight:700}
-    input,select,button{width:100%;padding:10px;margin-top:6px;border-radius:10px;border:1px solid #ddd;box-sizing:border-box}
-    button{border:none;cursor:pointer;font-weight:800}
-    .btn{background:#2563eb;color:#fff;margin-top:14px}
-    .durum{margin-top:14px;padding:12px;border-radius:10px;background:#f8fafc;border:1px dashed #cbd5e1;min-height:24px}
-    .mini{font-size:12px;color:#64748b;margin-top:10px}
-  </style>
-</head>
-<body>
-  <div class="kutu">
-    <h2>🛡️ Güvenlik Bildirimi (Fotoğraf)</h2>
+<script>
+/* ===========================
+ *  GAS POST FIX (NO PREFLIGHT)
+ *  Tek parça kopyala-yapıştır
+ * =========================== */
 
-    <label>Personel</label>
-    <input id="personel" placeholder="Örn: Akın" value="Akın" />
+// Eğer sayfanda zaten gidip getirmek() varsa, bunu onun ALTINA koy.
+// Bu sürüm, POST'u text/plain ile yollar -> CORS preflight tetiklemez.
+async function gidip_getirmek_fix(url, ayar = {}) {
+  const yontem = ayar.yöntem || ayar.method || "GET";
+  const govde  = ayar.vücut || ayar.body || null;
 
-    <label>Personel ID</label>
-    <input id="personelId" placeholder="Örn: A101" value="A101" />
+  // GET ise normal fetch
+  if (String(yontem).toUpperCase() === "GET") {
+    const r = await fetch(url, { method: "GET" });
+    return r;
+  }
 
-    <label>Birim</label>
-    <select id="birim">
-      <option>Güvenlik</option>
-      <option>Teknik</option>
-      <option>Temizlik</option>
-      <option>Yönetim</option>
-    </select>
+  // POST (veya diğerleri): preflight olmasın diye text/plain
+  const r = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: (typeof govde === "string") ? govde : JSON.stringify(govde || {})
+  });
+  return r;
+}
 
-    <label>Tarih</label>
-    <input id="tarih" />
+/*
+  Şimdi kritik hamle:
+  Sayfanda "gidip getirmek(" diye bir fonksiyon çağrısı varsa
+  onu değiştirmeye gerek yok; aşağıdaki satır onu otomatik yönlendirir.
 
-    <label>Fotoğraflar</label>
-    <input id="foto" type="file" accept="image/*" multiple />
+  Yani var olan kod:
+    gidip getirmek(UC_NOKTA, { yöntem:"POSTALAMAK", vücut: JSON.stringify(yük) })
+  -> artık bu FIX fonksiyonunu kullanır.
+*/
+if (typeof window.gidipGetirmek === "function") {
+  // Bazı dosyalarda isim böyle olabiliyor; dokunmuyoruz.
+}
+if (typeof gidipGetirmek === "function") {
+  // dokunmuyoruz
+}
 
-    <button class="btn" id="gonder">📤 Fotoğrafları Gönder</button>
+// En yaygın isim: gidip_getirmek veya gidip getirmek (senin ekrandaki)
+try {
+  // Eğer sayfada gidip getirmek fonksiyonu tanımlıysa onu FIX'e yönlendir.
+  if (typeof gidip_getirmek === "function") {
+    gidip_getirmek = gidip_getirmek_fix;
+  }
+} catch (e) {}
 
-    <div class="durum" id="durum">Hazır.</div>
-    <div class="mini">Backend: Google Apps Script Web App (/exec)</div>
-  </div>
+try {
+  if (typeof gidip === "function") {
+    // dokunma
+  }
+} catch (e) {}
 
-  <script>
-    /* === GAS BACKEND (SENİN LİNKİN) === */
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbxnORQbPdpPw9KuvskTWeT1LtucQPoeOqg6pn78BIYoHu8LBD8TpGCa8A0AuAhjqwPnxg/exec";
+// Senin ekrandaki çağrı adı: "gidip getirmek" gibi yazılmış olabilir.
+// JS'te boşluklu fonksiyon adı olmaz; ama senin projede muhtemelen minify/çeviri var.
+// O yüzden en garanti çözüm: aşağıdaki global alias'ı da veriyoruz.
+window.gidip_getirmek = gidip_getirmek_fix;
+window.gidip_getirmek_fix = gidip_getirmek_fix;
 
-    // Tarih input default
-    const tarihEl = document.getElementById("tarih");
-    const bugün = new Date();
-    const yyyy = bugün.getFullYear();
-    const mm = String(bugün.getMonth()+1).padStart(2,"0");
-    const dd = String(bugün.getDate()).padStart(2,"0");
-    tarihEl.value = ${yyyy}-${mm}-${dd};
-
-    const durum = document.getElementById("durum");
-    const btn = document.getElementById("gonder");
-
-    function setDurum(msg){ durum.textContent = msg; }
-
-    function fileToBase64(file){
-      return new Promise((resolve,reject)=>{
-        const r = new FileReader();
-        r.onload = ()=> {
-          const dataUrl = String(r.result || "");
-          // "data:image/jpeg;base64,XXXX" -> sadece XXXX
-          const base64 = dataUrl.split(",")[1] || "";
-          resolve({
-            name: file.name || ("foto_"+Date.now()+".jpg"),
-            mimeType: file.type || "image/jpeg",
-            base64
-          });
-        };
-        r.onerror = reject;
-        r.readAsDataURL(file);
-      });
-    }
-
-    btn.addEventListener("click", async ()=>{
-      try{
-        btn.disabled = true;
-
-        const personel = document.getElementById("personel").value.trim();
-        const personelId = document.getElementById("personelId").value.trim();
-        const birim = document.getElementById("birim").value.trim();
-        const tarih = document.getElementById("tarih").value.trim();
-
-        const files = Array.from(document.getElementById("foto").files || []);
-        if(!personel || !personelId || !birim){
-          setDurum("❌ Lütfen Personel / Personel ID / Birim doldur.");
-          btn.disabled = false;
-          return;
-        }
-        if(files.length === 0){
-          setDurum("❌ En az 1 fotoğraf seç.");
-          btn.disabled = false;
-          return;
-        }
-
-        setDurum("⏳ Fotoğraflar hazırlanıyor...");
-        const resimler = [];
-        for(const f of files){
-          resimler.push(await fileToBase64(f));
-        }
-
-        // GAS tarafı bu alan adlarını kabul ediyor: birim/personel/miktar... + fotoBase64/fotoAdi/mimeType
-        // Biz çoklu foto için items array gönderiyoruz:
-        const items = resimler.map((img, i)=>({
-          birim,
-          alan: "Güvenlik Bildirimi",
-          urun: Fotoğraf ${i+1},   // zorunlu alanlara takılmamak için
-          miktar: 1,
-          aciklama: ${personel} (${personelId}) - ${tarih},
-          fotoBase64: img.base64,
-          fotoAdi: img.name,
-          mimeType: img.mimeType
-        }));
-
-        const payload = { items };
-
-        setDurum("📤 Gönderiliyor...");
-        const r = await fetch(GAS_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-
-        const out = await r.json().catch(()=>null);
-
-        if(out && out.ok){
-          setDurum("✅ Gönderildi. Sheet + Drive kontrol et.");
-        }else{
-          setDurum("❌ Hata: " + ((out && (out.msg || out.error)) || "Bilinmeyen"));
-        }
-      }catch(e){
-        setDurum("❌ Bağlantı hatası / CORS: " + (e && e.message ? e.message : e));
-      }finally{
-        btn.disabled = false;
-      }
-    });
-  </script>
-</body>
-</html>
+</script>
