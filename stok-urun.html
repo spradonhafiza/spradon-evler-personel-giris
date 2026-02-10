@@ -39,4 +39,379 @@
     }
     .btn.pri{background:var(--pri);color:#fff}
     .btn.pri:hover{background:var(--pri2)}
-    .btn.gray{background:#e5e7eb
+    .btn.gray{background:#e5e7eb;color:#111827}
+    .btn.gray:hover{background:#d1d5db}
+    .btn.bad{background:var(--bad);color:#fff}
+    .btn.bad:hover{filter:brightness(.95)}
+    .note{margin-top:10px;font-size:12px;color:var(--muted);line-height:1.35}
+    .kpi{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .k{background:#f9fafb;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:12px;color:var(--muted)}
+    .k b{color:var(--text)}
+    .status{
+      margin-top:12px;border-radius:12px;padding:10px 12px;border:1px solid var(--line);
+      background:#f9fafb;font-size:13px;line-height:1.35
+    }
+    .status.ok{border-color:#bbf7d0;background:#f0fdf4}
+    .status.warn{border-color:#fde68a;background:#fffbeb}
+    .status.bad{border-color:#fecaca;background:#fef2f2}
+    .sep{height:1px;background:var(--line);margin:14px 0}
+    .small{font-size:12px;color:var(--muted)}
+    .rightCol .card{position:sticky;top:16px}
+    @media (max-width:900px){.rightCol .card{position:static}}
+    .list{margin:0;padding-left:18px;color:var(--muted);font-size:13px;line-height:1.45}
+    .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-size:12px}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <h1>📦 Ürün Kartı Oluştur</h1>
+      <div class="sub">
+        Ürün fotoğrafı <b>zorunlu</b>. Kart oluşturulunca stok listesine eklenir.
+        İnternet yoksa kayıt <b>offline kuyruğa</b> alınır, internet gelince tek tuşla gönderilir.
+      </div>
+      <div class="kpi">
+        <div class="k">Offline bekleyen: <b id="qCount">0</b></div>
+        <div class="k">Bağlantı: <b id="netState">?</b></div>
+      </div>
+    </div>
+    <div class="pill">
+      <span>🔗 Backend:</span>
+      <span class="mono" id="gasShort">yükleniyor…</span>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="leftCol">
+      <div class="card">
+        <h2>Ürün Bilgisi</h2>
+
+        <label>Ürün Adı <span class="req">*</span></label>
+        <input id="urun" placeholder="Örn: 45'lik maşon" />
+
+        <div class="row">
+          <div>
+            <label>Kategori</label>
+            <select id="kategori">
+              <option value="">Seçiniz</option>
+              <option>Teknik</option>
+              <option>Temizlik</option>
+              <option>Güvenlik</option>
+              <option>Peyzaj</option>
+              <option>Genel</option>
+            </select>
+          </div>
+          <div>
+            <label>Birim <span class="req">*</span></label>
+            <select id="birimTur">
+              <option value="Adet">Adet</option>
+              <option value="Kutu">Kutu</option>
+              <option value="Paket">Paket</option>
+              <option value="Kg">Kg</option>
+              <option value="Litre">Litre</option>
+              <option value="Metre">Metre</option>
+              <option value="Set">Set</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Başlangıç Stok (adet/kg/lt) <span class="req">*</span></label>
+            <input id="stok" placeholder="Örn: 50" inputmode="decimal" />
+          </div>
+          <div>
+            <label>Minimum Stok (uyarı eşiği)</label>
+            <input id="minStok" placeholder="Örn: 10" inputmode="decimal" />
+          </div>
+        </div>
+
+        <label>Depo / Konum</label>
+        <input id="konum" placeholder="Örn: -1 Depo / Raf 3 / Kutu 2" />
+
+        <label>Açıklama</label>
+        <textarea id="aciklama" placeholder="Kısa not: ürün ne için kullanılır, dikkat edilmesi gerekenler..."></textarea>
+
+        <label>Ürün Fotoğrafı <span class="req">*</span></label>
+        <input id="foto" type="file" accept="image/*" />
+        <div class="note">📌 Foto zorunlu. (Telefonla çekip yükleyebilirsin.)</div>
+
+        <div class="btns">
+          <button class="btn pri" id="btnKaydet">✅ Ürün Kartını Kaydet</button>
+          <button class="btn gray" id="btnTemizle">🧹 Temizle</button>
+          <a class="btn gray" href="stok.html" style="text-decoration:none">↩️ Stok Paneline Dön</a>
+        </div>
+
+        <div id="status" class="status" style="display:none"></div>
+
+        <div class="sep"></div>
+
+        <h2>Offline kayıtlar</h2>
+        <div class="small">Depoda internet çekmiyorsa sorun değil: kayıt cihazda bekler.</div>
+        <div class="btns">
+          <button class="btn pri" id="btnSendOffline">📤 Offline Kayıtları Gönder</button>
+          <button class="btn bad" id="btnClearOffline">🗑️ Offline Kuyruğu Temizle</button>
+        </div>
+        <div class="note">⚠️ “Temizle” sadece yanlış kayıtları silmek içindir. Normalde kullanma.</div>
+      </div>
+    </div>
+
+    <div class="rightCol">
+      <div class="card">
+        <h2>Bilgi / Kontrol</h2>
+        <ul class="list">
+          <li>Bu sayfa <b>ürün kartı</b> oluşturur (foto zorunlu).</li>
+          <li>Kayıtlar Apps Script backend’e <b>STOK_KART</b> action’ı ile gider.</li>
+          <li>İnternet yoksa localStorage’a yazılır, sonra gönderilir.</li>
+          <li>Ürün çıkışı ayrı sayfadır: <b>stok-cikis.html</b></li>
+        </ul>
+        <div class="sep"></div>
+        <div class="small">GAS URL</div>
+        <div class="mono" id="gasFull" style="word-break:break-all"></div>
+        <div class="sep"></div>
+        <div class="small">Hata görürsen en çok 2 sebep:</div>
+        <ul class="list">
+          <li>GAS dağıtımı “Herkes” değil.</li>
+          <li>VPN / ağ engeli → <span class="mono">Failed to fetch</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ✅ Senin verdiğin Apps Script linki:
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbwZGhMDzmSt8PaZsQfbVPOkcEtecD2R1ASJd-6bJUjzKnof6FGwtdkoVDk_fuoJ_AAp2g/exec";
+
+  // Offline queue key
+  const QKEY = "SPRADON_STOK_URUN_QUEUE_V1";
+
+  const el = (id)=>document.getElementById(id);
+
+  function setStatus(type, msg){
+    const s = el("status");
+    s.className = "status " + (type||"");
+    s.style.display = "block";
+    s.textContent = msg;
+  }
+
+  function clearStatus(){
+    const s = el("status");
+    s.style.display = "none";
+    s.textContent = "";
+    s.className = "status";
+  }
+
+  function shortUrl(u){
+    try{
+      const x = new URL(u);
+      return x.host + x.pathname.replace(/\/macros\/s\//,"/…/");
+    }catch(e){ return u; }
+  }
+
+  function netUpdate(){
+    el("netState").textContent = navigator.onLine ? "Online" : "Offline";
+  }
+
+  function qGet(){
+    try{ return JSON.parse(localStorage.getItem(QKEY)||"[]") || []; }
+    catch(e){ return []; }
+  }
+  function qSet(arr){
+    localStorage.setItem(QKEY, JSON.stringify(arr||[]));
+    el("qCount").textContent = String((arr||[]).length);
+  }
+
+  async function fileToBase64(file){
+    return new Promise((resolve, reject)=>{
+      const reader = new FileReader();
+      reader.onload = ()=> {
+        const res = String(reader.result||"");
+        // res: data:image/...;base64,XXXX
+        const base64 = res.split(",")[1] || "";
+        resolve(base64);
+      };
+      reader.onerror = ()=>reject(new Error("Dosya okunamadı"));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function numVal(v){
+    const s = String(v||"").trim().replace(",",".");
+    const n = Number(s);
+    return isFinite(n) ? n : null;
+  }
+
+  function validate(){
+    const urun = el("urun").value.trim();
+    const stok = numVal(el("stok").value);
+    const birimTur = el("birimTur").value.trim();
+    const fotoFile = el("foto").files && el("foto").files[0];
+
+    if(!urun) return "Ürün adı boş.";
+    if(stok === null || stok < 0) return "Başlangıç stok sayısı hatalı.";
+    if(!birimTur) return "Birim seçilmedi.";
+    if(!fotoFile) return "Ürün fotoğrafı zorunlu.";
+    return "";
+  }
+
+  async function buildPayload(){
+    const fotoFile = el("foto").files[0];
+    const base64 = await fileToBase64(fotoFile);
+
+    return {
+      action: "STOK_KART",
+      // Kim/rol bilgisi ileride tespit ekranındaki oturumdan okunabilir;
+      // şimdilik boş bırakıyoruz (backend boş kabul edecek şekilde ayarlanmalı).
+      personel: "",
+      rol: "",
+      birim: el("kategori").value.trim() || "Genel",
+
+      urun: el("urun").value.trim(),
+      kategori: el("kategori").value.trim(),
+      stok: numVal(el("stok").value),
+      minStok: numVal(el("minStok").value),
+      birimTur: el("birimTur").value.trim(),
+      konum: el("konum").value.trim(),
+      aciklama: el("aciklama").value.trim(),
+
+      foto: {
+        name: fotoFile.name || "urun.jpg",
+        mimeType: fotoFile.type || "image/jpeg",
+        base64: base64
+      }
+    };
+  }
+
+  async function sendNow(payload){
+    const res = await fetch(GAS_URL, {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify(payload)
+    });
+    const txt = await res.text();
+    let json;
+    try{ json = JSON.parse(txt); }catch(e){ json = {ok:false, error:"JSON parse hatası", raw: txt}; }
+    return json;
+  }
+
+  function resetForm(){
+    el("urun").value = "";
+    el("kategori").value = "";
+    el("stok").value = "";
+    el("minStok").value = "";
+    el("birimTur").value = "Adet";
+    el("konum").value = "";
+    el("aciklama").value = "";
+    el("foto").value = "";
+  }
+
+  async function onSave(){
+    clearStatus();
+    const err = validate();
+    if(err){ setStatus("bad", "❌ " + err); return; }
+
+    el("btnKaydet").disabled = true;
+    el("btnKaydet").textContent = "⏳ Kaydediliyor…";
+
+    try{
+      const payload = await buildPayload();
+
+      if(!navigator.onLine){
+        const q = qGet();
+        q.push({type:"STOK_KART", payload, at: Date.now()});
+        qSet(q);
+        setStatus("warn","📌 İnternet yok. Kayıt offline kuyruğa alındı. İnternet gelince “Offline Kayıtları Gönder”e bas.");
+        resetForm();
+        return;
+      }
+
+      const out = await sendNow(payload);
+      if(out && out.ok){
+        setStatus("ok", "✅ Ürün kartı kaydedildi. ID: " + (out.id || "-") + (out.folderUrl ? (" • Klasör: " + out.folderUrl) : ""));
+        resetForm();
+      }else{
+        // fetch oldu ama backend hata döndü → offline'a da atalım
+        const q = qGet();
+        q.push({type:"STOK_KART", payload, at: Date.now(), lastError: (out && (out.error||out.msg)) || "Bilinmeyen hata"});
+        qSet(q);
+        setStatus("warn","⚠️ Backend hata verdi: " + ((out && (out.error||out.msg)) || "Bilinmeyen") + " | Kayıt offline kuyruğa alındı.");
+      }
+    }catch(e){
+      // network/vpn vs → offline'a al
+      try{
+        const payload = await buildPayload();
+        const q = qGet();
+        q.push({type:"STOK_KART", payload, at: Date.now(), lastError: String(e)});
+        qSet(q);
+      }catch(_){}
+      setStatus("warn","⚠️ Gönderim başarısız (VPN/ağ engeli olabilir). Kayıt offline kuyruğa alındı.");
+    }finally{
+      el("btnKaydet").disabled = false;
+      el("btnKaydet").textContent = "✅ Ürün Kartını Kaydet";
+    }
+  }
+
+  async function sendOffline(){
+    clearStatus();
+    const q = qGet();
+    if(!q.length){ setStatus("ok","✅ Offline kuyruk boş."); return; }
+    if(!navigator.onLine){ setStatus("warn","📌 Hâlâ offline görünüyorsun. İnternet gelince tekrar dene."); return; }
+
+    el("btnSendOffline").disabled = true;
+    el("btnSendOffline").textContent = "⏳ Gönderiliyor…";
+
+    const remaining = [];
+    let okCount = 0, failCount = 0;
+
+    for(const item of q){
+      try{
+        const out = await sendNow(item.payload);
+        if(out && out.ok){
+          okCount++;
+        }else{
+          failCount++;
+          remaining.push(item);
+        }
+      }catch(e){
+        failCount++;
+        remaining.push(item);
+      }
+    }
+
+    qSet(remaining);
+
+    if(failCount === 0){
+      setStatus("ok", "✅ Offline kayıtların tamamı gönderildi. ("+okCount+")");
+    }else{
+      setStatus("warn", "⚠️ Gönderilen: "+okCount+" • Kalan: "+failCount+" (ağ/VPN/izin kaynaklı olabilir)");
+    }
+
+    el("btnSendOffline").disabled = false;
+    el("btnSendOffline").textContent = "📤 Offline Kayıtları Gönder";
+  }
+
+  function clearOffline(){
+    if(!confirm("Offline kuyruğu tamamen silinsin mi? (Yanlış kayıtları temizlemek için)")) return;
+    qSet([]);
+    setStatus("ok","✅ Offline kuyruk temizlendi.");
+  }
+
+  // INIT
+  (function init(){
+    el("gasShort").textContent = shortUrl(GAS_URL);
+    el("gasFull").textContent = GAS_URL;
+    qSet(qGet());
+    netUpdate();
+    window.addEventListener("online", netUpdate);
+    window.addEventListener("offline", netUpdate);
+
+    el("btnKaydet").addEventListener("click", onSave);
+    el("btnTemizle").addEventListener("click", ()=>{ resetForm(); clearStatus(); });
+    el("btnSendOffline").addEventListener("click", sendOffline);
+    el("btnClearOffline").addEventListener("click", clearOffline);
+  })();
+</script>
+</body>
+</html>
