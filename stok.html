@@ -1,81 +1,175 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="utf-8">
-  <title>Spradon Hafıza • Stok Yönetimi</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
+  <meta charset="UTF-8">
+  <title>Spradon Hafıza – Stok & Depo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body{
       margin:0;
-      font-family: Arial, Helvetica, sans-serif;
+      font-family:Arial, Helvetica, sans-serif;
       background:#f4f6fb;
-      color:#111827;
+      color:#1f2937;
     }
-    .wrap{
-      max-width:900px;
-      margin:0 auto;
-      padding:24px;
-    }
-    .card{
-      background:#fff;
-      border-radius:16px;
-      padding:24px;
-      box-shadow:0 10px 25px rgba(0,0,0,.08);
-      border:1px solid #e5e7eb;
+    .container{
+      max-width:1000px;
+      margin:auto;
+      padding:32px;
     }
     h1{
       margin-top:0;
-      font-size:22px;
+      font-size:26px;
     }
-    p{
-      color:#6b7280;
+    .card{
+      background:#fff;
+      border-radius:14px;
+      padding:24px;
+      box-shadow:0 10px 25px rgba(0,0,0,.08);
+      margin-bottom:24px;
+      border:1px solid #e5e7eb;
+    }
+    label{
+      font-weight:bold;
       font-size:14px;
-      line-height:1.5;
+      display:block;
+      margin-top:12px;
     }
-    .info{
-      margin-top:16px;
-      padding:16px;
-      background:#f0f9ff;
-      border:1px solid #bae6fd;
-      border-radius:12px;
+    input, select, textarea{
+      width:100%;
+      padding:10px;
+      margin-top:6px;
+      border-radius:8px;
+      border:1px solid #d1d5db;
       font-size:14px;
     }
-    a{
-      display:inline-block;
+    textarea{resize:vertical}
+    button{
       margin-top:20px;
-      text-decoration:none;
-      padding:12px 18px;
+      padding:12px 20px;
+      border:none;
+      border-radius:10px;
       background:#2563eb;
       color:#fff;
-      border-radius:12px;
-      font-weight:bold;
+      font-size:15px;
+      cursor:pointer;
+    }
+    button.secondary{
+      background:#6b7280;
+      margin-left:10px;
+    }
+    .note{
+      font-size:13px;
+      color:#6b7280;
+      margin-top:8px;
+    }
+    .success{
+      background:#ecfdf5;
+      color:#065f46;
+      padding:12px;
+      border-radius:10px;
+      margin-top:16px;
+      display:none;
     }
   </style>
 </head>
-
 <body>
-  <div class="wrap">
-    <div class="card">
-      <h1>📦 Stok / Depo Yönetimi</h1>
-      <p>
-        Bu ekran; teknik, temizlik ve saha ekiplerinin
-        ürün kartı oluşturduğu, stoktan ürün düşüldüğü
-        ve müdür tarafından raporlandığı merkezdir.
-      </p>
 
-      <div class="info">
-        🔧 <b>Yakında eklenecek:</b><br><br>
-        • Ürün kartı (foto zorunlu)<br>
-        • Stok giriş / çıkış<br>
-        • Ürünü alan kişi zorunlu<br>
-        • Offline geçici kayıt (depo için)<br>
-        • Aylık & yıllık stok raporu<br>
-        • Müdür onay & kontrol ekranı
-      </div>
+<div class="container">
+  <h1>📦 Stok / Depo Yönetimi</h1>
 
-      <a href="merkez.html">⬅ Merkez Panele Dön</a>
+  <div class="card">
+    <h3>➕ Yeni Ürün Kartı</h3>
+
+    <label>Ürün Fotoğrafı (zorunlu)</label>
+    <input type="file" id="foto" accept="image/*">
+
+    <label>Ürün Adı</label>
+    <input type="text" id="urun">
+
+    <label>Kategori</label>
+    <select id="kategori">
+      <option value="">Seçiniz</option>
+      <option>Teknik</option>
+      <option>Temizlik</option>
+      <option>Güvenlik</option>
+      <option>Peyzaj</option>
+    </select>
+
+    <label>Başlangıç Stok Miktarı</label>
+    <input type="number" id="stok" min="0">
+
+    <label>Birim</label>
+    <select id="birim">
+      <option>Adet</option>
+      <option>Kilo</option>
+      <option>Litre</option>
+    </select>
+
+    <label>Kaydı Oluşturan (zorunlu)</label>
+    <input type="text" id="kisi">
+
+    <button onclick="urunKaydet()">Ürün Kartını Kaydet</button>
+
+    <div class="note">
+      ⚠️ İnternet yoksa kayıt cihazda saklanır, bağlantı gelince gönderilir.
+    </div>
+
+    <div class="success" id="okMsg">
+      ✔ Ürün başarıyla kaydedildi.
     </div>
   </div>
+
+  <button class="secondary" onclick="location.href='merkez.html'">
+    ← Merkez Panele Dön
+  </button>
+</div>
+
+<script>
+const BACKEND_URL = "https://script.google.com/macros/s/AKfycbwZGhMDzmSt8PaZsQfbVPOkcEtecD2R1ASJd-6bJUjzKnof6FGwtdkoVDk_fuoJ_AAp2g/exec";
+
+function urunKaydet(){
+  const foto = document.getElementById("foto").files[0];
+  const urun = document.getElementById("urun").value.trim();
+  const kategori = document.getElementById("kategori").value;
+  const stok = document.getElementById("stok").value;
+  const birim = document.getElementById("birim").value;
+  const kisi = document.getElementById("kisi").value.trim();
+
+  if(!foto || !urun || !kategori || !kisi){
+    alert("Foto, ürün adı, kategori ve kişi zorunludur.");
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(){
+    const base64 = reader.result.split(",")[1];
+
+    const payload = {
+      action: "STOK_KART",
+      urun,
+      kategori,
+      stok,
+      birim,
+      kisi,
+      foto: base64
+    };
+
+    fetch(BACKEND_URL,{
+      method:"POST",
+      body:JSON.stringify(payload)
+    })
+    .then(r=>r.json())
+    .then(d=>{
+      document.getElementById("okMsg").style.display="block";
+    })
+    .catch(()=>{
+      localStorage.setItem("stok_yedek_"+Date.now(), JSON.stringify(payload));
+      alert("İnternet yok. Kayıt cihazda saklandı.");
+    });
+  };
+  reader.readAsDataURL(foto);
+}
+</script>
+
 </body>
 </html>
