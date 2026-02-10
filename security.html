@@ -1,64 +1,312 @@
-<script>
-/* ===========================
- *  GAS POST FIX (NO PREFLIGHT)
- *  Tek parça kopyala-yapıştır
- * =========================== */
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Güvenlik Bildirimi (Fotoğraflı)</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f4f4f4; padding:20px; }
+    .kutu { background:#fff; padding:16px; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,.08); max-width:520px; margin:0 auto 14px; }
+    h2 { margin:0 0 10px; }
+    label { font-weight:600; display:block; margin:10px 0 6px; }
+    input, select, textarea, button { width:100%; padding:12px; border-radius:10px; border:1px solid #ddd; font-size:16px; box-sizing:border-box; }
+    textarea { min-height:90px; resize:vertical; }
+    .row { display:flex; gap:10px; }
+    .row > * { flex:1; }
+    button { cursor:pointer; border:none; font-weight:700; }
+    .btn { background:#2563eb; color:#fff; }
+    .btn2 { background:#e5e7eb; color:#111827; }
+    .btnWarn { background:#0ea5e9; color:#fff; }
+    .mini { font-size:13px; color:#6b7280; margin-top:6px; }
+    .ok { color:#16a34a; font-weight:700; }
+    .err { color:#dc2626; font-weight:700; }
+    .warn { color:#b45309; font-weight:700; }
+    .line { height:1px; background:#eee; margin:14px 0; }
+    .pill { display:inline-block; padding:6px 10px; border-radius:999px; background:#f3f4f6; font-size:13px; }
+    .smallBtnRow { display:flex; gap:10px; }
+    .smallBtnRow button { width:auto; flex:1; }
+    .kv { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size:12px; background:#0b1220; color:#c7d2fe; padding:10px; border-radius:10px; overflow:auto; }
+  </style>
+</head>
 
-// Eğer sayfanda zaten gidip getirmek() varsa, bunu onun ALTINA koy.
-// Bu sürüm, POST'u text/plain ile yollar -> CORS preflight tetiklemez.
-async function gidip_getirmek_fix(url, ayar = {}) {
-  const yontem = ayar.yöntem || ayar.method || "GET";
-  const govde  = ayar.vücut || ayar.body || null;
+<body>
 
-  // GET ise normal fetch
-  if (String(yontem).toUpperCase() === "GET") {
-    const r = await fetch(url, { method: "GET" });
-    return r;
-  }
+  <!-- AYAR -->
+  <script>
+    // ✅ Burayı doldur: GAS Web App /exec linkin
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbxnORQbPdpPw9KuvskTWeT1LtucQPoeOqg6pn78BIYoHu8LBD8TpGCa8A0AuAhjqwPnxg/exec";
 
-  // POST (veya diğerleri): preflight olmasın diye text/plain
-  const r = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: (typeof govde === "string") ? govde : JSON.stringify(govde || {})
-  });
-  return r;
-}
+    const OFFLINE_KEY = "spradon_offline_guvenlik_v1";
 
-/*
-  Şimdi kritik hamle:
-  Sayfanda "gidip getirmek(" diye bir fonksiyon çağrısı varsa
-  onu değiştirmeye gerek yok; aşağıdaki satır onu otomatik yönlendirir.
+    function $(id){ return document.getElementById(id); }
 
-  Yani var olan kod:
-    gidip getirmek(UC_NOKTA, { yöntem:"POSTALAMAK", vücut: JSON.stringify(yük) })
-  -> artık bu FIX fonksiyonunu kullanır.
-*/
-if (typeof window.gidipGetirmek === "function") {
-  // Bazı dosyalarda isim böyle olabiliyor; dokunmuyoruz.
-}
-if (typeof gidipGetirmek === "function") {
-  // dokunmuyoruz
-}
+    function setStatus(type, msg, extraObj){
+      const el = $("durum");
+      el.className = (type==="ok") ? "ok" : (type==="warn" ? "warn" : "err");
+      el.textContent = msg;
+      const dbg = $("debug");
+      if(extraObj){
+        dbg.style.display = "block";
+        dbg.textContent = JSON.stringify(extraObj, null, 2);
+      } else {
+        dbg.style.display = "none";
+        dbg.textContent = "";
+      }
+    }
 
-// En yaygın isim: gidip_getirmek veya gidip getirmek (senin ekrandaki)
-try {
-  // Eğer sayfada gidip getirmek fonksiyonu tanımlıysa onu FIX'e yönlendir.
-  if (typeof gidip_getirmek === "function") {
-    gidip_getirmek = gidip_getirmek_fix;
-  }
-} catch (e) {}
+    function isOnline(){
+      return navigator.onLine;
+    }
 
-try {
-  if (typeof gidip === "function") {
-    // dokunma
-  }
-} catch (e) {}
+    function loadOffline(){
+      try{
+        return JSON.parse(localStorage.getItem(OFFLINE_KEY) || "[]");
+      }catch(e){
+        return [];
+      }
+    }
 
-// Senin ekrandaki çağrı adı: "gidip getirmek" gibi yazılmış olabilir.
-// JS'te boşluklu fonksiyon adı olmaz; ama senin projede muhtemelen minify/çeviri var.
-// O yüzden en garanti çözüm: aşağıdaki global alias'ı da veriyoruz.
-window.gidip_getirmek = gidip_getirmek_fix;
-window.gidip_getirmek_fix = gidip_getirmek_fix;
+    function saveOffline(list){
+      localStorage.setItem(OFFLINE_KEY, JSON.stringify(list || []));
+      renderOfflineCount();
+    }
 
-</script>
+    function pushOffline(item){
+      const list = loadOffline();
+      list.push(item);
+      saveOffline(list);
+    }
+
+    function renderOfflineCount(){
+      const n = loadOffline().length;
+      $("offlineCount").textContent = n;
+    }
+
+    function nowIso(){
+      return new Date().toISOString();
+    }
+
+    function toYMD(iso){
+      try { return iso.slice(0,10); } catch(e){ return ""; }
+    }
+
+    // Dosyayı base64 DataURL olarak oku
+    function readFileAsDataURL(file){
+      return new Promise((resolve, reject)=>{
+        const r = new FileReader();
+        r.onload = ()=> resolve(String(r.result || ""));
+        r.onerror = ()=> reject(new Error("FILE_READ_ERROR"));
+        r.readAsDataURL(file);
+      });
+    }
+
+    // DataURL -> { base64, mimeType, name }
+    function dataUrlToBase64Obj(dataUrl, nameFallback){
+      // data:image/jpeg;base64,XXXX
+      const s = String(dataUrl || "");
+      const m = s.match(/^data:([^;]+);base64,(.*)$/);
+      if(!m) return null;
+      return { base64: m[2], mimeType: m[1], name: nameFallback || "foto.jpg" };
+    }
+
+    async function gasGetTest(){
+      if(!GAS_URL || GAS_URL.indexOf("script.google.com") === -1){
+        setStatus("err", "GAS linki tanımlı değil / hatalı.", { GAS_URL });
+        return;
+      }
+      try{
+        const r = await fetch(GAS_URL, { method:"GET" });
+        const j = await r.json();
+        setStatus("ok", "✅ Cevap geldi (OK).", j);
+      }catch(e){
+        setStatus("err", "❌ Test başarısız: Failed to fetch", { error: String(e) });
+      }
+    }
+
+    // Tek kayıt gönder
+    async function sendOne(payload){
+      const r = await fetch(GAS_URL, {
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify(payload)
+      });
+      // GAS bazen text döner, biz güvene alalım:
+      const txt = await r.text();
+      try { return JSON.parse(txt); } catch(e){ return { ok:false, msg:"NON_JSON_RESPONSE", raw: txt }; }
+    }
+
+    // Offline kayıtları gönder
+    async function sendOfflineAll(){
+      if(!isOnline()){
+        setStatus("warn", "⚠️ İnternet yok. Offline kayıtlar cihazda duruyor.");
+        return;
+      }
+      const list = loadOffline();
+      if(list.length === 0){
+        setStatus("ok", "Gönderilecek offline kayıt yok.");
+        return;
+      }
+
+      let ok = 0, fail = 0;
+      const keep = [];
+
+      for(const item of list){
+        try{
+          const res = await sendOne(item);
+          if(res && res.ok){
+            ok++;
+          } else {
+            fail++;
+            keep.push(item);
+          }
+        }catch(e){
+          fail++;
+          keep.push(item);
+        }
+      }
+
+      saveOffline(keep);
+
+      if(fail === 0){
+        setStatus("ok", ✅ Offline gönderim tamam: gönderilen ${ok}, başarısız ${fail}.);
+      } else {
+        setStatus("warn", ⚠️ Kısmi gönderim: gönderilen ${ok}, başarısız ${fail}. (Kayıtlar cihazda duruyor, tekrar deneyebilirsin.));
+      }
+    }
+
+    async function handleSubmit(){
+      // Zorunlular
+      const personel = $("personel").value.trim();
+      const personelId = $("personelId").value.trim();
+      const birim = $("birim").value.trim();
+      const aciklama = $("aciklama").value.trim();
+
+      if(!personel || !birim){
+        setStatus("err", "❌ Personel ve Birim zorunlu.");
+        return;
+      }
+
+      // Foto (opsiyonel ama seçildiyse mutlaka okunacak)
+      const f = $("foto").files && $("foto").files[0] ? $("foto").files[0] : null;
+
+      let fotoObj = null;
+      if(f){
+        try{
+          const dataUrl = await readFileAsDataURL(f);
+          fotoObj = dataUrlToBase64Obj(dataUrl, f.name);
+          if(!fotoObj || !fotoObj.base64){
+            setStatus("err", "❌ Foto okunamadı (base64 oluşmadı).");
+            return;
+          }
+        }catch(e){
+          setStatus("err", "❌ Foto okunamadı.");
+          return;
+        }
+      }
+
+      // Payload (GAS tarafı esnek alan eşleme yapıyor diye tasarlamıştık)
+      const payload = {
+        kaynak: "web",
+        tarih: toYMD(nowIso()),
+        personel: personel,
+        personelId: personelId || "",
+        birim: birim,
+        aciklama: aciklama || "",
+        // Foto alanları (GAS tarafında photoBase64 / fotoBase64 / imageBase64 gibi yakalanıyordu)
+        photoBase64: fotoObj ? fotoObj.base64 : "",
+        photoName: fotoObj ? (fotoObj.name || "foto.jpg") : "",
+        photoMime: fotoObj ? (fotoObj.mimeType || "image/jpeg") : ""
+      };
+
+      // Online ise direkt gönder, değilse offline kaydet
+      if(!isOnline()){
+        pushOffline(payload);
+        setStatus("warn", "✅ Kayıt alındı (offline). İnternet gelince 'Offline Kayıtları Gönder' ile yollarsın.");
+        return;
+      }
+
+      try{
+        const res = await sendOne(payload);
+        if(res && res.ok){
+          setStatus("ok", "✅ Kayıt gönderildi.");
+          // Formu temizle
+          $("aciklama").value = "";
+          $("foto").value = "";
+        } else {
+          // Gönderemedi -> offline’a al
+          pushOffline(payload);
+          setStatus("warn", "⚠️ Sunucuya gidemedim. Kayıt offline'a alındı, internet gelince gönderebilirsin.", res);
+        }
+      }catch(e){
+        pushOffline(payload);
+        setStatus("warn", "⚠️ Bağlantı hatası. Kayıt offline'a alındı, internet gelince gönderebilirsin.", { error: String(e) });
+      }
+    }
+
+    window.addEventListener("online", ()=>{
+      renderOfflineCount();
+    });
+    window.addEventListener("offline", ()=>{
+      renderOfflineCount();
+    });
+  </script>
+
+  <div class="kutu">
+    <h2>🛡️ Güvenlik Bildirimi</h2>
+    <div class="pill">Backend: <b>GAS</b> / Offline kayıt: <b id="offlineCount">0</b></div>
+
+    <label>Personel (zorunlu)</label>
+    <input id="personel" placeholder="Örn: Akın" value="Akın" />
+
+    <label>Personel ID (opsiyonel)</label>
+    <input id="personelId" placeholder="Örn: A101" />
+
+    <label>Birim (zorunlu)</label>
+    <select id="birim">
+      <option value="Güvenlik">Güvenlik</option>
+      <option value="Teknik">Teknik</option>
+      <option value="Temizlik">Temizlik</option>
+      <option value="Yönetim">Yönetim</option>
+    </select>
+
+    <label>Açıklama</label>
+    <textarea id="aciklama" placeholder="Bildirimi yaz..."></textarea>
+
+    <label>Fotoğraf (opsiyonel)</label>
+    <input id="foto" type="file" accept="image/*" />
+
+    <div class="row" style="margin-top:12px;">
+      <button class="btn" onclick="handleSubmit()">📩 Gönder</button>
+      <button class="btn2" onclick="location.href='panel.html'">↩️ Panele Dön</button>
+    </div>
+
+    <div class="line"></div>
+
+    <h3 style="margin:0 0 8px;">🧠 Offline & Gönderim</h3>
+    <div class="mini">
+      Depoda internet çekmiyorsa sorun değil: kayıtlar cihazda saklanır. İnternet gelince aşağıdaki butonla toplu gönderirsin.
+    </div>
+
+    <div class="row" style="margin-top:10px;">
+      <button class="btnWarn" onclick="sendOfflineAll()">📤 Offline Kayıtları Gönder</button>
+    </div>
+
+    <div class="smallBtnRow" style="margin-top:10px;">
+      <button class="btn2" onclick="localStorage.removeItem(OFFLINE_KEY); renderOfflineCount(); setStatus('ok','Offline kayıtlar temizlendi.');">🧹 Offline Temizle</button>
+      <button class="btn2" onclick="gasGetTest()">🔎 GET Test</button>
+    </div>
+
+    <div class="line"></div>
+
+    <div id="durum" class="mini">Durum mesajı burada görünecek.</div>
+    <pre id="debug" class="kv" style="display:none;"></pre>
+  </div>
+
+  <script>
+    // ilk yükleme
+    renderOfflineCount();
+    setStatus("ok", "Hazır. GET Test ile bağlantıyı doğrulayabilirsin.");
+  </script>
+
+</body>
+</html>
