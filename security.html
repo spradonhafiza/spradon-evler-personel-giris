@@ -2,622 +2,579 @@
 <html lang="tr" translate="no" class="notranslate">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="google" content="notranslate" />
   <meta http-equiv="content-language" content="tr" />
   <title>Spradon Hafıza • Güvenlik</title>
 
   <style>
     :root{
-      --bg:#0b1220; --card:rgba(255,255,255,.06); --card2:rgba(255,255,255,.08);
-      --text:#e8eefc; --muted:rgba(232,238,252,.7);
-      --ok:#2ecc71; --warn:#f39c12; --bad:#e74c3c; --btn:#2563eb; --btn2:#0f1b33;
+      --bg:#0b1220;
+      --card:rgba(255,255,255,.06);
+      --card2:rgba(255,255,255,.09);
+      --text:#e8eefc;
+      --muted:rgba(232,238,252,.72);
+      --ok:#2ecc71;
+      --warn:#f39c12;
+      --bad:#e74c3c;
+      --btn:#2563eb;
+      --btn2:rgba(255,255,255,.10);
       --line:rgba(255,255,255,.12);
       --radius:18px;
     }
-    *{ box-sizing:border-box; }
+    *{box-sizing:border-box}
     body{
-      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: radial-gradient(1200px 800px at 20% -10%, rgba(37,99,235,.35), transparent 60%),
-                  radial-gradient(1000px 700px at 110% 0%, rgba(46,204,113,.25), transparent 55%),
-                  var(--bg);
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(1200px 800px at 20% -10%, rgba(37,99,235,.25), transparent 60%),
+        radial-gradient(1000px 700px at 110% 0%, rgba(46,204,113,.18), transparent 60%),
+        radial-gradient(900px 700px at 30% 120%, rgba(243,156,18,.12), transparent 60%),
+        var(--bg);
       color:var(--text);
       padding:18px;
     }
-    .wrap{ max-width:980px; margin:0 auto; }
+    a{color:var(--text)}
+    .wrap{max-width:980px;margin:0 auto}
     .top{
-      display:flex; gap:12px; align-items:center; justify-content:space-between;
-      flex-wrap:wrap;
-      margin-bottom:14px;
+      display:flex;gap:12px;align-items:center;justify-content:space-between;
+      flex-wrap:wrap;margin-bottom:14px;
     }
-    .brand{
-      display:flex; gap:10px; align-items:center;
+    .brand{display:flex;gap:10px;align-items:center}
+    .logo{
+      width:34px;height:34px;border-radius:10px;
+      background:linear-gradient(135deg, rgba(37,99,235,.9), rgba(46,204,113,.85));
+      display:grid;place-items:center;font-weight:800;
+      box-shadow:0 10px 24px rgba(0,0,0,.25);
     }
-    .badge{
-      width:42px; height:42px; border-radius:14px;
-      background: linear-gradient(135deg, rgba(37,99,235,.9), rgba(46,204,113,.7));
-      display:grid; place-items:center; font-weight:800;
-      box-shadow:0 10px 30px rgba(0,0,0,.35);
-      user-select:none;
-    }
-    .title{
-      line-height:1.1;
-    }
-    .title h1{ margin:0; font-size:18px; letter-spacing:.2px; }
-    .title div{ margin-top:2px; font-size:12px; color:var(--muted); }
-    .pill{
-      display:flex; gap:8px; flex-wrap:wrap; align-items:center; justify-content:flex-end;
-    }
+    .title{font-weight:800}
+    .subtitle{color:var(--muted);font-size:12px;margin-top:2px}
+    .chips{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
     .chip{
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.04);
-      padding:6px 10px; border-radius:999px; font-size:12px;
+      padding:8px 10px;border:1px solid var(--line);border-radius:999px;
+      background:rgba(255,255,255,.04);font-size:12px;color:var(--muted)
     }
-    .chip b{ font-weight:700; }
-    .grid{
-      display:grid; grid-template-columns: 1.1fr .9fr; gap:14px;
-    }
-    @media (max-width: 900px){ .grid{ grid-template-columns:1fr; } }
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    @media(max-width:900px){.grid{grid-template-columns:1fr}}
     .card{
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: 0 12px 34px rgba(0,0,0,.28);
-      overflow:hidden;
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:14px;
+      box-shadow:0 18px 50px rgba(0,0,0,.22);
     }
-    .card h2{
-      margin:0; padding:14px 14px 10px;
-      font-size:15px; letter-spacing:.2px;
-      display:flex; align-items:center; justify-content:space-between;
-      background: rgba(255,255,255,.03);
-      border-bottom: 1px solid var(--line);
+    .card h3{margin:0 0 10px 0;font-size:14px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media(max-width:560px){.row{grid-template-columns:1fr}}
+    label{display:block;font-size:12px;color:var(--muted);margin:10px 0 6px}
+    input,select,textarea{
+      width:100%;padding:10px 12px;border-radius:12px;
+      border:1px solid var(--line);background:rgba(0,0,0,.18);
+      color:var(--text);outline:none;
     }
-    .card .body{ padding:14px; }
-    .row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-    @media (max-width:600px){ .row{ grid-template-columns:1fr; } }
-    label{ display:block; font-size:12px; color:var(--muted); margin:0 0 6px; }
-    input, select, textarea{
-      width:100%;
-      padding:10px 12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(0,0,0,.18);
-      color: var(--text);
-      outline:none;
+    textarea{min-height:88px;resize:vertical}
+    .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    button{
+      border:0;border-radius:12px;padding:10px 12px;
+      cursor:pointer;font-weight:700;color:var(--text);
+      background:var(--btn);
     }
-    textarea{ min-height:92px; resize:vertical; }
-    input::placeholder, textarea::placeholder{ color: rgba(232,238,252,.35); }
-    .actions{
-      display:flex; flex-wrap:wrap; gap:10px; margin-top:12px;
-    }
-    .btn{
-      border:0; cursor:pointer; user-select:none;
-      padding:12px 14px; border-radius:14px;
-      font-weight:700; letter-spacing:.2px;
-      background: var(--btn);
-      color:white;
-      box-shadow:0 12px 26px rgba(37,99,235,.25);
-    }
-    .btn.secondary{ background: rgba(255,255,255,.08); color:var(--text); border:1px solid var(--line); box-shadow:none; }
-    .btn.danger{ background: rgba(231,76,60,.18); border:1px solid rgba(231,76,60,.35); box-shadow:none; }
-    .btn:disabled{ opacity:.6; cursor:not-allowed; }
+    button.secondary{background:var(--btn2);border:1px solid var(--line);font-weight:700}
+    button.danger{background:rgba(231,76,60,.18);border:1px solid rgba(231,76,60,.45)}
+    .note{color:var(--muted);font-size:12px;line-height:1.35}
     .status{
-      margin-top:10px; padding:10px 12px;
-      border-radius:14px; border:1px dashed rgba(255,255,255,.18);
-      background: rgba(0,0,0,.12);
-      font-size:13px; color:var(--muted);
+      margin-top:10px;padding:10px 12px;border-radius:12px;
+      border:1px dashed var(--line);color:var(--muted);font-size:12px;
+      background:rgba(0,0,0,.14);
       white-space:pre-wrap;
     }
-    .ok{ color: var(--ok); }
-    .warn{ color: var(--warn); }
-    .bad{ color: var(--bad); }
-    .mini{ font-size:12px; color:var(--muted); line-height:1.35; }
-    .photos{
-      display:grid; grid-template-columns: 1fr 1fr; gap:10px;
-      margin-top:10px;
-    }
-    @media (max-width: 560px){ .photos{ grid-template-columns:1fr; } }
-    .thumb{
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.04);
-      border-radius: 16px;
-      overflow:hidden;
-    }
-    .thumb img{ width:100%; height:190px; object-fit:cover; display:block; }
-    .thumb .cap{ padding:8px 10px; font-size:12px; color:var(--muted); }
-    .hr{ height:1px; background: var(--line); margin:12px 0; }
-    .smallline{ height:1px; background: rgba(255,255,255,.08); margin:10px 0; }
-    .rightStack{ display:flex; flex-direction:column; gap:14px; }
-    .note{
-      font-size:12px; color:var(--muted);
-      border-left:3px solid rgba(46,204,113,.6);
-      padding-left:10px;
-    }
     .kpi{
-      display:grid; grid-template-columns: 1fr 1fr; gap:10px;
+      display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px
     }
     .kpi .box{
+      background:rgba(0,0,0,.14);
       border:1px solid var(--line);
-      background: rgba(255,255,255,.04);
-      border-radius:16px;
-      padding:10px 12px;
+      border-radius:14px;padding:10px 12px;
     }
-    .kpi .box .v{ font-size:18px; font-weight:800; }
-    .kpi .box .t{ font-size:12px; color:var(--muted); margin-top:2px; }
+    .kpi .big{font-size:22px;font-weight:900;margin:0}
+    .kpi .small{margin:4px 0 0;color:var(--muted);font-size:12px}
+    .ok{color:var(--ok)}
+    .warn{color:var(--warn)}
+    .bad{color:var(--bad)}
+    .hr{height:1px;background:var(--line);margin:12px 0}
+    .tiny{font-size:11px;color:var(--muted)}
   </style>
 </head>
 
 <body>
-<div class="wrap">
-
+<div class="wrap notranslate" translate="no">
   <div class="top">
     <div class="brand">
-      <div class="badge">S</div>
-      <div class="title">
-        <h1>Spradon Hafıza • Güvenlik</h1>
-        <div>Foto + not + offline kayıt (internet gelince toplu gönderim)</div>
+      <div class="logo">S</div>
+      <div>
+        <div class="title">Spradon Hafıza • Güvenlik</div>
+        <div class="subtitle">Foto + not + offline kayıt (internet gelince toplu gönderim)</div>
       </div>
     </div>
 
-    <div class="pill">
-      <div class="chip">Durum: <b id="netTxt">—</b></div>
-      <div class="chip">Offline kuyruk: <b id="qTxt">0</b></div>
+    <div class="chips">
+      <div class="chip">Durum: <b id="netChip">—</b></div>
+      <div class="chip">Offline kuyruk: <b id="qChip">0</b></div>
     </div>
   </div>
 
   <div class="grid">
-
-    <!-- LEFT: MAIN FORM -->
+    <!-- SOL: Kayıt -->
     <div class="card">
-      <h2>
-        <span>📸 Kayıt Oluştur</span>
-        <span class="mini" id="clockTxt">—</span>
-      </h2>
-      <div class="body">
+      <h3>🗂️ Kayıt Oluştur</h3>
 
-        <div class="row">
-          <div>
-            <label>Personel Adı</label>
-            <input id="personel" placeholder="Örn: Akın" autocomplete="name" />
-          </div>
-          <div>
-            <label>Personel ID / Sicil</label>
-            <input id="personelId" placeholder="Örn: A101" autocomplete="off" />
-          </div>
+      <div class="row">
+        <div>
+          <label>Personel Adı</label>
+          <input id="personel" autocomplete="off" placeholder="Örn: Akın" />
         </div>
-
-        <div class="row" style="margin-top:10px;">
-          <div>
-            <label>Birim</label>
-            <select id="birim">
-              <option value="Güvenlik">Güvenlik</option>
-              <option value="Teknik">Teknik</option>
-              <option value="Temizlik">Temizlik</option>
-              <option value="Yönetim">Yönetim</option>
-              <option value="Diğer">Diğer</option>
-            </select>
-          </div>
-          <div>
-            <label>Tarih</label>
-            <input id="tarih" type="date" />
-          </div>
+        <div>
+          <label>Personel ID / Sicil</label>
+          <input id="personelId" autocomplete="off" placeholder="Örn: A101" />
         </div>
-
-        <div style="margin-top:10px;">
-          <label>Not / Açıklama</label>
-          <textarea id="not" placeholder="Örn: 550 ada giriş kapısı…"></textarea>
-        </div>
-
-        <div style="margin-top:10px;">
-          <label>Fotoğraf(lar) (opsiyonel)</label>
-          <input id="foto" type="file" accept="image/*" capture="environment" multiple />
-          <div class="mini" style="margin-top:6px;">
-            Not: Fotoğraflar otomatik küçültülür (hız + kota için). Çok büyük/HEIC dosyalarda bazı cihazlar desteklemeyebilir.
-          </div>
-
-          <div class="photos" id="photoPreview" style="display:none;"></div>
-        </div>
-
-        <div class="actions">
-          <button class="btn" id="btnSend">✅ Kaydet & Gönder</button>
-          <button class="btn secondary" id="btnSaveOffline">📦 Sadece Offline Kaydet</button>
-          <button class="btn secondary" id="btnClearForm">🧹 Formu Temizle</button>
-        </div>
-
-        <div class="status" id="statusBox">Hazır.</div>
-
       </div>
+
+      <div class="row">
+        <div>
+          <label>Birim</label>
+          <select id="birim">
+            <option>Güvenlik</option>
+            <option>Teknik</option>
+            <option>Temizlik</option>
+            <option>Yönetim</option>
+            <option>Diğer</option>
+          </select>
+        </div>
+        <div>
+          <label>Tarih</label>
+          <input id="tarih" type="date" />
+        </div>
+      </div>
+
+      <label>Not / Açıklama</label>
+      <textarea id="not" placeholder="Örn: 550 ada giriş kapısı..."></textarea>
+
+      <label>Fotoğraf(lar) (opsiyonel)</label>
+      <input id="foto" type="file" accept="image/*" multiple />
+
+      <div class="tiny" style="margin-top:8px;">
+        Not: Fotoğraflar otomatik küçültülür (hız + kota için). Çok büyük/HEIC dosyalarda bazı cihazlar desteklemeyebilir.
+      </div>
+
+      <div class="btns">
+        <button id="btnSend">✅ Kaydet & Gönder</button>
+        <button id="btnOffline" class="secondary">📦 Sadece Offline Kaydet</button>
+        <button id="btnClearForm" class="secondary">🧹 Formu Temizle</button>
+      </div>
+
+      <div id="statusLeft" class="status">Hazır.</div>
     </div>
 
-    <!-- RIGHT: SETTINGS + OFFLINE -->
-    <div class="rightStack">
+    <!-- SAĞ: Offline & Backend -->
+    <div class="card">
+      <h3>🧠 Offline & Gönderim</h3>
 
-      <div class="card">
-        <h2>🧠 Offline & Gönderim</h2>
-        <div class="body">
-
-          <div class="kpi">
-            <div class="box">
-              <div class="v" id="kpiQueue">0</div>
-              <div class="t">Cihazda bekleyen kayıt</div>
-            </div>
-            <div class="box">
-              <div class="v" id="kpiNet">—</div>
-              <div class="t">İnternet</div>
-            </div>
-          </div>
-
-          <div class="hr"></div>
-
-          <button class="btn" id="btnFlush">📤 Offline Kayıtları Gönder</button>
-          <button class="btn danger" id="btnWipe">🗑️ Offline Kuyruğu Sil</button>
-
-          <div class="status" id="flushBox">Bekleyen kayıt yoksa burada “0” görürsün.</div>
-
-          <div class="note" style="margin-top:10px;">
-            Depoda internet yoksa sorun değil: kayıtlar cihazda kalır. İnternet gelince “Offline Kayıtları Gönder” ile yollarsın.
-          </div>
-
+      <div class="kpi">
+        <div class="box">
+          <p class="big" id="qCount">0</p>
+          <p class="small">Cihazda bekleyen kayıt</p>
+        </div>
+        <div class="box">
+          <p class="big" id="netState">—</p>
+          <p class="small">İnternet</p>
         </div>
       </div>
 
-      <div class="card">
-        <h2>⚙️ Backend (GAS) Ayarı</h2>
-        <div class="body">
-          <label>Apps Script Web App (…/exec) URL</label>
-          <input id="gasUrl" placeholder="https://script.google.com/macros/s/XXXX/exec" />
-
-          <div class="actions">
-            <button class="btn secondary" id="btnSaveGAS">💾 Kaydet</button>
-            <button class="btn secondary" id="btnTestGAS">🔎 Test</button>
-          </div>
-
-          <div class="mini">
-            Test: GET atar. “OK” dönerse bağlantı tamam.
-          </div>
-
-          <div class="status" id="gasBox">Henüz test edilmedi.</div>
-
-          <div class="smallline"></div>
-
-          <div class="mini">
-            İpucu: GAS tarafında değişiklik yaptıysan tekrar “Dağıt → Yeni dağıtım” ile yeni sürüm çıkman gerekir.
-          </div>
-        </div>
+      <div class="btns">
+        <button id="btnFlush" class="secondary">🚚 Offline Kayıtları Gönder</button>
+        <button id="btnWipe" class="danger">🗑️ Offline Kuyruğu Sil</button>
       </div>
 
+      <div id="statusRight" class="status">Bekleyen kayıt yoksa burada “0” görürsün.</div>
+
+      <div class="hr"></div>
+
+      <h3>⚙️ Backend (GAS) Ayarı</h3>
+
+      <label>Apps Script Web App (…/exec) URL</label>
+      <input id="gasUrl" autocomplete="off" placeholder="https://script.google.com/macros/s/XXXX/exec" />
+
+      <div class="btns">
+        <button id="btnSaveUrl" class="secondary">💾 Kaydet</button>
+        <button id="btnTest" class="secondary">🔎 Test</button>
+      </div>
+
+      <div class="note">
+        Test: <b>GET</b> atar, “OK” dönerse bağlantı tamam.<br/>
+        <span class="warn">Önemli:</span> Gönderimde <b>preflight tetiklememek</b> için JSON header kullanmıyoruz.
+      </div>
+
+      <div id="statusUrl" class="status">Henüz test edilmedi.</div>
     </div>
-
   </div>
 </div>
 
 <script>
 (() => {
-  // ====== STORAGE KEYS ======
-  const KEY_GAS = "spradon_gas_url";
-  const KEY_Q   = "spradon_security_offline_queue_v1";
+  "use strict";
 
-  // ====== DEFAULTS ======
-  const DEFAULT_GAS_URL = ""; // istersen buraya sabit URL yazabilirsin.
+  // --- Anti-translate (tarayıcı çevirisi için ek önlem)
+  document.documentElement.setAttribute("translate","no");
+  document.documentElement.classList.add("notranslate");
+  document.body.setAttribute("translate","no");
+  document.body.classList.add("notranslate");
 
-  // ====== DOM ======
-  const el = (id) => document.getElementById(id);
+  // --- Storage keys
+  const KEY_URL = "spradon_gas_url";
+  const KEY_QUEUE = "spradon_offline_queue_v1";
 
-  const netTxt   = el("netTxt");
-  const qTxt     = el("qTxt");
-  const kpiQueue = el("kpiQueue");
-  const kpiNet   = el("kpiNet");
-  const clockTxt = el("clockTxt");
+  // --- UI refs
+  const $ = (id) => document.getElementById(id);
 
-  const personel   = el("personel");
-  const personelId = el("personelId");
-  const birim      = el("birim");
-  const tarih      = el("tarih");
-  const notTxt     = el("not");
-  const fotoInput  = el("foto");
+  const el = {
+    personel: $("personel"),
+    personelId: $("personelId"),
+    birim: $("birim"),
+    tarih: $("tarih"),
+    not: $("not"),
+    foto: $("foto"),
 
-  const statusBox  = el("statusBox");
-  const flushBox   = el("flushBox");
-  const gasBox     = el("gasBox");
-  const gasUrlInp  = el("gasUrl");
+    btnSend: $("btnSend"),
+    btnOffline: $("btnOffline"),
+    btnClearForm: $("btnClearForm"),
 
-  const btnSend       = el("btnSend");
-  const btnSaveOffline= el("btnSaveOffline");
-  const btnClearForm  = el("btnClearForm");
-  const btnFlush      = el("btnFlush");
-  const btnWipe       = el("btnWipe");
-  const btnSaveGAS    = el("btnSaveGAS");
-  const btnTestGAS    = el("btnTestGAS");
+    btnFlush: $("btnFlush"),
+    btnWipe: $("btnWipe"),
 
-  const previewWrap = el("photoPreview");
+    gasUrl: $("gasUrl"),
+    btnSaveUrl: $("btnSaveUrl"),
+    btnTest: $("btnTest"),
 
-  // ====== HELPERS ======
-  const nowISODate = () => new Date().toISOString().slice(0,10);
+    statusLeft: $("statusLeft"),
+    statusRight: $("statusRight"),
+    statusUrl: $("statusUrl"),
 
-  function setStatus(msg, kind="") {
-    statusBox.className = "status " + (kind || "");
-    statusBox.textContent = msg;
+    qCount: $("qCount"),
+    qChip: $("qChip"),
+    netState: $("netState"),
+    netChip: $("netChip"),
+  };
+
+  // default date today
+  if (!el.tarih.value) {
+    const d = new Date();
+    const iso = new Date(d.getTime() - d.getTimezoneOffset()*60000).toISOString().slice(0,10);
+    el.tarih.value = iso;
   }
-  function setFlush(msg, kind="") {
-    flushBox.className = "status " + (kind || "");
-    flushBox.textContent = msg;
+
+  // Load saved URL
+  el.gasUrl.value = (localStorage.getItem(KEY_URL) || "").trim();
+
+  // --- Helpers
+  const nowISO = () => new Date().toISOString();
+
+  function setLeft(msg, cls="") {
+    el.statusLeft.className = "status " + cls;
+    el.statusLeft.textContent = msg;
   }
-  function setGas(msg, kind="") {
-    gasBox.className = "status " + (kind || "");
-    gasBox.textContent = msg;
+  function setRight(msg, cls="") {
+    el.statusRight.className = "status " + cls;
+    el.statusRight.textContent = msg;
+  }
+  function setUrlStatus(msg, cls="") {
+    el.statusUrl.className = "status " + cls;
+    el.statusUrl.textContent = msg;
   }
 
   function loadQueue() {
-    try { return JSON.parse(localStorage.getItem(KEY_Q) || "[]"); }
+    try { return JSON.parse(localStorage.getItem(KEY_QUEUE) || "[]") || []; }
     catch { return []; }
   }
   function saveQueue(q) {
-    localStorage.setItem(KEY_Q, JSON.stringify(q));
-    refreshBadges();
+    localStorage.setItem(KEY_QUEUE, JSON.stringify(q || []));
+    renderQueue();
   }
 
-  function getGasUrl() {
-    return (localStorage.getItem(KEY_GAS) || DEFAULT_GAS_URL || "").trim();
-  }
-  function setGasUrl(url) {
-    localStorage.setItem(KEY_GAS, (url || "").trim());
-  }
-
-  function refreshBadges() {
+  function renderNet() {
     const online = navigator.onLine;
-    netTxt.textContent = online ? "Online" : "Offline";
-    netTxt.style.color = online ? "var(--ok)" : "var(--warn)";
-    kpiNet.textContent = online ? "Online" : "Offline";
-    kpiNet.style.color = online ? "var(--ok)" : "var(--warn)";
+    el.netState.textContent = online ? "Online" : "Offline";
+    el.netState.className = "big " + (online ? "ok" : "warn");
 
+    el.netChip.textContent = online ? "Online" : "Offline";
+    el.netChip.className = online ? "ok" : "warn";
+  }
+
+  function renderQueue() {
     const q = loadQueue();
-    qTxt.textContent = String(q.length);
-    kpiQueue.textContent = String(q.length);
+    el.qCount.textContent = String(q.length);
+    el.qChip.textContent = String(q.length);
   }
 
-  function tickClock(){
-    const d = new Date();
-    const pad = (n)=> String(n).padStart(2,"0");
-    clockTxt.textContent = ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())};
+  window.addEventListener("online", () => { renderNet(); });
+  window.addEventListener("offline", () => { renderNet(); });
+
+  renderNet();
+  renderQueue();
+
+  function cleanUrl(u) {
+    u = (u || "").trim();
+    if (!u) return "";
+    // allow googleusercontent echo too
+    return u;
   }
 
-  // ====== IMAGE: read + resize to base64 ======
-  function fileToBase64Resized(file, maxW=1280, maxH=1280, quality=0.78) {
+  // --- Image handling: convert to jpeg base64 (small)
+  function fileToJpegBase64(file, maxW=1280, quality=0.82) {
     return new Promise((resolve, reject) => {
-      try{
-        if (!file) return resolve(null);
-
-        // Some iOS photos come as HEIC; browsers may not decode it.
-        const isHeic = (file.type || "").toLowerCase().includes("heic") || (file.name || "").toLowerCase().endsWith(".heic");
-        if (isHeic) {
-          return reject(new Error("HEIC formatı bazı cihazlarda okunamayabilir. JPG/PNG deneyin."));
-        }
-
-        const reader = new FileReader();
-        reader.onerror = () => reject(new Error("Foto okunamadı (FileReader)."));
-        reader.onload = () => {
-          const img = new Image();
-          img.onerror = () => reject(new Error("Foto okunamadı (Image decode)."));
-          img.onload = () => {
-            const { width:w, height:h } = img;
-            let tw = w, th = h;
-
-            const ratio = Math.min(maxW / w, maxH / h, 1);
-            tw = Math.round(w * ratio);
-            th = Math.round(h * ratio);
-
-            const canvas = document.createElement("canvas");
-            canvas.width = tw; canvas.height = th;
-            const ctx = canvas.getContext("2d", { alpha:false });
-
-            ctx.drawImage(img, 0, 0, tw, th);
-
-            const out = canvas.toDataURL("image/jpeg", quality);
-            resolve(out);
-          };
-          img.src = reader.result;
+      // Some HEIC not readable in browser -> reject gracefully
+      const fr = new FileReader();
+      fr.onerror = () => reject(new Error("Foto okunamadı (FileReader)."));
+      fr.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          try {
+            const ratio = Math.min(1, maxW / img.width);
+            const w = Math.max(1, Math.round(img.width * ratio));
+            const h = Math.max(1, Math.round(img.height * ratio));
+            const c = document.createElement("canvas");
+            c.width = w; c.height = h;
+            const ctx = c.getContext("2d");
+            ctx.drawImage(img, 0, 0, w, h);
+            const dataUrl = c.toDataURL("image/jpeg", quality);
+            const b64 = dataUrl.split(",")[1] || "";
+            resolve({
+              base64: b64,
+              mimeType: "image/jpeg",
+              name: (file.name || "photo.jpg").replace(/\.(heic|heif)$/i, ".jpg")
+            });
+          } catch (e) {
+            reject(new Error("Foto işlenemedi (canvas)."));
+          }
         };
-        reader.readAsDataURL(file);
-      }catch(err){
-        reject(new Error("Foto okunamadı: " + (err?.message || err)));
-      }
+        img.onerror = () => reject(new Error("Foto okunamadı (Image decode)."));
+        img.src = fr.result;
+      };
+      fr.readAsDataURL(file);
     });
   }
 
-  async function buildPhotoPayload(files) {
-    const list = [];
-    if (!files || !files.length) return list;
-
-    for (let i=0; i<files.length; i++){
-      const f = files[i];
-      const b64 = await fileToBase64Resized(f);
-      // convert "data:image/jpeg;base64,AAAA" -> AAAA
-      const base64 = (b64 || "").split(",")[1] || "";
-      list.push({
-        name: f.name || (foto_${Date.now()}_${i}.jpg),
-        mime: "image/jpeg",
-        base64
-      });
+  async function readPhotos(files) {
+    const arr = Array.from(files || []);
+    if (!arr.length) return [];
+    const out = [];
+    for (const f of arr) {
+      try {
+        out.push(await fileToJpegBase64(f));
+      } catch (e) {
+        // Continue, but mark error
+        throw e;
+      }
     }
-    return list;
+    return out;
   }
 
-  function renderPreview(photoList){
-    if (!photoList || !photoList.length){
-      previewWrap.style.display = "none";
-      previewWrap.innerHTML = "";
-      return;
-    }
-    previewWrap.style.display = "grid";
-    previewWrap.innerHTML = photoList.map((p,idx)=>`
-      <div class="thumb">
-        <img alt="foto ${idx+1}" src="data:image/jpeg;base64,${p.base64}">
-        <div class="cap">${p.name || ("Foto " + (idx+1))}</div>
-      </div>
-    `).join("");
-  }
+  function buildRecord(photosArr) {
+    const personel = (el.personel.value || "").trim();
+    const personelId = (el.personelId.value || "").trim();
+    const birim = (el.birim.value || "").trim();
+    const tarih = (el.tarih.value || "").trim();
+    const note = (el.not.value || "").trim();
 
-  // ====== PAYLOAD ======
-  function collectBasePayload(){
-    const p = (personel.value || "").trim();
-    const pid = (personelId.value || "").trim();
-    const b = birim.value || "Güvenlik";
-    const t = tarih.value || nowISODate();
-    const n = (notTxt.value || "").trim();
+    // Minimal validations
+    if (!personel && !personelId) {
+      throw new Error("Personel Adı veya Personel ID gir.");
+    }
+    if (!tarih) {
+      throw new Error("Tarih seç.");
+    }
 
     return {
-      source: "security",
-      personel: p,
-      personelId: pid,
-      birim: b,
-      tarih: t,
-      not: n,
-      ts: new Date().toISOString()
+      source: "web",
+      ts: nowISO(),
+      personel,
+      personelId,
+      birim,
+      tarih,
+      not: note,
+      fotograflar: photosArr || []
     };
   }
 
-  function validate(payload){
-    // Security sayfasında minimum: birim + tarih (personel zorunlu değil)
-    if (!payload.birim) return "Birim boş olamaz.";
-    if (!payload.tarih) return "Tarih boş olamaz.";
-    return "";
-  }
+  // --- SEND (NO PREFLIGHT)
+  // IMPORTANT: Do NOT set Content-Type: application/json
+  // We'll send raw JSON string as text/plain (default) to avoid OPTIONS preflight to GAS.
+  async function postToGAS(url, payloadObj) {
+    const bodyText = JSON.stringify(payloadObj);
 
-  // ====== NETWORK: GAS ======
-  async function gasGetTest(url){
-    const r = await fetch(url, { method:"GET", cache:"no-store" });
-    let txt = await r.text();
-    // try json
-    try { return JSON.parse(txt); } catch { return { ok:r.ok, msg:txt }; }
-  }
-
-  async function gasPost(url, payload){
-    const r = await fetch(url, {
-      method:"POST",
-      headers: { "Content-Type":"application/json" },
-      body: JSON.stringify(payload),
-      cache:"no-store"
+    const res = await fetch(url, {
+      method: "POST",
+      // headers intentionally omitted (preflight avoidance)
+      body: bodyText,
+      cache: "no-store",
+      redirect: "follow",
     });
-    const txt = await r.text();
-    try { return JSON.parse(txt); } catch { return { ok:r.ok, msg:txt }; }
+
+    // If GAS returns text/json
+    const text = await res.text();
+    let data = null;
+    try { data = JSON.parse(text); } catch { data = { raw: text }; }
+
+    if (!res.ok) {
+      const msg = (data && (data.msg || data.error)) ? (data.msg || data.error) : ("HTTP " + res.status);
+      throw new Error(msg);
+    }
+    // Support various response shapes
+    if (data && (data.ok === true || data.success === true)) return data;
+    if (data && data.raw && String(data.raw).includes("OK")) return { ok:true, raw:data.raw };
+    return data || { ok:true };
   }
 
-  async function sendOne(item){
-    const url = getGasUrl();
-    if (!url) throw new Error("GAS URL tanımlı değil (Ayar kısmından kaydet).");
-
-    // gönderim
-    const res = await gasPost(url, item);
-
-    // farklı backend'ler farklı alan döndürebilir
-    const ok = !!(res && (res.ok === true || res.success === true || res.status === "ok"));
-    if (!ok) {
-      throw new Error("Backend hata verdi: " + (res?.msg || res?.message || JSON.stringify(res)));
-    }
-    return res;
+  async function testGET(url) {
+    const u = url + (url.includes("?") ? "&" : "?") + "ping=1&t=" + Date.now();
+    const res = await fetch(u, { method:"GET", cache:"no-store" });
+    const text = await res.text();
+    let data = null;
+    try { data = JSON.parse(text); } catch { data = { raw:text }; }
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    return data;
   }
 
-  async function flushQueue(){
-    const q = loadQueue();
-    if (!q.length){
-      setFlush("Gönderilecek offline kayıt yok.", "ok");
-      return;
-    }
-    if (!navigator.onLine){
-      setFlush("İnternet yok. Online olunca tekrar dene.", "warn");
-      return;
-    }
+  // --- Actions
+  el.btnSaveUrl.addEventListener("click", () => {
+    const u = cleanUrl(el.gasUrl.value);
+    localStorage.setItem(KEY_URL, u);
+    setUrlStatus(u ? "✅ Kaydedildi." : "⚠️ URL boş.", u ? "ok" : "warn");
+  });
 
-    let okCount = 0;
-    const failed = [];
-    for (let i=0; i<q.length; i++){
-      try{
-        await sendOne(q[i]);
-        okCount++;
-      }catch(err){
-        failed.push(q[i]);
+  el.btnTest.addEventListener("click", async () => {
+    try {
+      const u = cleanUrl(el.gasUrl.value);
+      if (!u) throw new Error("URL boş. /exec linkini yapıştır.");
+      localStorage.setItem(KEY_URL, u);
+      setUrlStatus("Test ediliyor...", "");
+      const data = await testGET(u);
+      setUrlStatus("✅ Cevap geldi.\n" + JSON.stringify(data, null, 2), "ok");
+    } catch (e) {
+      setUrlStatus("❌ Test başarısız: " + (e.message || e), "bad");
+    }
+  });
+
+  el.btnClearForm.addEventListener("click", () => {
+    el.personel.value = "";
+    el.personelId.value = "";
+    el.not.value = "";
+    el.foto.value = "";
+    setLeft("Form temizlendi.", "");
+  });
+
+  el.btnOffline.addEventListener("click", async () => {
+    try {
+      setLeft("Offline kaydediliyor...", "");
+      const photos = await readPhotos(el.foto.files);
+      const rec = buildRecord(photos);
+      const q = loadQueue();
+      q.push(rec);
+      saveQueue(q);
+      setLeft("✅ Kayıt offline kuyruğa eklendi. (Toplam: " + q.length + ")", "ok");
+      setRight("Bekleyen kayıt: " + q.length + "\nİnternet gelince “Offline Kayıtları Gönder” ile yollarsın.", "");
+    } catch (e) {
+      setLeft("❌ " + (e.message || e), "bad");
+    }
+  });
+
+  el.btnSend.addEventListener("click", async () => {
+    try {
+      setLeft("Hazırlanıyor...", "");
+      const url = cleanUrl(localStorage.getItem(KEY_URL) || el.gasUrl.value);
+      if (!url) throw new Error("Backend URL yok. Sağ alttan /exec linkini yapıştırıp Kaydet.");
+
+      const photos = await readPhotos(el.foto.files);
+      const rec = buildRecord(photos);
+
+      // If offline -> queue only
+      if (!navigator.onLine) {
+        const q = loadQueue();
+        q.push(rec);
+        saveQueue(q);
+        setLeft("✅ İnternet yok: kayıt offline kuyruğa alındı. (Toplam: " + q.length + ")", "warn");
+        return;
+      }
+
+      setLeft("Gönderiliyor...", "");
+      const resp = await postToGAS(url, rec);
+      setLeft("✅ Gönderildi.\n" + JSON.stringify(resp, null, 2), "ok");
+    } catch (e) {
+      // If failed, put into queue for safety
+      const msg = (e.message || e) + "";
+      try {
+        const photos = await readPhotos(el.foto.files);
+        const rec = buildRecord(photos);
+        const q = loadQueue();
+        q.push(rec);
+        saveQueue(q);
+        setLeft("⚠️ Gönderilemedi, offline kuyruğa aldım.\nHata: " + msg + "\nBekleyen: " + q.length, "warn");
+      } catch (e2) {
+        setLeft("❌ " + msg, "bad");
       }
     }
-    saveQueue(failed);
+  });
 
-    if (failed.length === 0){
-      setFlush(✅ Hepsi gönderildi. Gönderilen: ${okCount}, "ok");
-    }else{
-      setFlush(⚠️ Kısmi gönderim: gönderilen ${okCount}, başarısız ${failed.length}. (Kayıtlar cihazda tutuldu, tekrar deneyebilirsin.), "warn");
+  el.btnFlush.addEventListener("click", async () => {
+    const url = cleanUrl(localStorage.getItem(KEY_URL) || el.gasUrl.value);
+    if (!url) {
+      setRight("❌ Backend URL yok. /exec linkini gir.", "bad");
+      return;
     }
-  }
+    if (!navigator.onLine) {
+      setRight("⚠️ İnternet yok. Online olunca tekrar dene.", "warn");
+      return;
+    }
 
-  // ====== EVENTS ======
-  btnSaveGAS.addEventListener("click", () => {
-    const u = (gasUrlInp.value || "").trim();
-    setGasUrl(u);
-    setGas("✅ Kaydedildi.", "ok");
-  });
+    const q = loadQueue();
+    if (!q.length) {
+      setRight("Bekleyen kayıt yok.", "");
+      return;
+    }
 
-  btnTestGAS.addEventListener("click", async () => {
-    const u = (gasUrlInp.value || "").trim() || getGasUrl();
-    if (!u) { setGas("❌ GAS URL boş.", "bad"); return; }
-    try{
-      setGas("Test ediliyor…", "");
-      const res = await gasGetTest(u);
-      const ok = !!(res && (res.ok === true || res.msg === "OK" || res.status === "ok"));
-      setGas(ok ? ("✅ Cevap geldi (OK)\n" + JSON.stringify(res)) : ("⚠️ Cevap geldi ama beklenmeyen\n" + JSON.stringify(res)), ok ? "ok" : "warn");
-    }catch(err){
-      setGas("❌ Test başarısız: " + (err?.message || err), "bad");
+    let ok = 0, fail = 0;
+    const remain = [];
+
+    setRight("Gönderim başladı... (Toplam: " + q.length + ")", "");
+
+    for (let i=0; i<q.length; i++) {
+      const item = q[i];
+      try {
+        // Single item send
+        await postToGAS(url, item);
+        ok++;
+      } catch (e) {
+        fail++;
+        remain.push(item);
+      }
+    }
+
+    saveQueue(remain);
+
+    if (fail === 0) {
+      setRight("✅ Hepsi gönderildi. Gönderilen: " + ok + " / " + (ok+fail), "ok");
+    } else {
+      setRight("⚠️ Kısmi gönderim: gönderilen " + ok + ", başarısız " + fail +
+               ". (Kayıtları cihazda tuttum, tekrar deneyebilirsin.)", "warn");
     }
   });
 
-  btnClearForm.addEventListener("click", () => {
-    notTxt.value = "";
-    fotoInput.value = "";
-    renderPreview([]);
-    setStatus("Form temizlendi.", "");
-  });
-
-  btnWipe.addEventListener("click", () => {
-    if (!confirm("Offline kuyruğu silinsin mi?")) return;
+  el.btnWipe.addEventListener("click", () => {
+    if (!confirm("Offline kuyruğu tamamen silinsin mi?")) return;
     saveQueue([]);
-    setFlush("🗑️ Offline kuyruk silindi.", "ok");
+    setRight("🗑️ Offline kuyruk silindi.", "");
   });
 
-  btnFlush.addEventListener("click", async () => {
-    btnFlush.disabled = true;
-    try { await flushQueue(); }
-    finally { btnFlush.disabled = false; }
-  });
-
-  btnSaveOffline.addEventListener("click", async () => {
-    try{
-      const base = collectBasePayload();
-      const err = validate(base);
-      if (err) { setStatus("❌ " + err, "bad"); return; }
-
-      setStatus("Foto okunuyor…", "");
-      const photos = await buildPhotoPayload(fotoInput.files);
-
-      const item = { ...base, photos };
-      const q = loadQueue();
-      q.push(item);
-      saveQueue(q);
-
-      renderPreview(photos);
-      setStatus(📦 Offline kaydedildi. (Bekleyen: ${q.length}), "ok");
-    }catch(err){
-      setStatus("❌ " + (err?.message || err), "bad");
-    }
-  });
-
-  btnSend.addEventListener("click", async () => {
-    btnSend.disabled = true;
-    try{
-      const base = collectBasePayload();
-      const err = validate(base);
-      if (err) { setStatus("❌ " + err, "bad"); return; }
-
-      setStatus("Foto okunuyor…", "");
-      const photos = await buildPhotoPayload(fotoInput.files);
-      renderPreview(photos);
-
-      const item = { ...base, photos };
-
-      //
+})();
+</script>
+</body>
+</html>
